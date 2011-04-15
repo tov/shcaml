@@ -7,19 +7,20 @@ AC_INIT(shtop.mli)
 PACKAGES="camlp4 unix pcre"
 
 # Our version number
-VERSION="0.1.1"
+VERSION="0.1.2"
 
 # Our version name
-CODENAME="Shmooz"
+CODENAME="Shlimazl"
 
 # shlock shmaltz shadken shanda shaygets shayner shiksa
-# shlemiel shlep shlimazl shmendrick shmegegge
-# shmeer shmooz shmutzik shnorrer shtik shtetl shtunk
+# shlemiel shlep shmendrick shmegegge
+# shmeer shmutzik shnorrer shtik shtetl shtunk
 # shvitz 
 
 # Used:
 # 0.1.0 shmatta
 # 0.1.1 shmooz
+# 0.1.2 shlimazl
 
 # We need ocamlfind
 AC_PATH_PROG(OCAMLFIND,ocamlfind,no)

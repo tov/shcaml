@@ -97,7 +97,7 @@ val grep_string : (string -> bool) -> ('i elem -> 'i elem) t
 
 (** {4 Fitting Combinators} *)
 
-val ( /</ )     : (text -> 'o) t -> dup_in_spec -> (text -> 'o) t
+val ( /</ )     : (text -> 'o) t -> dup_spec -> (text -> 'o) t
 (** Redirect some inputs to a fitting.  [fitting /</ dups]
  * performs the redirections specifed by [dups] for the extent
  * of [fitting].  For example,
@@ -105,17 +105,17 @@ val ( /</ )     : (text -> 'o) t -> dup_in_spec -> (text -> 'o) t
  * {v     % fitting 4<&0 <file v}
  *)
 
-val redirect_in  : dup_in_spec -> (text -> 'o) t -> (text -> 'o) t
+val redirect_in  : dup_spec -> (text -> 'o) t -> (text -> 'o) t
 (** Alias for {!(/</)} *)
 
-val ( />/ )     : ('i -> 'o elem) t -> dup_out_spec -> ('i -> 'o elem) t
+val ( />/ )     : ('i -> 'o elem) t -> dup_spec -> ('i -> 'o elem) t
 (** Redirect some outputs from a fitting.  [fitting />/ dups]
  * performs the redirections specifed by [dups] for the extent
  * of [fitting].  For example,
  * [fitting />/ \[ 2 %>& 1 \]] is like
  * {v     % fitting 2>&1 v}
  *)
-val redirect_out : dup_out_spec -> ('i -> 'o elem) t -> ('i -> 'o elem) t
+val redirect_out : dup_spec -> ('i -> 'o elem) t -> ('i -> 'o elem) t
 (** Alias for {!(/>/)} *)
 
 val (^>>=)      : ('i -> 'o) t ->
@@ -204,6 +204,9 @@ val run_source : (text -> 'o) t      -> 'o shtream
 val run_sink   : ('i -> 'o elem) t   -> 'i coshtream
 (** Run a fitting, returning a costhream connected to its input.
  * The fitting will send its output from the standard output. *)
+val run_list   : (text -> 'o) t      -> 'o list
+(** Run a fitting, returning its output as a list.  The fitting
+ * will take its input from the standard input. *)
 
 val run_shtream : ('i -> 'o) t  -> 'i shtream -> 'o shtream
 (** 

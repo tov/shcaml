@@ -12,11 +12,11 @@
  *)
 
 (** Abort the current continuation, replacing it with a thunk.
-    This function doesn't return.
-    *)
+  * This function doesn't return. *)
 val abort     : (unit -> unit) -> 'a
 
 (** Set the abort handler if none is set.  Call this as soon as possible
  * in a program, so that the rest is in its dynamic extent, and then
  * {!Abort.abort} can throw control there. *)
 val set_abort : (unit -> 'a) -> 'a
+

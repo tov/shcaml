@@ -152,16 +152,12 @@ module Delim = struct
       | Some i -> (fields line).(i)
 
   let get_int:
-    string -> < delim: < names: present; .. >; .. > t -> int option =
-    fun key line ->
-      try Some (int_of_string (get key line)) with
-      | Failure _ -> None
+    string -> < delim: < names: present; .. >; .. > t -> int =
+    fun key line -> int_of_string (get key line)
 
   let get_float:
-    string -> < delim: < names: present; .. >; .. > t -> float option =
-    fun key line ->
-      try Some (float_of_string (get key line)) with
-      | Failure _ -> None
+    string -> < delim: < names: present; .. >; .. > t -> float =
+    fun key line -> float_of_string (get key line)
 
   val options: Delimited.options = Delimited.default_options
   with "The {!Delimited} options with which the record was split"

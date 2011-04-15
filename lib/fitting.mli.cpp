@@ -35,10 +35,10 @@ type initial      = LineShtream.initial
  * external processes.  That is, fittings constructed from external
  * processes produce values of type [initial elem].
  *)
-type 'a shtream   = 'a Shtream.t
-(** Alias for {!Shtream.t} *)
-type 'a coshtream = 'a Shtream.co_t
-(** Alias for {!Shtream.co_t} *)
+type 'a shtream   = 'a LineShtream.t
+(** Alias for {!LineShtream.t} *)
+type 'a coshtream = 'a LineShtream.co_t
+(** Alias for {!LineShtream.co_t} *)
 
 #include "fitting.sig"
 

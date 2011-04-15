@@ -318,15 +318,12 @@ let with_out_string kont =
   |}
 
 module Dup = struct
-  type 'a dup_in_arg  = 'a
-    constraint 'a = [> dup_in_source ] * [> gen_in_channel ]
-  type 'a dup_out_arg = 'a
-    constraint 'a = [> dup_out_source ] * [> gen_out_channel ]
+  type dup_arg = dup_source * gen_channel
 
   let ( !% ) d = fd_of_descr d
 
-  let ( *<& )  a b = ((b, a) :> 'a dup_in_arg)
-  let ( *>& )  a b = ((b, a) :> 'a dup_out_arg)
+  let ( *<& )  a b = ((b, a) :> dup_arg)
+  let ( *>& )  a b = ((b, a) :> dup_arg)
   let ( *< )   a b = a *<& `Filename b
   let ( *> )   a b = a *>& `Filename b
   let ( *>! )  a b = a *>& `Filespec (b, `Clobber)

@@ -58,11 +58,11 @@ module Make(Shtream : SHTREAM) = struct
     }
   and ('i, 'o) dupin =
     { dupin_witness :   'i in_witness;
-      dupin_dups :      dup_in_spec;
+      dupin_dups :      dup_spec;
       dupin_sub :       ('i -> 'o) t; }
   and ('i, 'o) dupout =
     { dupout_witness :  'r . ('o, 'r) out_witness -> 'r;
-      dupout_dups :     dup_out_spec;
+      dupout_dups :     dup_spec;
       dupout_sub :      ('i -> 'o) t; }
   and ('i, 'o) pipe =
     { pipe :            'r . ('i, 'o, 'r) depipe -> 'r; }
@@ -490,6 +490,8 @@ module Make(Shtream : SHTREAM) = struct
       run_low.s_c fitting s out_witness_id
 
   let run_shtream = run_low.s_s
+
+  let run_list fitting = Shtream.list_of (run_source fitting)
 
   let run_in ?procref fitting =
     open_thunk_in ?procref {|

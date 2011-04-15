@@ -10,3 +10,9 @@ specifiers.
 There's no need for linespec.ml to handle its own docstrings anymore,
 since camlp4 now handles comments alright.  We could actually use a
 regular old filter.
+
+We really ought to get rid of lines.  Arrows would work better.  We'll
+need arrow notation syntax.  How does this affect readers and splitters?
+(One valiant attempt at this has failed.)
+
+Campl4 is dropping many of our docstrings on the floor.

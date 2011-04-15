@@ -30,79 +30,94 @@ type 'ab adaptor = 'a Line.t Shtream.t -> 'b Line.t Shtream.t
 type 'ab fitting_adaptor = unit -> ('a Line.t -> 'b Line.t) Fitting.t
   constraint 'ab = 'a -> 'b
 
-val make_adaptor : ?reader:Reader.t ->
-                   ('a -> 'b) splitter ->
-                   ('a -> 'b) adaptor
 (** Make a shtream adaptor from a reader and a field splitter.  The
  * resulting adaptor can provide reader hints to a shtream from which it
  * reads. *)
+val make_adaptor : ?reader:Reader.t ->
+                   ('a -> 'b) splitter ->
+                   ('a -> 'b) adaptor
 
 (** Conversions for shtream adaptors.  These produce shtream warnings
  * (calling {!Shtream.warn}) if the value cannot be coerced. *)
 module Convert : sig
-  val convert : (string -> 'a) -> string -> string -> string -> 'a
+
   (** Create a custom conversion.
    * [Adaptor.Convert.convert conv tyname loc str]
    * applies the conversion [conv] to [str]; if the conversion raises
    * [Failure], then it produces a warning, with [tyname] as the name of
    * the target type and [loc] as the name of the function given in the
    * message. *)
+  val convert : (string -> 'a) -> string -> string -> string -> 'a
 
-  val to_int    : string -> string -> int
   (** Convert a string to an integer, with shtream warning on failure.
    * [Convert.to_int loc str] returns [str] as an integer or raises a warning
    * attributed to [loc]. *)
-  val to_float  : string -> string -> float
+  val to_int    : string -> string -> int
+
   (** Convert a string to a float, with shtream warning on failure.
    * [Convert.to_float loc str] returns [str] as a float or raises a warning
    * attributed to [loc]. *)
+  val to_float  : string -> string -> float
+
 end
 
 (** Adaptor modules for flexible handling of delimited text files.
  * This is a thin layer over {!Delimited}, and takes the same
  * {!Delimited.options}.  Results are stored in {!Line.Delim}. *)
 module Delim : sig
+
+  (** Split lines according to the given {!Delimited} options. *)
   val adaptor : ?options:Delimited.options ->
     (<Line| delim: Line.absent; .. as 'a > ->
      <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
-  (** Split lines according to the given {!Delimited} options. *)
+
+  (** Fitting for delimited text files. *)
   val fitting : ?options:Delimited.options ->
     (<Line| delim: Line.absent; .. as 'a > ->
      <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
-  (** Fitting for delimited text files. *)
-  val reader : ?options:Delimited.options -> Reader.t
+
   (** Read records according to the given {!Delimited} options. *)
+  val reader : ?options:Delimited.options -> Reader.t
+
+  (** Split one record according to the given {!Delimited} options. *)
   val splitter : ?options:Delimited.options ->
     (<Line| delim: Line.absent;                .. as 'a > ->
      <Line| delim: <| options: Line.present >; .. as 'a >) splitter
-  (** Split one record according to the given {!Delimited} options. *)
 
   (** {3 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized delim adaptor. *)
   module type SPEC = sig
-    val options : Delimited.options
+
     (** The options to use for splitting into fields. *)
+    val options : Delimited.options
+
   end
 
   (** Output signature for {!Make}. *)
   module type S = sig
+
     include SPEC
+
+    (** Adaptor for a custom delim adaptor. *)
     val adaptor : 
       (<Line| delim: Line.absent;  .. as 'a > ->
        <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
-    (** Adaptor for a custom delim adaptor. *)
+
+    (** Fitting for a custom delim adaptor. *)
     val fitting :
       (<Line| delim: Line.absent;  .. as 'a > ->
        <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
-    (** Fitting for a custom delim adaptor. *)
-    val reader : Reader.t
+
     (** Reader for a custom delim adaptor. *)
+    val reader : Reader.t
+
+    (** Splitter for a custom delim adaptor. *)
     val splitter :
       (<Line| delim: Line.absent; .. as 'a > ->
        <Line| delim: <| options: Line.present >; .. as 'a >) splitter
-    (** Splitter for a custom delim adaptor. *)
+
   end
 
   module Make(Spec : SPEC) : S
@@ -255,20 +270,20 @@ end
  * comment lines and join lines ending in a backslash.
  *)
 module Key_value : sig
-  val adaptor : ?comment:string -> ?delim:char ->
+  val adaptor : ?quiet:bool -> ?comment:string -> ?delim:char ->
     (<Line| key_value: Line.absent;  .. as 'a > ->
      <Line| key_value: <| >; .. as 'a >) adaptor
   (** Adaptor to parse a key-value file. Lines starting with [?comment]
    * (default ["#"] are considered comments and discarded.  Lines are
    * then split between a key and a value at [?delim] (default ['=']),
    * and leading and trailing white space is discarded. *)
-  val fitting : ?comment:string -> ?delim:char ->
+  val fitting : ?quiet:bool -> ?comment:string -> ?delim:char ->
     (<Line| key_value: Line.absent;  .. as 'a > ->
      <Line| key_value: <| >; .. as 'a >) fitting_adaptor
   (** Fitting for key-value files. *)
   val reader : ?comment:string -> Reader.t
   (** Read key-value records. *)
-  val splitter : ?delim:char ->
+  val splitter : ?quiet:bool -> ?delim:char ->
     (<Line| key_value: Line.absent; .. as 'a > ->
      <Line| key_value: <| >; .. as 'a >) splitter
   (** Split key-value file records and fill in {!Line.Key_value}. *)

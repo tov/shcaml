@@ -17,6 +17,7 @@ LIBCMOS	= lib/flags.cmo \
 	  lib/util.cmo \
 	  lib/version.cmo \
 	  lib/weakPlus.cmo \
+	  lib/priorityQueue.cmo \
 	  lib/signal.cmo \
 	  lib/reader.cmo \
 	  lib/delimited.cmo \
@@ -32,6 +33,7 @@ LIBCMOS	= lib/flags.cmo \
 	  lib/lineShtream.cmo \
 	  lib/fitting.cmo \
 	  lib/adaptor.cmo \
+	  lib/depDAG.cmo \
 	  lib/usrBin.cmo
 
 
@@ -271,14 +273,19 @@ lib/channel.cmi: lib/proc.cmi
 lib/delimited.cmo: lib/reader.cmi lib/delimited.cmi 
 lib/delimited.cmx: lib/reader.cmx lib/delimited.cmi 
 lib/delimited.cmi: lib/reader.cmi 
+lib/depDAG.cmo: lib/util.cmo lib/proc.cmi lib/priorityQueue.cmi \
+    lib/depDAG.cmi 
+lib/depDAG.cmx: lib/util.cmx lib/proc.cmx lib/priorityQueue.cmx \
+    lib/depDAG.cmi 
+lib/depDAG.cmi: lib/proc.cmi 
 lib/disposal.cmo: lib/weakPlus.cmi lib/util.cmo lib/disposal.cmi 
 lib/disposal.cmx: lib/weakPlus.cmx lib/util.cmx lib/disposal.cmi 
 lib/fitting.cmo: lib/util.cmo lib/proc.cmi lib/lineShtream.cmi \
     lib/channel.cmi lib/anyShtream.cmi lib/abort.cmi lib/fitting.cmi 
 lib/fitting.cmx: lib/util.cmx lib/proc.cmx lib/lineShtream.cmx \
     lib/channel.cmx lib/anyShtream.cmx lib/abort.cmx lib/fitting.cmi 
-lib/fitting.cmi: lib/shtream.cmi lib/proc.cmi lib/lineShtream.cmi \
-    lib/channel.cmi lib/anyShtream.cmi 
+lib/fitting.cmi: lib/proc.cmi lib/lineShtream.cmi lib/channel.cmi \
+    lib/anyShtream.cmi 
 lib/flags.cmo: lib/flags.cmi 
 lib/flags.cmx: lib/flags.cmi 
 lib/iVar.cmo: lib/util.cmo lib/iVar.cmi 
@@ -291,6 +298,8 @@ lib/lineShtream.cmo: lib/util.cmo lib/shtream.cmi lib/reader.cmi lib/proc.cmi \
 lib/lineShtream.cmx: lib/util.cmx lib/shtream.cmx lib/reader.cmx lib/proc.cmx \
     lib/line.cmx lib/anyShtream.cmx lib/lineShtream.cmi 
 lib/lineShtream.cmi: lib/reader.cmi lib/line.cmi lib/anyShtream.cmi 
+lib/priorityQueue.cmo: lib/util.cmo lib/priorityQueue.cmi 
+lib/priorityQueue.cmx: lib/util.cmx lib/priorityQueue.cmi 
 lib/proc.cmo: lib/util.cmo lib/iVar.cmi lib/proc.cmi 
 lib/proc.cmx: lib/util.cmx lib/iVar.cmx lib/proc.cmi 
 lib/reader.cmo: lib/util.cmo lib/reader.cmi 

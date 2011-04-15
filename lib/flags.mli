@@ -9,27 +9,33 @@ exception Argument_missing of string
 (** The argument parser {!Flags.go} returns an object for querying
  * its results. *)
 class type lookup = object
-  method bool    : string -> bool
+
   (** Look up the value of a [bool] flag. *)
-  method int     : ?default:int -> string -> int
+  method bool    : string -> bool
+
   (** Look up the value of an [int] flag; if multiple values were given,
    * returns the last one. If the flag wasn't given but [?default] is
    * provided, returns that; otherwise throws {!Flags.Argument_missing}. *)
-  method string  : ?default:string -> string -> string
+  method int     : ?default:int -> string -> int
+
   (** Look up the value of a [string] flag; if multiple values were given,
    * returns the last one. If the flag wasn't given but [?default] is
    * provided, returns that; otherwise throws {!Flags.Argument_missing}. *)
+  method string  : ?default:string -> string -> string
 
-  method bcount  : string -> int
   (** Look up how many times a particular [bool] flag was given. *)
-  method ints    : string -> int list
+  method bcount  : string -> int
+
   (** Return all the values given with an [int] flag. *)
-  method strings : string -> string list
+  method ints    : string -> int list
+
   (** Return all the values given with a [string] flag.  Passing the
    * empty string [""] will return all additional (non-flag) arguments. *)
+  method strings : string -> string list
 
-  method usage   : unit
   (** Print usage information on [stdout] *)
+  method usage   : unit
+
 end
 
 (** [Flags.go spec] parses the command-line arguments according to

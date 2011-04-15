@@ -416,7 +416,7 @@ module Key_value = struct
                   Reader.starts_with comment s)
         Reader.lines)
 
-  let splitter ?(delim = '=') line =
+  let splitter ?(quiet = false) ?(delim = '=') line =
     let options = {
       Delimited.default_options with
         Delimited.rec_quotation = false;
@@ -424,15 +424,16 @@ module Key_value = struct
         Delimited.max_fields    = 2; } in
     match Delimited.splitter ~options (Line.raw line) with
     | [| key; value |] -> Line.Key_value.create ~key ~value line
+    | _ when quiet -> Shtream.try_again ()
     | a -> Shtream.warn
              "Key_value.splitter: key_value line has %d fields, needs 2"
              (Array.length a)
 
-  let adaptor ?comment ?delim shtream =
-    make_adaptor ~reader:(reader ?comment) (splitter ?delim) shtream
+  let adaptor ?quiet ?comment ?delim shtream =
+    make_adaptor ~reader:(reader ?comment) (splitter ?quiet ?delim) shtream
 
-  let fitting ?comment ?delim () =
-    Fitting.trans (adaptor ?comment ?delim)
+  let fitting ?quiet ?comment ?delim () =
+    Fitting.trans (adaptor ?quiet ?comment ?delim)
 
   module type SPEC = sig
     val delim       : char

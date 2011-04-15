@@ -1,3 +1,14 @@
+Caml-Shcaml 0.1.2
+-----------------
+- [23 Sep 2008] We no longer distinguish input and output dups.  This
+  change is because the old way we did it no longer types under 3.10.2.
+  There is probably a better way.
+
+- [19 Sep 2008] Added DepDAG module for running dependency DAGs in
+  parallel.
+
+- [19 Sep 2008] Added Fitting.run_list as a convenient fitting runner.
+
 Caml-Shcaml 0.1.1
 -----------------
 
@@ -18,4 +29,3 @@ Caml-Shcaml 0.1.0
 -----------------
 
 - [06 Aug 2007] Initial release
-

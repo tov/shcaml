@@ -81,10 +81,6 @@ type dup_source       = [ dup_in_source   | dup_out_source ]
  * {3 Common Argument Types}
  *)
 
-type dup_in_spec      = (dup_in_source * gen_in_channel) list
-(** A list of dups on input channels. *)
-type dup_out_spec     = (dup_out_source * gen_out_channel) list
-(** A list of dups on output channels. *)
 type dup_spec         = (dup_source * gen_channel) list
 (** A list of dups (either direction). *)
 
@@ -354,92 +350,88 @@ val rewinddir : directory -> unit
  * - [ c /<* `Close ] closes [c : in_channel]
  *)
 module Dup : sig
-  type 'a dup_in_arg  = 'a
-    constraint 'a = [> dup_in_source ] * [> gen_in_channel ]
-  (** An argument to dup acting on input channels *)
-  type 'a dup_out_arg = 'a
-    constraint 'a = [> dup_out_source ] * [> gen_out_channel ]
-  (** An argument to dup acting on output channels *)
+  type dup_arg  = dup_source * gen_channel
+  (** An argument to dup. *)
 
   val ( !% )    : descr -> int
   (** Get the integer value of an abstract file descriptor. *)
 
-  val ( *<& )   : gen_in_channel   -> dup_in_source    -> 'a dup_in_arg
+  val ( *<& )   : gen_in_channel   -> dup_in_source    -> dup_arg
   (** Dup a {!Channel.dup_in_source} onto a {!Channel.gen_in_channel}. *)
-  val ( *< )    : gen_in_channel   -> string           -> 'a dup_in_arg
+  val ( *< )    : gen_in_channel   -> string           -> dup_arg
   (** Open a file for reading on a {!Channel.gen_in_channel}. *)
-  val ( *>& )   : gen_out_channel  -> dup_out_source   -> 'a dup_out_arg
+  val ( *>& )   : gen_out_channel  -> dup_out_source   -> dup_arg
   (** Dup a {!Channel.dup_out_source} onto a {!Channel.gen_out_channel}. *)
-  val ( *> )    : gen_out_channel  -> string           -> 'a dup_out_arg
+  val ( *> )    : gen_out_channel  -> string           -> dup_arg
   (** Open a file for writing on a {!Channel.gen_out_channel}. *)
-  val ( *>! )   : gen_out_channel  -> string           -> 'a dup_out_arg
+  val ( *>! )   : gen_out_channel  -> string           -> dup_arg
   (** Open a file on a {!Channel.gen_out_channel}, clobbering. *)
-  val ( *>? )   : gen_out_channel  -> string           -> 'a dup_out_arg
+  val ( *>? )   : gen_out_channel  -> string           -> dup_arg
   (** Open a file on a {!Channel.gen_out_channel}, without clobbering. *)
-  val ( *>> )   : gen_out_channel  -> string           -> 'a dup_out_arg
+  val ( *>> )   : gen_out_channel  -> string           -> dup_arg
   (** Open a file on a {!Channel.gen_out_channel}, appending. *)
-  val ( *>>! )  : gen_out_channel  -> string           -> 'a dup_out_arg
+  val ( *>>! )  : gen_out_channel  -> string           -> dup_arg
   (** Open a file on a {!Channel.gen_out_channel}, appending, without
    * creating. *)
 
-  val ( %<& )   : int              -> int              -> 'a dup_in_arg
+  val ( %<& )   : int              -> int              -> dup_arg
   (** Dup a file descriptor from another file descriptor. *)
-  val ( %< )    : int              -> string           -> 'a dup_in_arg
+  val ( %< )    : int              -> string           -> dup_arg
   (** Open a file for reading on a file descriptor. *)
-  val ( %>& )   : int              -> int              -> 'a dup_out_arg
+  val ( %>& )   : int              -> int              -> dup_arg
   (** Dup a file descriptor from another file descriptor. *)
-  val ( %> )    : int              -> string           -> 'a dup_out_arg
+  val ( %> )    : int              -> string           -> dup_arg
   (** Open a file for writing on a file descriptor. *)
-  val ( %>! )   : int              -> string           -> 'a dup_out_arg
+  val ( %>! )   : int              -> string           -> dup_arg
   (** Open a file on a file descriptor, clobbering. *)
-  val ( %>? )   : int              -> string           -> 'a dup_out_arg
+  val ( %>? )   : int              -> string           -> dup_arg
   (** Open a file on a file descriptor, without clobbering. *)
-  val ( %>> )   : int              -> string           -> 'a dup_out_arg
+  val ( %>> )   : int              -> string           -> dup_arg
   (** Open a file on a file descriptor, appending. *)
-  val ( %>>! )  : int              -> string           -> 'a dup_out_arg
+  val ( %>>! )  : int              -> string           -> dup_arg
   (** Open a file on a file descriptor, appending, without creating. *)
 
-  val ( /<& )   : in_channel       -> in_channel       -> 'a dup_in_arg
+  val ( /<& )   : in_channel       -> in_channel       -> dup_arg
   (** Dup an [in_channel] from another [in_channel]. *)
-  val ( /< )    : in_channel       -> string           -> 'a dup_in_arg
+  val ( /< )    : in_channel       -> string           -> dup_arg
   (** Open a file for reading on an [in_channel]. *)
-  val ( />& )   : out_channel      -> out_channel      -> 'a dup_out_arg
+  val ( />& )   : out_channel      -> out_channel      -> dup_arg
   (** Dup an [out_channel] from another [out_channel]. *)
-  val ( /> )    : out_channel      -> string           -> 'a dup_out_arg
+  val ( /> )    : out_channel      -> string           -> dup_arg
   (** Open a file for writing on an [out_channel]. *)
-  val ( />! )   : out_channel      -> string           -> 'a dup_out_arg
+  val ( />! )   : out_channel      -> string           -> dup_arg
   (** Open a file on an [out_channel], clobbering. *)
-  val ( />? )   : out_channel      -> string           -> 'a dup_out_arg
+  val ( />? )   : out_channel      -> string           -> dup_arg
   (** Open a file on an [out_channel], without clobbering. *)
-  val ( />> )   : out_channel      -> string           -> 'a dup_out_arg
+  val ( />> )   : out_channel      -> string           -> dup_arg
   (** Open a file on an [out_channel], appending. *)
-  val ( />>! )  : out_channel      -> string           -> 'a dup_out_arg
+  val ( />>! )  : out_channel      -> string           -> dup_arg
   (** Open a file on an [out_channel], appending, without
    * creating. *)
 
-  val ( *>% )   : gen_out_channel  -> int              -> 'a dup_out_arg
+  val ( *>% )   : gen_out_channel  -> int              -> dup_arg
   (** Dup a {!Channel.gen_out_channel} from a file descriptor. *)
-  val ( *>/ )   : gen_out_channel  -> out_channel      -> 'a dup_out_arg
+  val ( *>/ )   : gen_out_channel  -> out_channel      -> dup_arg
   (** Dup a {!Channel.gen_out_channel} from an [out_channel]. *)
-  val ( %>* )   : int              -> dup_out_source   -> 'a dup_out_arg
+  val ( %>* )   : int              -> dup_out_source   -> dup_arg
   (** Dup a file descriptor from a {!Channel.dup_out_source}. *)
-  val ( %>/ )   : int              -> out_channel      -> 'a dup_out_arg
+  val ( %>/ )   : int              -> out_channel      -> dup_arg
   (** Dup a file descriptor from an [out_channel]. *)
-  val ( />* )   : out_channel      -> dup_out_source   -> 'a dup_out_arg
+  val ( />* )   : out_channel      -> dup_out_source   -> dup_arg
   (** Dup an [out_channel] from a {!Channel.dup_out_source}. *)
-  val ( />% )   : out_channel      -> int              -> 'a dup_out_arg
+  val ( />% )   : out_channel      -> int              -> dup_arg
   (** Dup an [out_channel] from a file descriptor. *)
 
-  val ( *<% )   : gen_in_channel   -> int              -> 'a dup_in_arg
+  val ( *<% )   : gen_in_channel   -> int              -> dup_arg
   (** Dup a {!Channel.gen_in_channel} from a file descriptor. *)
-  val ( *</ )   : gen_in_channel   -> in_channel       -> 'a dup_in_arg
+  val ( *</ )   : gen_in_channel   -> in_channel       -> dup_arg
   (** Dup a {!Channel.gen_in_channel} from an [in_channel]. *)
-  val ( %<* )   : int              -> dup_in_source    -> 'a dup_in_arg
+  val ( %<* )   : int              -> dup_in_source    -> dup_arg
   (** Dup a file descriptor from a {!Channel.dup_in_source}. *)
-  val ( %</ )   : int              -> in_channel       -> 'a dup_in_arg
+  val ( %</ )   : int              -> in_channel       -> dup_arg
   (** Dup a file descriptor from an [in_channel]. *)
-  val ( /<* )   : in_channel       -> dup_in_source    -> 'a dup_in_arg
+  val ( /<* )   : in_channel       -> dup_in_source    -> dup_arg
   (** Dup an [in_channel] from a {!Channel.dup_in_source}. *)
-  val ( /<% )   : in_channel       -> int              -> 'a dup_in_arg
+  val ( /<% )   : in_channel       -> int              -> dup_arg
   (** Dup an [in_channel] from a file descriptor. *)
 end
