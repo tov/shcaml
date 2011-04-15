@@ -1,0 +1,16 @@
+DEV-FAQ
+=======
+
+Questions
+---------
+
+Why do all the line types in the sources look like <Line| .. as 'a >
+instead of <| .. as 'a >?
+
+    Expanding the <| > syntax requires generating identifiers that refer
+    to types and values in the Shcaml.Line module, such as
+    Shcaml.Line.present.  End-users see the Line module as nested inside
+    the Shcaml module, so syntax/pa_linetype.ml generates the
+    identifiers qualified with Shcaml.Line.  However, when compiling our
+    code, we haven't packed into Shcaml yet, so we need to tell
+    pa_linetype.ml to leave off the leading Shcaml.

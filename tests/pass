@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo "dummy pass"
+
+exit 0

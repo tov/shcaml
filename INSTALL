@@ -1,0 +1,24 @@
+INSTALLING CAML-SHCAML
+08/02/2007
+
+Caml-Shcaml requires findlib and the pcre package (as well as the camlp4 and
+unix packages, which are provided by Ocaml and findlib).
+
+To build and install:
+
+    % gunzip shcaml-VERSION.tar.gz
+    % tar xf shcaml-VERSION.tar
+    % cd shcaml-VERSION
+    % ./configure
+    % make
+    % make install
+
+If your findlib is installed as root, you may need to "sudo make install".
+
+You can find Caml-Shcaml's documentation online at <?>, or build a local copy
+(HTML and man pages) with
+
+    % make docs
+
+This will put HTML documentation in doc/html (start with index.html) and man
+pages in doc/man.

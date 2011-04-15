@@ -1,0 +1,8 @@
+Shmyntax.
+
+Making redirection as lazy as piping so things don't reorder improperly.
+
+Proc.command (and friends) that takes a format string with quoting
+specifiers.
+
+syntax/pa_linetype.ml should take <| .. > to < .. >.
