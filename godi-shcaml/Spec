@@ -1,0 +1,11 @@
+Package: godi-shcaml
+Version: 0.1.3
+Revision: 0
+Depends: godi-ocaml (>= 3.12), godi-pcre
+Build-Depends: godi-findlib
+Sources: http://www.ccs.neu.edu/home/tov/code/shcaml/shcaml-0.1.3.tar.gz
+Homepage: http://www.ccs.neu.edu/home/tov/code/shcaml/
+Maintainer: Jesse Tov <tov@ccs.neu.edu>
+Options: configure
+Description: Caml-Shcaml is an Ocaml library for UNIX shell programming
+.

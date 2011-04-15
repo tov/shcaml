@@ -1,0 +1,9 @@
+Caml-Shcaml brings high-level abstractions for Unix systems and shell
+programming to OCaml. In particular, it takes advantage of OCaml's type
+system to offer statically-checked data pipelines. External Unix
+processes and internal OCaml stream transducers communicate seamlessly
+within these pipelines. Shcaml brings other essential systems concepts
+into the world of typed functional programming as well, including
+high-level interfaces to Unix facilities for I/O redirection, signal
+handling, program execution, and subprocess reaping. For more
+information, see http://www.ccs.neu.edu/home/tov/code/shcaml/.
