@@ -13,7 +13,7 @@ PA_EXTS = pa_local.cmo \
 	  lineMetadata.cmo pa_linetype.cmo
 
 MLFLAGS	= -syntax camlp4o $(PKGS)
-PKGS    = -package camlp4,camlp4.extend,camlp4.quotations
+PKGS    = -package camlp4,camlp4.extend,camlp4.quotations,dynlink
 P4OBJS	= toplevellib.cma camlp4of.cma
 
 GEN	= lineMetadata.ml

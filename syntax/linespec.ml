@@ -251,6 +251,7 @@ module CtypMap = Map.Make(struct
     | TyOfAmp (_, x, y)
                       -> TyOfAmp (p, t x, t y)
     | TyAnt (_, x)    -> TyAnt (p, x)
+    | TyPkg (_, x)    -> TyPkg (p, x)
   and i = function
     | IdAcc (_, x, y) -> IdAcc (p, i x, i y)
     | IdApp (_, x, y) -> IdApp (p, i x, i y)
@@ -493,7 +494,8 @@ let rec acc_of_field root swrap mwrap fields =
       flag     = Nullable;
       name     = n;
       typ      = t;
-    } -> let sel_row = swrap (TyObj(_loc, <:ctyp< $lid:n$: present >>, BTrue))
+    } -> let sel_row = swrap (TyObj(_loc, <:ctyp< $lid:n$: present >>,
+                                    RvRowVar))
          in
          doc_many _loc [
            doc_one _loc
@@ -551,7 +553,8 @@ let rec acc_of_field root swrap mwrap fields =
       cname  = n;
       mname  = module_name;
       fields = f;
-    } -> let swrap x = swrap (TyObj(_loc, <:ctyp< $lid:n$: $x$ >>, BTrue)) in
+    } -> let swrap x = swrap (TyObj(_loc, <:ctyp< $lid:n$: $x$ >>,
+                                    RvRowVar)) in
          let mwrap x = mwrap (make_row _loc
                                 ~present:n
                                 ~value:x

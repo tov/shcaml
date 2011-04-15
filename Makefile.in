@@ -173,7 +173,7 @@ clean: docclean
 
 distclean: clean
 	$(RM) .loc-ignore .depend
-	$(RM) Makefile META lib/version.ml
+	$(RM) Makefile syntax/Makefile META lib/version.ml
 	$(RM) config.status config.log
 	$(RM) -R $(ARCHIVE) $(ARCHIVE).tar.gz
 	autoconf
@@ -252,74 +252,86 @@ depend: .depend
 	$(OCAMLDEP) $(MLFLAGS) $(LIBSRCS) > $@
 
 ### Do not remove this line.  Use "make depend" to regenerate. ###
-lib/abort.cmo: lib/util.cmo lib/abort.cmi 
-lib/abort.cmx: lib/util.cmx lib/abort.cmi 
+lib/abort.cmo: lib/util.cmo lib/abort.cmi
+lib/abort.cmx: lib/util.cmx lib/abort.cmi
+lib/abort.cmi:
 lib/adaptor.cmo: lib/util.cmo lib/shtream.cmi lib/reader.cmi lib/line.cmi \
-    lib/fitting.cmi lib/delimited.cmi lib/adaptor.cmi 
+    lib/fitting.cmi lib/delimited.cmi lib/adaptor.cmi
 lib/adaptor.cmx: lib/util.cmx lib/shtream.cmx lib/reader.cmx lib/line.cmx \
-    lib/fitting.cmx lib/delimited.cmx lib/adaptor.cmi 
+    lib/fitting.cmx lib/delimited.cmx lib/adaptor.cmi
 lib/adaptor.cmi: lib/shtream.cmi lib/reader.cmi lib/line.cmi lib/fitting.cmi \
-    lib/delimited.cmi 
+    lib/delimited.cmi
 lib/anyShtream.cmo: lib/util.cmo lib/shtream.cmi lib/reader.cmi \
-    lib/channel.cmi lib/anyShtream.cmi 
+    lib/channel.cmi lib/anyShtream.cmi
 lib/anyShtream.cmx: lib/util.cmx lib/shtream.cmx lib/reader.cmx \
-    lib/channel.cmx lib/anyShtream.cmi 
-lib/anyShtream.cmi: lib/shtream.cmi lib/reader.cmi lib/channel.cmi 
+    lib/channel.cmx lib/anyShtream.cmi
+lib/anyShtream.cmi: lib/shtream.cmi lib/reader.cmi lib/channel.cmi
 lib/channel.cmo: lib/util.cmo lib/proc.cmi lib/iVar.cmi lib/disposal.cmi \
-    lib/channel.cmi 
+    lib/channel.cmi
 lib/channel.cmx: lib/util.cmx lib/proc.cmx lib/iVar.cmx lib/disposal.cmx \
-    lib/channel.cmi 
-lib/channel.cmi: lib/proc.cmi 
-lib/delimited.cmo: lib/reader.cmi lib/delimited.cmi 
-lib/delimited.cmx: lib/reader.cmx lib/delimited.cmi 
-lib/delimited.cmi: lib/reader.cmi 
+    lib/channel.cmi
+lib/channel.cmi: lib/proc.cmi
+lib/delimited.cmo: lib/reader.cmi lib/delimited.cmi
+lib/delimited.cmx: lib/reader.cmx lib/delimited.cmi
+lib/delimited.cmi: lib/reader.cmi
 lib/depDAG.cmo: lib/util.cmo lib/proc.cmi lib/priorityQueue.cmi \
-    lib/depDAG.cmi 
+    lib/depDAG.cmi
 lib/depDAG.cmx: lib/util.cmx lib/proc.cmx lib/priorityQueue.cmx \
-    lib/depDAG.cmi 
-lib/depDAG.cmi: lib/proc.cmi 
-lib/disposal.cmo: lib/weakPlus.cmi lib/util.cmo lib/disposal.cmi 
-lib/disposal.cmx: lib/weakPlus.cmx lib/util.cmx lib/disposal.cmi 
+    lib/depDAG.cmi
+lib/depDAG.cmi: lib/proc.cmi
+lib/disposal.cmo: lib/weakPlus.cmi lib/util.cmo lib/disposal.cmi
+lib/disposal.cmx: lib/weakPlus.cmx lib/util.cmx lib/disposal.cmi
+lib/disposal.cmi:
 lib/fitting.cmo: lib/util.cmo lib/proc.cmi lib/lineShtream.cmi \
-    lib/channel.cmi lib/anyShtream.cmi lib/abort.cmi lib/fitting.cmi 
+    lib/channel.cmi lib/anyShtream.cmi lib/abort.cmi lib/fitting.cmi
 lib/fitting.cmx: lib/util.cmx lib/proc.cmx lib/lineShtream.cmx \
-    lib/channel.cmx lib/anyShtream.cmx lib/abort.cmx lib/fitting.cmi 
+    lib/channel.cmx lib/anyShtream.cmx lib/abort.cmx lib/fitting.cmi
 lib/fitting.cmi: lib/proc.cmi lib/lineShtream.cmi lib/channel.cmi \
-    lib/anyShtream.cmi 
-lib/flags.cmo: lib/flags.cmi 
-lib/flags.cmx: lib/flags.cmi 
-lib/iVar.cmo: lib/util.cmo lib/iVar.cmi 
-lib/iVar.cmx: lib/util.cmx lib/iVar.cmi 
-lib/line.cmo: lib/util.cmo lib/proc.cmi lib/delimited.cmi lib/line.cmi 
-lib/line.cmx: lib/util.cmx lib/proc.cmx lib/delimited.cmx lib/line.cmi 
-lib/line.cmi: lib/proc.cmi lib/delimited.cmi 
+    lib/anyShtream.cmi
+lib/flags.cmo: lib/flags.cmi
+lib/flags.cmx: lib/flags.cmi
+lib/flags.cmi:
+lib/iVar.cmo: lib/util.cmo lib/iVar.cmi
+lib/iVar.cmx: lib/util.cmx lib/iVar.cmi
+lib/iVar.cmi:
+lib/line.cmo: lib/util.cmo lib/proc.cmi lib/delimited.cmi lib/line.cmi
+lib/line.cmx: lib/util.cmx lib/proc.cmx lib/delimited.cmx lib/line.cmi
+lib/line.cmi: lib/proc.cmi lib/delimited.cmi
 lib/lineShtream.cmo: lib/util.cmo lib/shtream.cmi lib/reader.cmi lib/proc.cmi \
-    lib/line.cmi lib/anyShtream.cmi lib/lineShtream.cmi 
+    lib/line.cmi lib/anyShtream.cmi lib/lineShtream.cmi
 lib/lineShtream.cmx: lib/util.cmx lib/shtream.cmx lib/reader.cmx lib/proc.cmx \
-    lib/line.cmx lib/anyShtream.cmx lib/lineShtream.cmi 
-lib/lineShtream.cmi: lib/reader.cmi lib/line.cmi lib/anyShtream.cmi 
-lib/priorityQueue.cmo: lib/util.cmo lib/priorityQueue.cmi 
-lib/priorityQueue.cmx: lib/util.cmx lib/priorityQueue.cmi 
-lib/proc.cmo: lib/util.cmo lib/iVar.cmi lib/proc.cmi 
-lib/proc.cmx: lib/util.cmx lib/iVar.cmx lib/proc.cmi 
-lib/reader.cmo: lib/util.cmo lib/reader.cmi 
-lib/reader.cmx: lib/util.cmx lib/reader.cmi 
+    lib/line.cmx lib/anyShtream.cmx lib/lineShtream.cmi
+lib/lineShtream.cmi: lib/reader.cmi lib/line.cmi lib/anyShtream.cmi
+lib/priorityQueue.cmo: lib/util.cmo lib/priorityQueue.cmi
+lib/priorityQueue.cmx: lib/util.cmx lib/priorityQueue.cmi
+lib/priorityQueue.cmi:
+lib/proc.cmo: lib/util.cmo lib/iVar.cmi lib/proc.cmi
+lib/proc.cmx: lib/util.cmx lib/iVar.cmx lib/proc.cmi
+lib/proc.cmi:
+lib/reader.cmo: lib/util.cmo lib/reader.cmi
+lib/reader.cmx: lib/util.cmx lib/reader.cmi
+lib/reader.cmi:
 lib/shtream.cmo: lib/util.cmo lib/signal.cmi lib/reader.cmi lib/proc.cmi \
-    lib/channel.cmi lib/shtream.cmi 
+    lib/channel.cmi lib/shtream.cmi
 lib/shtream.cmx: lib/util.cmx lib/signal.cmx lib/reader.cmx lib/proc.cmx \
-    lib/channel.cmx lib/shtream.cmi 
-lib/shtream.cmi: lib/util.cmo lib/reader.cmi lib/proc.cmi lib/channel.cmi 
-lib/signal.cmo: lib/util.cmo lib/signal.cmi 
-lib/signal.cmx: lib/util.cmx lib/signal.cmi 
-lib/stringShtream.cmo: lib/util.cmo lib/anyShtream.cmi lib/stringShtream.cmi 
-lib/stringShtream.cmx: lib/util.cmx lib/anyShtream.cmx lib/stringShtream.cmi 
-lib/stringShtream.cmi: lib/anyShtream.cmi 
+    lib/channel.cmx lib/shtream.cmi
+lib/shtream.cmi: lib/util.cmo lib/reader.cmi lib/proc.cmi lib/channel.cmi
+lib/signal.cmo: lib/util.cmo lib/signal.cmi
+lib/signal.cmx: lib/util.cmx lib/signal.cmi
+lib/signal.cmi:
+lib/stringShtream.cmo: lib/util.cmo lib/anyShtream.cmi lib/stringShtream.cmi
+lib/stringShtream.cmx: lib/util.cmx lib/anyShtream.cmx lib/stringShtream.cmi
+lib/stringShtream.cmi: lib/anyShtream.cmi
 lib/usrBin.cmo: lib/util.cmo lib/shtream.cmi lib/lineShtream.cmi lib/line.cmi \
-    lib/fitting.cmi lib/channel.cmi lib/adaptor.cmi lib/usrBin.cmi 
+    lib/fitting.cmi lib/channel.cmi lib/adaptor.cmi lib/usrBin.cmi
 lib/usrBin.cmx: lib/util.cmx lib/shtream.cmx lib/lineShtream.cmx lib/line.cmx \
-    lib/fitting.cmx lib/channel.cmx lib/adaptor.cmx lib/usrBin.cmi 
-lib/usrBin.cmi: lib/shtream.cmi lib/line.cmi lib/fitting.cmi lib/channel.cmi 
-lib/version.cmo: lib/version.cmi 
-lib/version.cmx: lib/version.cmi 
-lib/weakPlus.cmo: lib/util.cmo lib/weakPlus.cmi 
-lib/weakPlus.cmx: lib/util.cmx lib/weakPlus.cmi 
+    lib/fitting.cmx lib/channel.cmx lib/adaptor.cmx lib/usrBin.cmi
+lib/usrBin.cmi: lib/shtream.cmi lib/line.cmi lib/fitting.cmi lib/channel.cmi
+lib/util.cmo:
+lib/util.cmx:
+lib/version.cmo: lib/version.cmi
+lib/version.cmx: lib/version.cmi
+lib/version.cmi:
+lib/weakPlus.cmo: lib/util.cmo lib/weakPlus.cmi
+lib/weakPlus.cmx: lib/util.cmx lib/weakPlus.cmi
+lib/weakPlus.cmi:

@@ -4,23 +4,24 @@
 AC_INIT(shtop.mli)
 
 # Packages we depend on
-PACKAGES="camlp4 unix pcre"
+PACKAGES="camlp4 unix pcre dynlink"
 
 # Our version number
-VERSION="0.1.2"
+VERSION="0.1.3"
 
 # Our version name
-CODENAME="Shlimazl"
+CODENAME="Shmeer"
 
 # shlock shmaltz shadken shanda shaygets shayner shiksa
 # shlemiel shlep shmendrick shmegegge
-# shmeer shmutzik shnorrer shtik shtetl shtunk
+# shmutzik shnorrer shtik shtetl shtunk
 # shvitz 
 
 # Used:
 # 0.1.0 shmatta
 # 0.1.1 shmooz
 # 0.1.2 shlimazl
+# 0.1.3 shmeer
 
 # We need ocamlfind
 AC_PATH_PROG(OCAMLFIND,ocamlfind,no)
