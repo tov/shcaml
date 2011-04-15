@@ -1,0 +1,47 @@
+# Makefile for CamlShcaml syntax
+
+OCAMLFIND	= @OCAMLFIND@
+OCAMLC		= $(OCAMLFIND) ocamlc
+
+PA_SHCAML = pa_thunk.cmo \
+	    linespec.cmo lineMetadata.cmo pa_linetype.cmo
+
+PA_EXTS = pa_local.cmo \
+	  pa_before.cmo \
+	  pa_thunk.cmo \
+	  linespec.cmo pa_linespec.cmo \
+	  lineMetadata.cmo pa_linetype.cmo
+
+MLFLAGS	= -syntax camlp4o $(PKGS)
+PKGS    = -package camlp4,camlp4.extend,camlp4.quotations
+P4OBJS	= toplevellib.cma camlp4of.cma
+
+GEN	= lineMetadata.ml
+
+default: pa_shcaml.cmo
+
+pp_linespec: linespec.cmo pp_linespec.cmo
+	$(OCAMLC) -o $@ -linkpkg $(PKGS) $(P4OBJS) $^
+
+pa_shcaml.cmo: $(PA_SHCAML)
+	$(OCAMLC) -pack -o $@ $^
+
+pa_internal.cmo: $(PA_EXTS)
+	$(OCAMLC) -pack -o $@ $^
+
+pp_linespec.cmo pa_linespec.cmo lineMetadata.cmo: linespec.cmo
+pa_linetype.cmo: linespec.cmo lineMetadata.cmo
+
+lineMetadata.ml: ../lib/line.ls pp_linespec
+	$(RM) $@
+	./pp_linespec -data $< >$@
+	chmod a-w $@
+
+%.cmi: %.mli
+	$(OCAMLC) $(MLFLAGS) -c $<
+
+%.cmo: %.ml
+	$(OCAMLC) $(MLFLAGS) -c $<
+
+clean:
+	$(RM) pp_linespec $(GEN) *.cmo *.cmi *.cma *.cmx

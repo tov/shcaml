@@ -1,0 +1,161 @@
+body {
+    margin: 3em 10%;
+    color: black;
+    background-color: white;
+}
+
+br {
+    display: none;
+}
+code br, a+br {
+    display: block;
+}
+
+hr {
+    background-color: #484;
+    border: 1px solid #8a8;
+    height: 8px;
+    width: 8px;
+    margin: 1em auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding: 0;
+    font-weight: normal;
+}
+h1 { margin-top: 0.25em; }
+h1 { color: #060; }
+h2 { color: #060; }
+h3 { color: #090; }
+h4 { color: #0a0; }
+h5 { color: #3c3; font-style: italic; }
+h6 { color: #000; text-decoration: underline; }
+
+h1 {
+    font-size : 2em;
+    letter-spacing: 1px;
+    text-align: center;
+}
+h2 {
+    font-size : 1.44em;
+    text-align: center;
+}
+
+h3 { font-size: 1.3em; }
+h4 { font-size: 1.15em;  }
+h5 { font-size: 1em;    }
+h6 { font-size: 1em;    }
+
+div.h7 div.h8 div.h9 {
+    /* not used */
+}
+
+.navbar {
+    text-align: right;
+}
+.navbar a:before { content: "["; }
+.navbar a:after { content: "]"; }
+
+p {
+    margin: 1em 0;
+    padding: 0;
+}
+
+a {
+    color: #33f;
+    text-decoration: none;
+    background-color: #ffc;
+}
+h1 a, .navbar a {
+    background-color: transparent;
+}
+
+a:hover {
+    background-color: #ff0;
+}
+a:active, a:active * {
+    color: white !important;
+    background-color: #009;
+}
+
+.info {
+    width: 75%;
+    margin: 0.75em 1em 1.5em 1em;
+}
+
+.keyword { color: #c00 }
+.keywordsign { color: #900; }
+.comment { color :#990 }
+.constructor { color: #009 }
+.type { color : #093 }
+.string { color : #900; }
+.warning { color: #c00; font-weight: bold; }
+.param_info { margin-top: 4px; margin-left : 3em; margin-right : 3em }
+.code { color : #459; }
+
+.indextable {
+    margin: 1em;
+    border-style: hidden;
+}
+.indextable td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.25em;
+    margin: 0;
+}
+.indextable .info {
+    margin: 0;
+}
+
+.typetable {
+    border-style: hidden;
+}
+.typetable td {
+    margin: 0;
+    padding: .25em .5em 0 0;
+}
+
+table tr td b {
+    font-weight: normal;
+    font-style: italic;
+    display: block;
+    margin-top: .5em;
+}
+table tr td .info b {
+    font-weight: bold;
+    font-style: normal;
+    display: inline;
+    margin-top: 0;
+}
+.paramstable {
+    margin: 2em 0 1em -5em;
+    border-style: hidden;
+}
+
+td.typefieldcomment {
+    font-size: .95em;
+    font-style: italic;
+}
+
+pre+pre {
+    margin-top: -.75em;
+    color: #666;
+}
+pre+pre+pre {
+    margin-top: -1.25em;
+}
+
+div.sig_block {
+    margin-left: 2em
+}
+
+.superscript {
+    /* Not used */
+    /* font-size: 4; */
+}
+.subscript {
+    /* Not used */
+    /* font-size: 4; */
+}

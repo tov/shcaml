@@ -1,0 +1,316 @@
+# Makefile for CamlShcaml
+
+OCAMLFIND	= @OCAMLFIND@
+OCAMLLEX        = @OCAMLLEX@
+CPP		= @CPP@
+OCAMLC		= $(OCAMLFIND) ocamlc
+OCAMLOPT	= $(OCAMLFIND) ocamlopt
+OCAMLMKTOP	= $(OCAMLFIND) ocamlmktop
+OCAMLDEP	= $(OCAMLFIND) ocamldep
+OCAMLDOC	= $(OCAMLFIND) ocamldoc
+
+#
+# Source files for the library:
+#
+
+LIBCMOS	= lib/flags.cmo \
+	  lib/util.cmo \
+	  lib/version.cmo \
+	  lib/weakPlus.cmo \
+	  lib/signal.cmo \
+	  lib/reader.cmo \
+	  lib/delimited.cmo \
+	  lib/iVar.cmo \
+	  lib/abort.cmo \
+	  lib/disposal.cmo \
+	  lib/proc.cmo \
+	  lib/line.cmo \
+	  lib/channel.cmo \
+	  lib/shtream.cmo \
+	  lib/anyShtream.cmo \
+	  lib/stringShtream.cmo \
+	  lib/lineShtream.cmo \
+	  lib/fitting.cmo \
+	  lib/adaptor.cmo \
+	  lib/usrBin.cmo
+
+
+LIBSRCS	= $(sort $(LIBCMOS:.cmo=.ml) $(LIBGENS) $(wildcard lib/*.mli))
+LIBCMIS	= $(LIBCMOS:.cmo=.cmi)
+LIBCMXS	= $(LIBCMOS:.cmo=.cmx)
+LIBGENS	= lib/line.ml lib/line.mli \
+	  lib/fitting.ml lib/fitting.mli \
+	  lib/shtream.ml lib/shtream.mli \
+	  lib/anyShtream.ml lib/anyShtream.mli \
+	  lib/flags.ml
+
+CLEAN	= $(EXES) $(OBJS) $(LIBS) $(GENS)
+EXES	= shtop
+OBJS	= *.cmo *.cmi *.cmx *.o lib/*.cmo lib/*.cmi lib/*.cmx lib/*.o
+LIBS	= *.cma
+GENS	= $(LIBGENS)
+
+#
+# Flags
+#
+
+MLFLAGS	= -syntax camlp4o $(PPOPT) $(PKGS) $(INCLUDE) $(PACK)
+LDFLAGS	= $(PKGS) -linkpkg
+
+INCLUDE	= -I lib
+PPOPT	= -ppopt "./$(PPLIB)"
+PPLIB	= syntax/pa_internal.cmo
+PKGS    = -package "@PACKAGES@"
+
+#
+# Default rule
+#
+
+ALL	= META shcaml.cmi shcaml.cmo shcaml.cmx shcaml.o \
+	  shtop.cmi shtop.cmo shtopInit.cmo syntax/pa_shcaml.cmo \
+	  dir_shcaml.ml
+
+all: $(ALL)
+
+#
+# Building the custom toploop
+#
+
+shtop: shcaml.cmo shtop.cmo $(PPLIB)
+	$(OCAMLMKTOP) -o $@ $(LDFLAGS) camlp4o.cma $^
+
+shtop.cmo shtopInit.cmo: INCLUDE =
+
+shtopInit.cmo: shtop.cmo
+shtop.cmi: shcaml.cmi
+shtop.cmo: shcaml.cmo shtop.cmi
+
+DIY_TOPLOOP	= -linkall toplevellib.cma
+
+#
+# Building the packed library
+#
+
+shcaml.cmi: shcaml.cmo
+	@touch $@
+
+shcaml.cmo: $(LIBCMOS)
+	$(OCAMLC) -pack -o $@ $(INCLUDE) $^
+
+shcaml.cmx: $(LIBCMXS)
+	$(OCAMLOPT) -pack -o $@ $(INCLUDE) $^
+
+$(LIBCMOS) $(LIBCMIS) $(LIBCMXS): PACK = -for-pack Shcaml
+
+#
+# Building modules
+#
+
+%.cmi: %.mli $(PPLIB)
+	$(OCAMLC) $(MLFLAGS) -c $<
+
+%.cmo: %.ml $(PPLIB)
+	$(OCAMLC) $(MLFLAGS) -c $<
+
+%.cmx: %.ml $(PPLIB)
+	$(OCAMLOPT) $(MLFLAGS) -c $<
+
+#
+# Syntax and code generation
+#
+
+syntax/%: syntax lib/line.ls
+	$(MAKE) -C syntax $*
+
+LINESPEC = ./syntax/pp_linespec
+
+%.mli: %.ls $(LINESPEC)
+	$(RM) $@
+	$(LINESPEC) -intf $< >$@
+	chmod a-w $@
+
+%.ml: %.ls $(LINESPEC)
+	$(RM) $@
+	$(LINESPEC) -impl $< >$@
+	chmod a-w $@
+
+%.ml: %.mll
+	$(RM) $@
+	$(OCAMLLEX) -o $@ $<
+	chmod a-w $@
+
+%.ml: %.ml.cpp %.sig
+	$(RM) $@
+	$(CPP) -o $@ $<
+	chmod a-w $@
+
+%.mli: %.mli.cpp %.sig
+	$(RM) $@
+	$(CPP) -o $@ $<
+	chmod a-w $@
+
+#
+# Installation
+#
+
+reinstall: uninstall install
+
+install: $(ALL)
+	$(OCAMLFIND) install shcaml $(ALL)
+
+remove uninstall:
+	$(OCAMLFIND) remove shcaml
+
+# 
+# Miscellaneous utilities
+#
+
+clean: docclean
+	$(RM) $(CLEAN)
+	$(MAKE) -C syntax clean
+
+distclean: clean
+	$(RM) .loc-ignore .depend
+	$(RM) Makefile META lib/version.ml
+	$(RM) config.status config.log
+	$(RM) -R $(ARCHIVE) $(ARCHIVE).tar.gz
+	autoconf
+	$(RM) -R autom4te.cache
+
+ARCHIVE	= "shcaml-@VERSION@"
+dist: depend
+	$(RM) -R $(ARCHIVE)
+	svn export . $(ARCHIVE)
+	cd $(ARCHIVE) && autoconf
+	$(RM) -R $(ARCHIVE)/autom4te.cache
+	tar zcf $(ARCHIVE).tar.gz $(ARCHIVE)
+	$(RM) -R $(ARCHIVE)
+
+LOC = {syntax,lib,scripts,.}/*.{ml,mli,mll,ls,cpp,sig}
+loc: .loc-ignore
+	wc -l `ls $(LOC) 2>/dev/null | grep -vf $<`
+.loc-ignore: Makefile
+	@for i in $(GENS); do echo '^'$$i'$$'; done > $@
+
+#
+# Documentation
+#
+
+DOCFLAGS = -stars -colorize-code $(MLFLAGS) \
+           -t "Caml-Shcaml" -intro doc/INDEX
+
+DOCDIRS	= doc/html doc/man
+DOCS	= $(patsubst %.ml,%.doc,$(LIBSRCS:%.mli=%.doci)) shtop.doci shtop.doc
+LOADS	= $(addprefix -load ,$(DOCS))
+
+docs: $(DOCDIRS)
+
+$(DOCDIRS): doc/.cache
+	$(RM) -R $@.new
+	mkdir $@.new
+	cp doc/style.css $@.new
+	$(OCAMLDOC) $(DOCFLAGS) -`basename $@` -d $@.new -load $<
+	chmod -R a+rX $@.new
+	$(RM) -R $@
+	mv $@.new $@
+
+doc/INDEX: doc/make-index.sed doc/tutorial.ml
+	sed -nf $^ > $@
+
+doc/.cache: $(DOCS) doc/INDEX
+	$(OCAMLDOC) $(DOCFLAGS) -dump $@ $(LOADS)
+
+%.doci: %.mli %.cmi $(PPLIB)
+	$(OCAMLDOC) $(DOCFLAGS) -dump $@ $<
+
+%.doc: %.ml %.cmo $(PPLIB)
+	$(OCAMLDOC) $(DOCFLAGS) -dump $@ $<
+
+docclean:
+	$(RM) $(DOCS) doc/.cache doc/INDEX
+	$(RM) -R $(DOCDIRS)
+
+.PRECIOUS: line.ml line.mli $(LINESPEC)
+
+#
+# Dependency generation
+#
+
+tsort: .depend
+	sed -f pre-tsort.sed < $< | tsort
+
+depend: .depend
+	$(RM) Makefile.in.new Makefile.new
+	sed '1,/^### Do not remove/p;d' <Makefile.in >Makefile.in.new
+	cat $< >>Makefile.in.new
+	mv Makefile.in.new Makefile.in
+	./config.status
+
+.depend: $(PPLIB) $(LIBSRCS)
+	$(OCAMLDEP) $(MLFLAGS) $(LIBSRCS) > $@
+
+### Do not remove this line.  Use "make depend" to regenerate. ###
+lib/abort.cmo: lib/util.cmo lib/abort.cmi 
+lib/abort.cmx: lib/util.cmx lib/abort.cmi 
+lib/adaptor.cmo: lib/util.cmo lib/shtream.cmi lib/reader.cmi lib/line.cmi \
+    lib/fitting.cmi lib/delimited.cmi lib/adaptor.cmi 
+lib/adaptor.cmx: lib/util.cmx lib/shtream.cmx lib/reader.cmx lib/line.cmx \
+    lib/fitting.cmx lib/delimited.cmx lib/adaptor.cmi 
+lib/adaptor.cmi: lib/shtream.cmi lib/reader.cmi lib/line.cmi lib/fitting.cmi \
+    lib/delimited.cmi 
+lib/anyShtream.cmo: lib/util.cmo lib/shtream.cmi lib/reader.cmi \
+    lib/channel.cmi lib/anyShtream.cmi 
+lib/anyShtream.cmx: lib/util.cmx lib/shtream.cmx lib/reader.cmx \
+    lib/channel.cmx lib/anyShtream.cmi 
+lib/anyShtream.cmi: lib/shtream.cmi lib/reader.cmi lib/channel.cmi 
+lib/channel.cmo: lib/util.cmo lib/proc.cmi lib/iVar.cmi lib/disposal.cmi \
+    lib/channel.cmi 
+lib/channel.cmx: lib/util.cmx lib/proc.cmx lib/iVar.cmx lib/disposal.cmx \
+    lib/channel.cmi 
+lib/channel.cmi: lib/proc.cmi 
+lib/delimited.cmo: lib/reader.cmi lib/delimited.cmi 
+lib/delimited.cmx: lib/reader.cmx lib/delimited.cmi 
+lib/delimited.cmi: lib/reader.cmi 
+lib/disposal.cmo: lib/weakPlus.cmi lib/util.cmo lib/disposal.cmi 
+lib/disposal.cmx: lib/weakPlus.cmx lib/util.cmx lib/disposal.cmi 
+lib/fitting.cmo: lib/util.cmo lib/proc.cmi lib/lineShtream.cmi \
+    lib/channel.cmi lib/anyShtream.cmi lib/abort.cmi lib/fitting.cmi 
+lib/fitting.cmx: lib/util.cmx lib/proc.cmx lib/lineShtream.cmx \
+    lib/channel.cmx lib/anyShtream.cmx lib/abort.cmx lib/fitting.cmi 
+lib/fitting.cmi: lib/shtream.cmi lib/proc.cmi lib/lineShtream.cmi \
+    lib/channel.cmi lib/anyShtream.cmi 
+lib/flags.cmo: lib/flags.cmi 
+lib/flags.cmx: lib/flags.cmi 
+lib/iVar.cmo: lib/util.cmo lib/iVar.cmi 
+lib/iVar.cmx: lib/util.cmx lib/iVar.cmi 
+lib/line.cmo: lib/util.cmo lib/proc.cmi lib/delimited.cmi lib/line.cmi 
+lib/line.cmx: lib/util.cmx lib/proc.cmx lib/delimited.cmx lib/line.cmi 
+lib/line.cmi: lib/proc.cmi lib/delimited.cmi 
+lib/lineShtream.cmo: lib/util.cmo lib/shtream.cmi lib/reader.cmi lib/proc.cmi \
+    lib/line.cmi lib/anyShtream.cmi lib/lineShtream.cmi 
+lib/lineShtream.cmx: lib/util.cmx lib/shtream.cmx lib/reader.cmx lib/proc.cmx \
+    lib/line.cmx lib/anyShtream.cmx lib/lineShtream.cmi 
+lib/lineShtream.cmi: lib/reader.cmi lib/line.cmi lib/anyShtream.cmi 
+lib/proc.cmo: lib/util.cmo lib/iVar.cmi lib/proc.cmi 
+lib/proc.cmx: lib/util.cmx lib/iVar.cmx lib/proc.cmi 
+lib/reader.cmo: lib/util.cmo lib/reader.cmi 
+lib/reader.cmx: lib/util.cmx lib/reader.cmi 
+lib/shtream.cmo: lib/util.cmo lib/signal.cmi lib/reader.cmi lib/proc.cmi \
+    lib/channel.cmi lib/shtream.cmi 
+lib/shtream.cmx: lib/util.cmx lib/signal.cmx lib/reader.cmx lib/proc.cmx \
+    lib/channel.cmx lib/shtream.cmi 
+lib/shtream.cmi: lib/util.cmo lib/reader.cmi lib/proc.cmi lib/channel.cmi 
+lib/signal.cmo: lib/util.cmo lib/signal.cmi 
+lib/signal.cmx: lib/util.cmx lib/signal.cmi 
+lib/stringShtream.cmo: lib/util.cmo lib/anyShtream.cmi lib/stringShtream.cmi 
+lib/stringShtream.cmx: lib/util.cmx lib/anyShtream.cmx lib/stringShtream.cmi 
+lib/stringShtream.cmi: lib/anyShtream.cmi 
+lib/usrBin.cmo: lib/util.cmo lib/shtream.cmi lib/lineShtream.cmi lib/line.cmi \
+    lib/fitting.cmi lib/channel.cmi lib/adaptor.cmi lib/usrBin.cmi 
+lib/usrBin.cmx: lib/util.cmx lib/shtream.cmx lib/lineShtream.cmx lib/line.cmx \
+    lib/fitting.cmx lib/channel.cmx lib/adaptor.cmx lib/usrBin.cmi 
+lib/usrBin.cmi: lib/shtream.cmi lib/line.cmi lib/fitting.cmi lib/channel.cmi 
+lib/version.cmo: lib/version.cmi 
+lib/version.cmx: lib/version.cmi 
+lib/weakPlus.cmo: lib/util.cmo lib/weakPlus.cmi 
+lib/weakPlus.cmx: lib/util.cmx lib/weakPlus.cmi 

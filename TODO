@@ -1,0 +1,12 @@
+CSV should allow separators longer than one character.
+
+Shmyntax.
+
+Making redirection as lazy as piping so things don't reorder improperly.
+
+Proc.command (and friends) that takes a format string with quoting
+specifiers.
+
+There's no need for linespec.ml to handle its own docstrings anymore,
+since camlp4 now handles comments alright.  We could actually use a
+regular old filter.
