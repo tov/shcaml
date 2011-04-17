@@ -10,7 +10,7 @@ CATEGORIES=     godi
 MASTER_SITES=   http://www.ccs.neu.edu/home/tov/code/shcaml/
 MAINTAINER=     Jesse Tov <tov@ccs.neu.edu>
 HOMEPAGE=       http://www.ccs.neu.edu/home/tov/code/shcaml/
-COMMENT=        An Ocaml library for Unix shell programming
+COMMENT=        Caml-Shcaml is an Ocaml library for UNIX shell programming
 
 # confopt defaults:
 
@@ -19,7 +19,8 @@ AUTOGENERATE_PLIST = yes
 PKG  =          godi-shcaml
 MAKE_FLAGS=     PREFIX=${PREFIX} LIBDIR=${PREFIX}/lib BINDIR=${PREFIX}/bin MANDIR=${PREFIX}/man 
 DEPENDS+= godi-core-mk>=1.2.14:../../godi/godi-core-mk
-DEPENDS+= godi-ocaml>=3.12:../../godi/godi-ocaml
+DEPENDS+= godi-ocaml>=3.11:../../godi/godi-ocaml
+DEPENDS+= godi-ocaml<3.12:../../godi/godi-ocaml
 DEPENDS+= godi-pcre-[0-9]*:../../godi/godi-pcre
 BUILD_DEPENDS+= godi-findlib-[0-9]*:../../godi/godi-findlib
 
