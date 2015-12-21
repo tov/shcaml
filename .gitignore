@@ -1,11 +1,8 @@
 .*sw?
 META
-syntax/Makefile
 shtop.top
 shutop.top
 lib/flags.ml
-syntax/lineMetadata.ml
-syntax/pp_linespec
 doc/INDEX
 doc/api.docdir
 doc/man
