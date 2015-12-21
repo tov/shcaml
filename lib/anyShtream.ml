@@ -1,19 +1,7 @@
 (* vim: set ft=ocaml : *)
 open Util
 
-module type ELEM = sig
-  type 'a elem
-  type initial
-  val reader    : unit -> in_channel -> initial elem
-  val of_string : unit -> string -> initial elem
-  val string_of : unit -> 'a elem -> string
-end
-
-module type ANYSHTREAM = sig
-  #include "anyShtream.sig"
-end
-
-module Make (E : ELEM) = struct
+module Make (E : AnyShtreamSig.ELEM) = struct
   include Shtream
 
   module Elem = E

@@ -38,7 +38,7 @@ module Delim = struct
   let reader ?options channel = Delimited.reader ?options channel
 
   let splitter ?options =
-    let options = maybe options {| Delimited.default_options |} id in
+    let options = maybe options (fun _ -> Delimited.default_options) id in
     fun line ->
       let fields = Delimited.splitter ~options (Line.raw line) in
         Line.Delim.set_options options
@@ -308,7 +308,7 @@ module Stat = struct
       | Some d -> Filename.concat d (Line.raw file)
       | _      -> Line.raw file in
     let sb = Unix.stat filename in
-      modeify sb.st_perm $
+      modeify sb.st_perm @@
         Line.Stat.create
           ~dev:   sb.st_dev
           ~inode: sb.st_ino

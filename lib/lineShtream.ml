@@ -7,7 +7,7 @@ let annotate source =
   let each line =
     let seq = !counter in
       counter := seq + 1;
-      Line.set_seq seq ^$ Line.set_source source line in
+      Line.set_seq seq @@ Line.set_source source line in
   Shtream.map each
 
 let parse_raw_lines source =
@@ -15,8 +15,8 @@ let parse_raw_lines source =
   fun raw ->
     let seq = !counter in
       counter := seq + 1;
-      Line.set_seq seq ^$
-        Line.set_source source ^$
+      Line.set_seq seq @@
+        Line.set_source source @@
           Line.line ~before:raw.Reader.before
                     ~after:raw.Reader.after
                     raw.Reader.content

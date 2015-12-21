@@ -28,7 +28,7 @@ let make ?(prio = 0) goal deps = {
 }
 
 let make_par ?(prio = 0) deps = {
-  goal  = {| Proc.spawn {| () |} |};
+  goal  = (fun _ -> Proc.spawn (fun _ -> ()));
   prio  = prio;
   deps  = deps;
   temp  = ref None;
@@ -63,8 +63,8 @@ let prepare =
   let rec clear n = n.temp := None; List.iter clear n.deps in
 
   fun dag ->
-    build [] Q.empty dag
-    BEFORE clear dag
+    let it = build [] Q.empty dag in
+    clear dag; it
 
 let run =
   let add_if_ready queue next =

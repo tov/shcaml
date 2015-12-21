@@ -38,7 +38,9 @@ exception CoFailure
 (** A coshtream accepting elements of type ['a] *)
 type 'a co_t
 
-#include "shtream.sig"
+include ShtreamSig.S
+  with type 'a t := 'a t
+   and type 'a co_t := 'a co_t
 
 (** {2 Reading and Writing Shtreams} *)
 
@@ -76,14 +78,14 @@ val channel_of  : ?procref:Channel.procref ->
 val of_channel  : ?hint:(Reader.raw_line -> 'a) ->
                   (in_channel -> 'a) -> in_channel -> 'a t
 
-(*
+(**
  * Construct a {!Shtream.t} from a reader and a filename.  The arguments
  * are as for {!of_channel}.
  *)
 val of_file     : ?hint:(Reader.raw_line -> 'a) ->
                   (in_channel -> 'a) -> string -> 'a t
 
-(*
+(**
  * Construct a {!Shtream.t} from a reader and an external command.
  * If [?procref] is given, stash the child {!Proc.t}; if [?dups] is
  * given, perform the dups in the child process.
@@ -94,7 +96,7 @@ val of_command  : ?procref:Channel.procref ->
                   ?hint:(Reader.raw_line -> 'a) ->
                   (in_channel -> 'a) -> string -> 'a t
 
-(*
+(**
  * Construct a {!Shtream.t} from a reader and an external program.
  * If [?procref] is given, stash the child {!Proc.t}; if [?dups] is
  * given, perform the dups in the child process.
@@ -107,7 +109,7 @@ val of_program  : ?procref:Channel.procref ->
                   ?path:bool -> string -> ?argv0:string -> string list ->
                   'a t
 
-(*
+(**
  * Construct a {!Shtream.t} from a reader and a thunk.
  * Spawns a child and calls the thunk in the child process.
  * If [?procref] is given, stash the child {!Proc.t}; if [?dups] is
@@ -127,11 +129,7 @@ val of_thunk   : ?procref:Channel.procref ->
 module type COMMON = sig
   exception Failure
   (** Alias for {!Shtream.Failure} *)
-  type 'a t
-  (** Alias for {!Shtream.t} *)
   exception CoFailure
   (** Alias for {!Shtream.CoFailure} *)
-  type 'a co_t
-  (** Alias for {!Shtream.co_t} *)
-  #include "shtream.sig"
+  include ShtreamSig.S
 end

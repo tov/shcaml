@@ -36,7 +36,7 @@ let null_protect_rec = { protector = null_protect; }
  * Stream initialization and finalization
  *)
 
-let make ?(read = {| raise Bug |})
+let make ?(read = (fun _ -> raise Bug))
          ?(hint = None)
          ?(close = ignore)
          ?procref
@@ -59,12 +59,16 @@ let make ?(read = {| raise Bug |})
  * advance on retries. *)
 let from_low ?close f =
   let position = ref 0 in
-  let n ()     = !position BEFORE (position := it + 1) in
-  let rec loop = Delay {| Strict (f (n ()), loop) |} in
+  let n ()     =
+    let it = !position in
+    position := it + 1;
+    it
+  in
+  let rec loop = Delay (fun _ -> Strict (f (n ()), loop)) in
     make ?close loop
 
 let from f =
-  from_low (fun n -> maybe (f n) {| raise Failure |} id)
+  from_low (fun n -> maybe (f n) (fun _ -> raise Failure) id)
 
 let try_again () = raise TryAgain
 let warn fmt     = Printf.ksprintf (fun s -> raise (Warning s)) fmt
@@ -92,19 +96,19 @@ let add_protection protector s =
   if s.protect == null_protect
   then s.protect <- protector.protector
   else s.protect <- let old = s.protect in
-                    fun thunk -> protector.protector {| old thunk |}
+                    fun thunk -> protector.protector (fun _ -> old thunk)
 
 let add_cleanup close s =
   if s.close == ignore
   then s.close <- close
-  else s.close <- let old = s.close in {| old (); close () |}
+  else s.close <- let old = s.close in (fun _ -> old (); close ())
 
 let of_list lst =
   make (List.fold_right (fun x y -> Strict (x, y)) lst end_success)
 
 let of_channel ?hint read c =
   let c = dup_in (`InChannel c) in
-  make ~read ~close:{| close_in c |} ~hint (Extern c)
+  make ~read ~close:(fun _ -> close_in c) ~hint (Extern c)
 
 let of_stream stream =
   let rec loop = Delay (fun () ->
@@ -123,12 +127,12 @@ let string_of_shtream_error = function
 let ignore_errors = ignore
 
 let warn_on_errors e =
-  Printf.eprintf "%s: shtream warning: %s\n%!" Sys.argv.(0) ^$
-    string_of_shtream_error e
+  Printf.eprintf "%s: shtream warning: %s\n%!" Sys.argv.(0)
+  @@ string_of_shtream_error e
 
 let die_on_errors e =
-  Printf.eprintf "%s: shtream error: %s\n%!" Sys.argv.(0) ^$
-    string_of_shtream_error e;
+  Printf.eprintf "%s: shtream error: %s\n%!" Sys.argv.(0)
+  @@ string_of_shtream_error e;
   fail_with (Proc.WEXITED (-1))
 
 let die_silently_on_errors _ = fail_with (Proc.WEXITED (-1))
@@ -139,7 +143,7 @@ let current_error_handler = ref warn_on_errors
 
 (* When called with N >= 0, will produce a shtream with N
  * Stricts in front or fewer than N followed by TheEnd. *)
-LOCAL
+module Force = struct
   let end_of_procref = function
     | Some {contents = Some proc} -> begin
         match Proc.status_of_proc proc with
@@ -154,8 +158,10 @@ LOCAL
 
   let finish s =
     close s;
-    end_of_procref s.procref
-    BEFORE (s.procref <- None)
+    let it =
+      end_of_procref s.procref in
+    s.procref <- None;
+    it
 
   let finish_with n s =
     close s;
@@ -184,9 +190,11 @@ LOCAL
    | Extern c        -> loop s n (try Strict (s.read c, d) with
                                   | e -> handle s d e)
    | TheEnd n        -> close s; TheEnd n
-IN
+
   let force n s = s.data <- loop s n s.data
-END
+end
+
+let force = Force.force
 
 let npeek ?(n = 1) s =
   let rec loop n d = match d with
@@ -256,33 +264,33 @@ let rec iter f s = match next' s with
 (* To enforce (dynamic) linearity of shtreams, this function creates
  * a copy of s and then empties s. *)
 let claim s =
-  { s with read = s.read } BEFORE begin
-    s.data    <- end_success;
-  end
+  let s' = { s with read = s.read } in
+  s.data    <- end_success;
+  s'
 
 let append s1 s2 =
   let s1, s2 = claim s1, claim s2 in
-  from_low ~close:{| close s1; close s2 |}
-    {| match next' s1 with
+  from_low ~close:(fun _ -> close s1; close s2)
+    (fun _ -> match next' s1 with
        | None   -> next s2
-       | Some r -> r |}
+       | Some r -> r)
 
 let filter pred s =
   let s = claim s in
   let rec each n =
     let x = next s in
       if pred x then x else each n in
-  from_low ~close:{| close s |} each
+  from_low ~close:(fun _ -> close s) each
 
 let map trans s =
   let s = claim s in
-    from_low ~close:{| close s |} {| trans (next s) |}
+    from_low ~close:(fun _ -> close s) (fun _ -> trans (next s))
 
 let concat_map trans s =
-  let rec data = Delay {|
+  let rec data = Delay (fun _ ->
     List.fold_right (fun x y -> Strict (x, y)) (trans (next s)) data
-  |} in
-  make ~close:{| close s |} data
+  ) in
+  make ~close:(fun _ -> close s) data
 
 let partition pred left right =
   map (fun x -> if pred x then left x else right x)
@@ -299,7 +307,7 @@ let rec fold_right f s z =
 
 let stream_of s =
   let s = claim s in
-  Stream.from {| next' s |}
+  Stream.from (fun _ -> next' s)
 
 let list_of s =
   let rec loop acc = match next' s with
@@ -311,47 +319,54 @@ let channel_of ?procref ?(before = ignore) ?(after = ignore) write s =
   let rec loop = function
     | Extern c   -> dup_in (`InChannel c)
     | Delay f    -> loop (f ())
-    | data       -> s.data <- data;
-                    open_thunk_in ?procref {|
-                      before ();
-                      flush stdout;
-                      iter (fun each ->
-                              write each;
-                              flush stdout) s;
-                      after ();
-                      flush stdout;
-                      match status s with
-                      | Some n -> Proc.exit_with_status n
-                      | _      -> exit 0
-                    |} in
+    | data       ->
+      s.data <- data;
+      open_thunk_in ?procref (fun _ ->
+        before ();
+        flush stdout;
+        iter (fun each ->
+          write each;
+          flush stdout) s;
+        after ();
+        flush stdout;
+        match status s with
+        | Some n -> Proc.exit_with_status n
+        | _      -> exit 0
+      ) in
   let result = loop s.data in
     close s;
     result
 
 let of_channel_with_close ?hint reader c =
   unwind_protect
-    {| of_channel ?hint reader c |}
-    {| close_in c |}
+    (fun _ -> of_channel ?hint reader c)
+    (fun _ -> close_in c)
 
 let of_file ?hint reader filename =
   of_channel_with_close ?hint reader (open_file_in filename)
 
 let of_command ?(procref = ref None) ?dups ?hint reader command =
-  of_channel_with_close ?hint reader
-    (open_command_in ~procref ?dups command)
-  BEFORE (it.procref <- Some procref)
+  let it =
+    of_channel_with_close ?hint reader
+      (open_command_in ~procref ?dups command) in
+  it.procref <- Some procref;
+  it
 
 let of_program ?(procref = ref None) ?dups ?hint reader
                ?path prog ?argv0 args =
-  of_channel_with_close ?hint reader
-    (open_program_in ~procref ?dups ?path prog ?argv0 args)
-  BEFORE (it.procref <- Some procref)
+  let it =
+    of_channel_with_close ?hint reader
+      (open_program_in ~procref ?dups ?path prog ?argv0 args) in
+  it.procref <- Some procref;
+  it
 
 
 let of_thunk ?(procref = ref None) ?dups ?hint reader thunk =
-  of_channel_with_close ?hint reader
-    (open_thunk_in ~procref ?dups thunk)
-  BEFORE (it.procref <- Some procref)
+  let it =
+    of_channel_with_close ?hint reader
+      (open_thunk_in ~procref ?dups thunk) in
+  it.procref <- Some procref;
+  it
 
 exception CoFailure
 
@@ -359,10 +374,11 @@ type 'a co_t = out_channel
 
 let coshtream_of ?procref consumer =
   open_thunk_out ?procref
-    {| let each _ = try Marshal.from_channel stdin
-                    with End_of_file -> raise Failure in
+    (fun _ ->
+       let each _ = try Marshal.from_channel stdin
+         with End_of_file -> raise Failure in
        consumer (from_low each);
-       exit 0 |}
+       exit 0)
 
 let conil = null_out
 
@@ -375,22 +391,20 @@ let sigpipe_protect thunk =
   Signal.signal_protect Sys.sigpipe ~exn:CoFailure thunk
 
 let conext c v =
-  sigpipe_protect {| unsafe_conext c v |}
+  sigpipe_protect (fun _ -> unsafe_conext c v)
 
 let coclose c =
-  try sigpipe_protect {| close_out c |}
+  try sigpipe_protect (fun _ -> close_out c)
   with CoFailure -> ()
 
 let annihilate shtream coshtream =
   begin
-    try sigpipe_protect {| iter (unsafe_conext coshtream) shtream; |}
+    try sigpipe_protect (fun _ -> iter (unsafe_conext coshtream) shtream;)
     with CoFailure -> ()
   end
 
 module type COMMON = sig
   exception Failure
-  type 'a t
   exception CoFailure
-  type 'a co_t
-  #include "shtream.sig"
+  include ShtreamSig.S
 end

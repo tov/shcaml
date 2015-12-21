@@ -10,10 +10,6 @@ let id x       = x
 let const x y  = x
 (** Function composition *)
 let (%) f g x  = f (g x)
-(** Function application *)
-let ($) f x    = f x
-(** Function application, right associative *)
-let (^$) f x   = f x
 (** Flip the arguments of a function *)
 let flip f x y = f y x
 

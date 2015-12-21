@@ -105,7 +105,7 @@ module Make(H : Hashtbl.HashedType) = struct
     let n = max n minsize in {
       ops    = 0;
       keys   = Array.make n (Weak.create 0);
-      values = Array.make n (Array.create 0 None);
+      values = Array.make n (Array.make 0 None);
     }
 
   let count h =
@@ -142,7 +142,7 @@ module Make(H : Hashtbl.HashedType) = struct
   let maybe_resize_helper h =
     let used = count h in
     let size = Array.length h.keys in
-    if 4 * used < size or 4 * size < used
+    if 4 * used < size || 4 * size < used
       then resize ~size:used h
 
   let tick_helper h =

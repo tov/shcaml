@@ -120,11 +120,12 @@ let rec wait proc =
   if not proc.child then raise Not_child;
   match proc.status with
   | Some status -> status
-  | None        -> (try wait_and_save ~pid:proc.pid [] with
-                    | Unix.Unix_error (Unix.ECHILD, _, _) ->
-                        if proc.status = None
-                        then raise Not_found);
-                   wait proc
+  | None        ->
+    (try wait_and_save ~pid:proc.pid [] with
+     | Unix.Unix_error (Unix.ECHILD, _, _) ->
+       if proc.status = None
+       then raise Not_found);
+    wait proc
 
 let status_of_proc proc =
   if not proc.child then raise Not_child;
@@ -136,20 +137,20 @@ let is_child proc    = proc.child
 let pid_of_proc proc = proc.pid
 
 let wait_any procs =
-    if procs = [] or List.exists (not % is_child) procs
+    if procs = [] || List.exists (not % is_child) procs
       then raise Not_child;
     let old_mask = Unix.sigprocmask Unix.SIG_BLOCK [Sys.sigchld] in
     unwind_protect
-      {|
+      (fun _ ->
         while_none
-        {| find' (fun proc -> proc.status <> None) procs |}
-          {| try
+        (fun _ -> find' (fun proc -> proc.status <> None) procs)
+          (fun _ -> try
               let pid, status = Unix.wait () in
                  stash_status pid status
              with Unix.Unix_error (Unix.EINTR, _, _) -> ()
-          |}
-      |}
-      {| Unix.sigprocmask Unix.SIG_SETMASK old_mask |}
+          )
+      )
+      (fun _ -> Unix.sigprocmask Unix.SIG_SETMASK old_mask)
 
 (* This is kind of complicated.  First, we look up the list of any procs
  * we already know about.  Then, if and ONLY if all the procs we know
@@ -223,8 +224,8 @@ let exec_program ?(path = true) prog ?(argv0 = prog) args =
 let exec cmd = exec_program ~path:false "/bin/sh" ["-c"; cmd]
 
 let vfork_program ?path prog ?argv0 args =
-  IVar.with_interprocess_protect ^$ fun protect ->
-    spawn {| protect {| exec_program ?path prog ?argv0 args |} |}
+  IVar.with_interprocess_protect @@ fun protect ->
+    spawn (fun _ -> protect (fun _ -> exec_program ?path prog ?argv0 args))
 
 let vfork cmd = vfork_program ~path:false "/bin/sh" ["-c"; cmd]
 

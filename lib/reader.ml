@@ -67,7 +67,7 @@ let rec make =
                      before   = "";
                      after    = String.make m '\000'; } in
       Pervasives.really_input c result.content 0 n;
-      ignore $ Pervasives.input c result.after 0 n;
+      ignore @@ Pervasives.input c result.after 0 n;
       result
   | `Buf f -> fun c ->
       let buf = Buffer.create 80 in
