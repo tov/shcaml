@@ -5,7 +5,8 @@ ODOCFLAGS=-docflags -colorize-code,-charset,utf8,-stars,-t,"Caml-Shcaml",-intro,
 
 lib:
 	$(OB) shcaml.cma shcaml.cmxa
-	$(OB) shtopInit.cmo
+	$(OB) shtop.cma
+	$(OB) shtopInit.cma
 
 top:
 	$(OB) shtop.top

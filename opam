@@ -1,0 +1,15 @@
+opam-version: "1.2"
+maintainer: "Armael <armael@isomorphis.me>"
+homepage: "https://github.com/tov/shcaml"
+dev-repo: "git+https://github.com/tov/shcaml.git"
+bug-reports: "https://github.com/tov/shcaml/issues"
+license: "MIT"
+available: [ ocaml-version >= "4.02.0" ]
+depends: [ "ocamlfind" {build}
+           "ocamlbuild" {build}
+           "pcre" ]
+build:
+[
+  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
+                           "native-dynlink=%{ocaml-native-dynlink}%" ]
+]
