@@ -1,12 +1,6 @@
 open Util
 open Fitting
 
-type 'a shtream = 'a Shtream.t
-type 'a line    = 'a Line.t
-type 'a fitting = 'a Fitting.t
-type absent     = Line.absent
-type present    = Line.present
-
 let cat s       = LineShtream.output s
 
 let cut selector = trans @@ Shtream.map (Line.select selector)

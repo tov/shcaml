@@ -6,7 +6,7 @@ val dir_shcaml          : unit -> unit
 (** Toploop directive to set up the Shcaml toploop environment.
  * Installs Shcaml printers and opens several Shcaml modules. *)
 
-val print_line          : Format.formatter -> 'a Line.t -> unit
+val print_line          : Format.formatter -> Line.t -> unit
 (** Toploop printer for {!Line.t} *)
 val print_descr         : Format.formatter -> Channel.descr -> unit
 (** Toploop printer for {!Channel.descr} *)

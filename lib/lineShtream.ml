@@ -1,6 +1,6 @@
 open Util
 
-type sourced = <Line| seq: Line.present; source: Line.present >
+type sourced = Line.t
 
 let annotate source =
   let counter = ref 0 in
@@ -25,7 +25,7 @@ let line_reader ?(source = `None) reader =
   parse_raw_lines source % reader
 
 module LineElem = struct
-  type 'a elem  = 'a Line.t
+  type 'a elem  = Line.t
   type initial  = sourced
   let reader    () = line_reader Reader.lines
   let string_of () = Line.show

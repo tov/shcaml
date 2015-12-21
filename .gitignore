@@ -8,8 +8,6 @@ config.status
 shtop
 lib/version.ml
 lib/flags.ml
-lib/line.ml
-lib/line.mli
 syntax/lineMetadata.ml
 syntax/pp_linespec
 doc/.cache
