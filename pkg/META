@@ -2,10 +2,20 @@ name 		= "shcaml"
 version 	= "%%VERSION%%"
 description 	= "Caml-Shcaml is an OCaml library for UNIX shell programming"
 requires	= "unix pcre"
-
-archive(toploop) = "shcaml.cma shtop.cma shtopInit.cma"
 archive(byte)	= "shcaml.cma shcamlCommon.cma"
 archive(byte, plugin) = "shcaml.cma shcamlCommon.cma"
 archive(native)	= "shcaml.cmxa shcamlCommon.cmxa"
 archive(native, plugin) = "shcaml.cmxs shcamlCommon.cmxs"
 exists_if = "shcaml.cma"
+
+package "top" (
+ version = "%%VERSION%%"
+ description = "Shcaml toplevel support"
+ requires = "shcaml"
+ archive(byte) = "shtop.cma shtopInit.cma"
+ archive(byte, plugin) = "shtop.cma shtopInit.cma"
+ archive(native) = "shtop.cmxa shtopInit.cmxa"
+ archive(native, plugin) = "shtop.cmxs shtopInit.cmxs"
+ exists_if = "shtop.cma shtopInit.cma"
+)
+ 

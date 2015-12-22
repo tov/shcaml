@@ -4,4 +4,4 @@ true: package(pcre), package(unix)
 <lib/*.{cmo,cmx}>: for-pack(Shcaml)
 <shtop.*>: package(compiler-libs)
 <shutop.*>: package(compiler-libs), package(utop), thread
-<shutopInit.*>: package(utop)
+<myutop_main.*>: package(utop)

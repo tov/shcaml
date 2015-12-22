@@ -4,13 +4,12 @@
 #use "config.ml";;
 
 let () =
-  let e = [`Ext ".cmi"; `Ext ".cmti"; `Ext ".cmx"; `Ext ".cma"; `Ext ".cmxa"; `Ext ".cmxs"] in
+  let exts = List.filter ((<>) (`Ext ".mli")) Exts.module_library in
   Vars.subst_file ~skip:Config.subst_skip ~vars:Config.vars "pkg/META" >>& fun () ->
   Vars.subst_file ~skip:Config.subst_skip ~vars:Config.vars "lib/version.ml" >>& fun () ->
   Pkg.describe "shcaml" ~builder:(`OCamlbuild []) [
     Pkg.lib "pkg/META";
-    Pkg.lib ~exts:e "shcaml";
-    Pkg.lib ~exts:e "shcamlCommon";
+    Pkg.lib ~exts "shcaml";
     Pkg.lib ~exts:Exts.module_library "shtop";
-    Pkg.lib ~exts:e "shtopInit";
+    Pkg.lib ~exts "shtopInit";
     Pkg.lib "dir_shcaml.ml"; ]

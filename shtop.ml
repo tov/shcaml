@@ -37,10 +37,5 @@ let print_out_channel fmt oc =
 let dir_shcaml () =
   Topdirs.dir_use silently "dir_shcaml.ml";
   if !Sys.interactive
-    then Printf.printf "\tCaml-Shcaml version %s (%s)\n\n%!"
-           Version.version Version.version_name;
-
-;;
-begin
-  Hashtbl.add directive_table "shcaml" (Directive_none dir_shcaml);
-end
+  then Printf.printf "\tCaml-Shcaml version %s (%s)\n\n%!"
+      Version.version Version.version_name
