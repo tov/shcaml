@@ -1,7 +1,7 @@
 #!/usr/bin/env ocaml
 
 #use "topfind";;
-#require "shcaml";;
+#require "shcaml.top";;
 
 open Printf;;
 

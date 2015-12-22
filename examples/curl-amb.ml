@@ -1,7 +1,6 @@
 #!/usr/bin/env ocaml
 
 #use "topfind";;
-#camlp4o;;
 #require "shcaml";;
 
 open Shcaml
@@ -77,7 +76,7 @@ let amb act1 act2 kont =
 let curl2 url1 url2 file =
   let file1 = file ^ ".1" in
   let file2 = file ^ ".2" in
-  amb (curl url1 file1) (curl url2 file2) ^$ fun winner status ->
+  amb (curl url1 file1) (curl url2 file2) @@ fun winner status ->
   if winner = 1 then
     ~>>[ rm [file2]; mv file1 file; yield status ]
   else
@@ -95,12 +94,12 @@ let shells =
 (**)
 
 let passwd_to_csv () =
-  Shtream.iter (Line.Delim.output stdout) ^$
+  Shtream.iter (Line.Delim.output stdout) @@
   Shtream.map
-    (fun line -> Line.Delim.set_options Delimited.default_options ^$
+    (fun line -> Line.Delim.set_options Delimited.default_options @@
        Line.Delim.create [| Line.Passwd.name line;
-                            Line.Passwd.gecos line |] line) ^$
-  Adaptor.Passwd.adaptor ^$
+                            Line.Passwd.gecos line |] line) @@
+  Adaptor.Passwd.adaptor @@
   LineShtream.of_file "/etc/passwd"
 
 ;;

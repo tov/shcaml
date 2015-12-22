@@ -12,8 +12,8 @@ run begin
     echo "b"            ^>>
     command "sleep 1" ) ^&= function proc ->
   echo "a"              ^>>
-  caml {|
+  caml (fun _ ->
     ignore (Proc.wait proc);
     echo "c"
-  |}
+  )
 end

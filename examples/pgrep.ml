@@ -3,9 +3,9 @@
 (* Quick reimplementation of pgrep(1). *)
 
 #use "topfind";;
-#require "shcaml";;
+#require "shcaml.top";;
 
-let pgrep pat = ignore ^$ run begin
+let pgrep pat = ignore @@ run begin
   ps () -|
   grep (Reader.starts_with pat % Line.Ps.command) -|
   cut (string_of_int % Line.Ps.pid)
