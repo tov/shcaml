@@ -1,5 +1,5 @@
 <**/*.ml{,i}>: bin_annot
-true: package(pcre), package(unix)
+true: package(pcre), package(unix), package(lwt.unix)
 
 <lib/*.{cmo,cmx}>: for-pack(Shcaml)
 <shtop.*>: package(compiler-libs)
