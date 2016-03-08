@@ -1,4 +1,6 @@
 (**
+ 
+
 Objective Caml excels at "programming in the large," but for small or
 write-once tasks, even the veteran functional programmer often prefers a
 language that feels lighter. Throwaway scripts, however, often live
@@ -9,27 +11,25 @@ UNIX shells provide easy access to UNIX functionality such as pipes,
 signals, file descriptor manipulation, and the file system.  Caml-Shcaml
 hopes to excel at these same tasks.
 
-{4 Likely Modules}
+{3 Likely Modules}
 
 Shcaml has a bunch of modules; these are the ones we think it's likely
-you'll need.  All modules in the system are submodules of the [Shcaml]
+you'll need.  All modules in the system are submodules of the {!Shcaml}
 module, except for the module {!Shtop}.
 
 {!modules:
-	UsrBin 
-        Adaptor
-	Fitting
-        Flags
-	LineShtream
-	Line
-	Reader
-	Channel
-	Proc
+  UsrBin 
+  Adaptor
+  Fitting
+  Flags
+  LineShtream
+  Line
+  Reader
+  Channel
+  Proc
 }
-*)
 
-(**
-{4 Getting Started}
+{3 Getting Started}
 
 Caml-Shcaml requires findlib and the pcre package (as well as the camlp4 and
 unix packages, which are provided by Ocaml and findlib).
@@ -69,26 +69,20 @@ Shcaml should now be installed.  Try the following:
 *)
 (**
 > val processes : string list ... 
-*)
 
-(**
 If all has gone well, you should have a list of all the process
 invocations (whatever's in the "COMMAND" field when you call {i ps auxww})
 currently running on your system.
-*)
 
-(**
-{2 User Manual}
+{1 User Manual}
 
 This manual is more tutorial style than straight ahead instruction
 manual.  The API is (hopefully!) completely documented, so for
 specific information on any particular bit of the library, check
 there.  This document is here to demonstrate some of the concepts and
 features of Shcaml.  
-*)
 
-(**
-{3 Components}
+{2 Components}
 
 Shcaml is composed of several major components that are the building
 blocks of the library.  Let's start out by examining a few of them.  
@@ -109,10 +103,8 @@ loaded.  So, run [ocaml], then:
 #require "shcaml";;
 (**
 > ...
-*)
 
-(**
-{4 Lines}
+{3 Lines}
 
 An ['a] {!Line.t} represents structured data that might be found in a
 file or in the output of a command.  A line might represent a record
@@ -371,7 +363,7 @@ goes to UNIX.
 *)
 
 (**
-{4 Shtreams}
+{3 Shtreams}
 
 {!Shtream}s are similar in intent and operation to Ocaml [Stream]s,
 but unlike a [Stream], {!Shtream}s have an ['h'].  Additionally, shtreams
@@ -507,7 +499,7 @@ which we discuss next.
 *)
 
 (**
-{3 Fittings}
+{2 Fittings}
 
 Fittings provide an embedded process control notation.  That's fancy
 way of saying that we did our best to create some functions that make
@@ -707,10 +699,8 @@ In addition to pipes, Shcaml provides analogues to the shell's [&&],
 [||], and [;] sequencing operators.  Take a bit of structured playtime
 and poke around with them.  They're in the fine
 {{:Fitting.html#4_FittingCombinators} manual}.
-*)
 
-(**
-{4 I/O Redirection}
+{3 I/O Redirection}
 
 A difference between fittings and UNIX pipelines is that fittings only
 have one input and one output, while UNIX processes may read or write
@@ -778,10 +768,8 @@ run (from_file "file2");;
 (**
 > world
 > - : Shcaml.Proc.status = Unix.WEXITED 0
-*)
 
-(**
-{4 Adaptors}
+{3 Adaptors}
 
 The {!Adaptor} module provides record readers and splitters for a
 variety of file formats.  The readers and splitters for each format
@@ -804,10 +792,8 @@ There are adaptor submodules for delimited text, simple flat files,
 comma-separated text, key-value and sectioned key-value (ie, ssh
 config files or .ini-style files), /etc/{group,fstab,passwd,mailcap}
 files, and more.
-*)
 
-(**
-{4 UsrBin}
+{3 UsrBin}
 
 {!UsrBin} contains a collection of miscellaneous useful functions.
 Among these are fittings like [ls], [ps], [cut], [head], [sort] and
@@ -815,10 +801,8 @@ Among these are fittings like [ls], [ps], [cut], [head], [sort] and
 useful functions, such as [cd], [mkdir], [mkpath] ({i mkdir -p}, as well
 as a submodule {!UsrBin.Test} that contains functions
 analogous to {b test}(1).
-*)
 
-(**
-{3 Glossary}
+{2 Glossary}
 
 It is an unfortunate necessity of the scope and intent of Shcaml that
 many of the names of things in the library sound generic (for
@@ -838,7 +822,7 @@ more formalized sense.  This glossary documents Shcaml (and related)
 - {b dup}: I/O redirection. To copy a file descriptor, or cause one
   file descriptor to behave as another.  In Shcaml, we also use {i dup}
   to refer to the specification of a redirection (e.g., [2 %>& 1]).
-- {b line}: A structured record of type ['a] {!Line.t}, containing
+- {b line}: A structured record of type {!Line.t}, containing
   both raw text and, usually, metadata.
 - {b program}: A single UNIX executable; contrast with {i command}.
   Usually in Shcaml, when we run a program, we specify both the name
@@ -874,7 +858,7 @@ more formalized sense.  This glossary documents Shcaml (and related)
 *)
 
 (**
-{2 Indices}
+{1 Indices}
 
 {!indexlist}
 *)
