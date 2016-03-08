@@ -9,12 +9,12 @@ let string_of_label lbl =
 let add_label_string lbl str =
   label_strings := (lbl, str) :: !label_strings
 
-module M = Mixmap.Make (struct
+module Map = Mixmap.Make (struct
     type t = label
     let compare = compare
   end)
 
-type t = M.t
+type t = Map.t
 
 type source = [
   | `File of string
@@ -26,8 +26,6 @@ type source = [
 ]
 
 module Field = struct
-  type 'a ty = 'a Mixmap.injection
-
   exception Not_found of label
 
   let _ =
@@ -35,48 +33,55 @@ module Field = struct
       | Not_found lbl -> Some (string_of_label lbl)
       | _ -> None)
   
-  let create_ty = Mixmap.create_inj
-
-  let get ~ty m lbl =
-    match M.get ~inj:ty m lbl with
+  let get ~inj m lbl =
+    match Map.get ~inj m lbl with
     | None -> raise (Not_found lbl)
     | Some v -> v
 
-  let get_opt ~ty m name = M.get ~inj:ty m name
+  let get_opt ~inj m name = Map.get ~inj m name
 
-  let set ~ty name value m =
-    M.add ~inj:ty m name value
+  let set ~inj name value m =
+    Map.add ~inj m name value
 
-  let string = create_ty ()
-  let int = create_ty ()
-  let string_array = create_ty ()
-  let string_list = create_ty ()
-  let source = create_ty ()
+  let string = Mixmap.create_inj ()
+  let int = Mixmap.create_inj ()
+  let string_array = Mixmap.create_inj ()
+  let string_list = Mixmap.create_inj ()
+  let source = Mixmap.create_inj ()
 end
 
-type label += Raw | Show | Source | Seq
+type label += Raw | Show | Source | Seq | After | Before
 
 let _ =
   add_label_string Raw "Raw";
   add_label_string Show "Show";
   add_label_string Source "Source";
-  add_label_string Seq "Seq"
+  add_label_string Seq "Seq";
+  add_label_string After "After";
+  add_label_string Before "Before"
 
-let raw r = Field.get ~ty:Field.string r Raw
-let set_raw = Field.set ~ty:Field.string Raw
+let raw r = Field.get ~inj:Field.string r Raw
+let set_raw = Field.set ~inj:Field.string Raw
 
-let field_string_thunk : (unit -> string) Field.ty = Field.create_ty ()
+let field_string_thunk : (unit -> string) Mixmap.injection =
+  Mixmap.create_inj ()
 
-let show r = (Field.get ~ty:field_string_thunk r Show) ()
-let set_show s = Field.set ~ty:field_string_thunk Show (fun _ -> s)
+let show r = (Field.get ~inj:field_string_thunk r Show) ()
+let set_show s = Field.set ~inj:field_string_thunk Show (fun _ -> s)
 
-let select sel r = Field.set ~ty:field_string_thunk Show (fun _ -> sel r) r
+let select sel r = Field.set ~inj:field_string_thunk Show (fun _ -> sel r) r
 
-let source r = Field.get ~ty:Field.source r Source
-let set_source = Field.set ~ty:Field.source Source
+let source r = Field.get ~inj:Field.source r Source
+let set_source = Field.set ~inj:Field.source Source
 
-let seq r = Field.get ~ty:Field.int r Seq
-let set_seq = Field.set ~ty:Field.int Seq
+let seq r = Field.get ~inj:Field.int r Seq
+let set_seq = Field.set ~inj:Field.int Seq
+
+let after r = Field.get ~inj:Field.string r After
+let set_after = Field.set ~inj:Field.string After
+
+let before r = Field.get ~inj:Field.string r Before
+let set_before = Field.set ~inj:Field.string Before
 
 module Key_value = struct
   type t = { key : string; value : string; section: string }
@@ -84,17 +89,17 @@ module Key_value = struct
   type label += Key_value
   let _ = add_label_string Key_value "Key_value"
 
-  let ty : t Field.ty = Field.create_ty ()
+  let inj : t Mixmap.injection = Mixmap.create_inj ()
 
-  let key r = (Field.get ~ty r Key_value).key
+  let key r = (Field.get ~inj r Key_value).key
   let set_key key r =
-    let t = Field.get ~ty r Key_value in
-    Field.set ~ty Key_value { t with key } r
+    let t = Field.get ~inj r Key_value in
+    Field.set ~inj Key_value { t with key } r
 
-  let value r = (Field.get ~ty r Key_value).value
+  let value r = (Field.get ~inj r Key_value).value
   let set_value value r =
-    let t = Field.get ~ty r Key_value in
-    Field.set ~ty Key_value { t with value } r
+    let t = Field.get ~inj r Key_value in
+    Field.set ~inj Key_value { t with value } r
 
   let as_int line =
     try Some (int_of_string (value line)) with Failure _ -> None
@@ -137,15 +142,15 @@ module Key_value = struct
          }
          (value line))
 
-  let section r = (Field.get ~ty r Key_value).section
+  let section r = (Field.get ~inj r Key_value).section
   let set_section section r =
-    let t = Field.get ~ty r Key_value in
-    Field.set ~ty Key_value { t with section } r
+    let t = Field.get ~inj r Key_value in
+    Field.set ~inj Key_value { t with section } r
 
   let empty = { key = ""; value = ""; section = "" }
 
   let create ~key ~value r =
-    Field.set ~ty Key_value
+    Field.set ~inj Key_value
       { key; value; section = "" } r
 end
 
@@ -157,17 +162,17 @@ module Delim = struct
   type label += Delim
   let _ = add_label_string Delim "Delim"
 
-  let ty : t Field.ty = Field.create_ty ()
+  let inj : t Mixmap.injection = Mixmap.create_inj ()
 
-  let fields r = (Field.get ~ty r Delim).fields
+  let fields r = (Field.get ~inj r Delim).fields
   let set_fields fields r =
-    let t = Field.get ~ty r Delim in
-    Field.set ~ty Delim { t with fields } r
+    let t = Field.get ~inj r Delim in
+    Field.set ~inj Delim { t with fields } r
 
-  let names r = (Field.get ~ty r Delim).names
+  let names r = (Field.get ~inj r Delim).names
   let set_names names r =
-    let t = Field.get ~ty r Delim in
-    Field.set ~ty Delim { t with names } r
+    let t = Field.get ~inj r Delim in
+    Field.set ~inj Delim { t with names } r
 
   let get =
     let rec index i item =
@@ -184,10 +189,10 @@ module Delim = struct
   let get_int key line = int_of_string (get key line)
   let get_float key line = float_of_string (get key line)
 
-  let options r = (Field.get ~ty r Delim).options
+  let options r = (Field.get ~inj r Delim).options
   let set_options options r =
-    let t = Field.get ~ty r Delim in
-    Field.set ~ty Delim { t with options } r
+    let t = Field.get ~inj r Delim in
+    Field.set ~inj Delim { t with options } r
 
   let output channel line =
     Delimited.output_record channel ~options: (options line) (fields line)
@@ -199,7 +204,7 @@ module Delim = struct
   }
 
   let create ~fields r =
-    Field.set ~ty Delim
+    Field.set ~inj Delim
       { fields; names = []; options = Delimited.default_options } r
 end
 
@@ -217,42 +222,42 @@ module Passwd = struct
   type label += Passwd
   let _ = add_label_string Passwd "Passwd"
 
-  let ty : t Field.ty = Field.create_ty ()
+  let inj : t Mixmap.injection = Mixmap.create_inj ()
 
-  let name r = (Field.get ~ty r Passwd).name
+  let name r = (Field.get ~inj r Passwd).name
   let set_name name r =
-    let t = Field.get ~ty r Passwd in
-    Field.set ~ty Passwd { t with name } r
+    let t = Field.get ~inj r Passwd in
+    Field.set ~inj Passwd { t with name } r
 
-  let passwd r = (Field.get ~ty r Passwd).passwd
+  let passwd r = (Field.get ~inj r Passwd).passwd
   let set_passwd passwd r =
-    let t = Field.get ~ty r Passwd in
-    Field.set ~ty Passwd { t with passwd } r
+    let t = Field.get ~inj r Passwd in
+    Field.set ~inj Passwd { t with passwd } r
   
-  let uid r = (Field.get ~ty r Passwd).uid
+  let uid r = (Field.get ~inj r Passwd).uid
   let set_uid uid r =
-    let t = Field.get ~ty r Passwd in
-    Field.set ~ty Passwd { t with uid } r
+    let t = Field.get ~inj r Passwd in
+    Field.set ~inj Passwd { t with uid } r
 
-  let gid r = (Field.get ~ty r Passwd).gid
+  let gid r = (Field.get ~inj r Passwd).gid
   let set_gid gid r =
-    let t = Field.get ~ty r Passwd in
-    Field.set ~ty Passwd { t with gid } r
+    let t = Field.get ~inj r Passwd in
+    Field.set ~inj Passwd { t with gid } r
 
-  let gecos r = (Field.get ~ty r Passwd).gecos
+  let gecos r = (Field.get ~inj r Passwd).gecos
   let set_gecos gecos r =
-    let t = Field.get ~ty r Passwd in
-    Field.set ~ty Passwd { t with gecos } r
+    let t = Field.get ~inj r Passwd in
+    Field.set ~inj Passwd { t with gecos } r
 
-  let home r = (Field.get ~ty r Passwd).home
+  let home r = (Field.get ~inj r Passwd).home
   let set_home home r =
-    let t = Field.get ~ty r Passwd in
-    Field.set ~ty Passwd { t with home } r
+    let t = Field.get ~inj r Passwd in
+    Field.set ~inj Passwd { t with home } r
 
-  let shell r = (Field.get ~ty r Passwd).shell
+  let shell r = (Field.get ~inj r Passwd).shell
   let set_shell shell r =
-    let t = Field.get ~ty r Passwd in
-    Field.set ~ty Passwd { t with shell } r
+    let t = Field.get ~inj r Passwd in
+    Field.set ~inj Passwd { t with shell } r
 
   let empty = {
     name = "";
@@ -264,7 +269,7 @@ module Passwd = struct
   }
 
   let create ~name ~passwd ~uid ~gid ~gecos ~home ~shell r =
-    Field.set ~ty Passwd
+    Field.set ~inj Passwd
       { name; passwd; uid; gid; gecos; home; shell } r
 end
 
@@ -279,27 +284,27 @@ module Group = struct
   type label += Group
   let _ = add_label_string Group "Group"
   
-  let ty : t Field.ty = Field.create_ty ()
+  let inj : t Mixmap.injection = Mixmap.create_inj ()
 
-  let name r = (Field.get ~ty r Group).name
+  let name r = (Field.get ~inj r Group).name
   let set_name name r =
-    let t = Field.get ~ty r Group in
-    Field.set ~ty Group { t with name } r
+    let t = Field.get ~inj r Group in
+    Field.set ~inj Group { t with name } r
 
-  let passwd r = (Field.get ~ty r Group).passwd
+  let passwd r = (Field.get ~inj r Group).passwd
   let set_passwd passwd r =
-    let t = Field.get ~ty r Group in
-    Field.set ~ty Group { t with passwd } r
+    let t = Field.get ~inj r Group in
+    Field.set ~inj Group { t with passwd } r
 
-  let gid r = (Field.get ~ty r Group).gid
+  let gid r = (Field.get ~inj r Group).gid
   let set_gid gid r =
-    let t = Field.get ~ty r Group in
-    Field.set ~ty Group { t with gid } r
+    let t = Field.get ~inj r Group in
+    Field.set ~inj Group { t with gid } r
 
-  let users r = (Field.get ~ty r Group).users
+  let users r = (Field.get ~inj r Group).users
   let set_users users r =
-    let t = Field.get ~ty r Group in
-    Field.set ~ty Group { t with users } r
+    let t = Field.get ~inj r Group in
+    Field.set ~inj Group { t with users } r
 
   let empty = {
     name = "";
@@ -309,7 +314,7 @@ module Group = struct
   }
 
   let create ~name ~passwd ~gid ~users r =
-    Field.set ~ty Group
+    Field.set ~inj Group
       { name; passwd; gid; users } r
 end
 
@@ -342,73 +347,73 @@ module Stat = struct
     ctime: float
   }
 
-  let ty : t Field.ty = Field.create_ty ()
+  let inj : t Mixmap.injection = Mixmap.create_inj ()
 
   module Mode = struct
-    let xusr r = (Field.get ~ty r Stat).mode.xusr
+    let xusr r = (Field.get ~inj r Stat).mode.xusr
     let set_xusr xusr r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with xusr }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with xusr }} r
 
-    let wusr r = (Field.get ~ty r Stat).mode.wusr
+    let wusr r = (Field.get ~inj r Stat).mode.wusr
     let set_wusr wusr r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with wusr }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with wusr }} r
 
-    let rusr r = (Field.get ~ty r Stat).mode.rusr
+    let rusr r = (Field.get ~inj r Stat).mode.rusr
     let set_rusr rusr r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with rusr }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with rusr }} r
 
-    let xgrp r = (Field.get ~ty r Stat).mode.xgrp
+    let xgrp r = (Field.get ~inj r Stat).mode.xgrp
     let set_xgrp xgrp r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with xgrp }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with xgrp }} r
 
-    let wgrp r = (Field.get ~ty r Stat).mode.wgrp
+    let wgrp r = (Field.get ~inj r Stat).mode.wgrp
     let set_wgrp wgrp r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with wgrp }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with wgrp }} r
 
-    let rgrp r = (Field.get ~ty r Stat).mode.rgrp
+    let rgrp r = (Field.get ~inj r Stat).mode.rgrp
     let set_rgrp rgrp r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with rgrp }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with rgrp }} r
 
-    let xoth r = (Field.get ~ty r Stat).mode.xoth
+    let xoth r = (Field.get ~inj r Stat).mode.xoth
     let set_xoth xoth r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with xoth }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with xoth }} r
 
-    let woth r = (Field.get ~ty r Stat).mode.woth
+    let woth r = (Field.get ~inj r Stat).mode.woth
     let set_woth woth r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with woth }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with woth }} r
 
-    let roth r = (Field.get ~ty r Stat).mode.roth
+    let roth r = (Field.get ~inj r Stat).mode.roth
     let set_roth roth r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with roth }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with roth }} r
 
-    let suid r = (Field.get ~ty r Stat).mode.suid
+    let suid r = (Field.get ~inj r Stat).mode.suid
     let set_suid suid r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with suid }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with suid }} r
 
-    let sgid r = (Field.get ~ty r Stat).mode.sgid
+    let sgid r = (Field.get ~inj r Stat).mode.sgid
     let set_sgid sgid r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with sgid }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with sgid }} r
 
-    let sticky r = (Field.get ~ty r Stat).mode.sticky
+    let sticky r = (Field.get ~inj r Stat).mode.sticky
     let set_sticky sticky r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with sticky }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with sticky }} r
 
-    let bits r = (Field.get ~ty r Stat).mode.bits
+    let bits r = (Field.get ~inj r Stat).mode.bits
     let set_bits bits r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat { t with mode = { t.mode with bits }} r
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat { t with mode = { t.mode with bits }} r
 
     let empty = {
       xusr = false;
@@ -432,8 +437,8 @@ module Stat = struct
         ~xoth ~woth ~roth
         ~suid ~sgid ~sticky
         ~bits r =
-      let t = Field.get ~ty r Stat in
-      Field.set ~ty Stat
+      let t = Field.get ~inj r Stat in
+      Field.set ~inj Stat
         { t with mode = {
             xusr; wusr; rusr;
             xgrp; wgrp; rgrp;
@@ -442,70 +447,70 @@ module Stat = struct
             bits }} r
   end
 
-  let dev r = (Field.get ~ty r Stat).dev
+  let dev r = (Field.get ~inj r Stat).dev
   let set_dev dev r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with dev } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with dev } r
 
-  let inode r = (Field.get ~ty r Stat).inode
+  let inode r = (Field.get ~inj r Stat).inode
   let set_inode inode r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with inode } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with inode } r
 
-  let kind r = (Field.get ~ty r Stat).kind
+  let kind r = (Field.get ~inj r Stat).kind
   let set_kind kind r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with kind } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with kind } r
 
-  let nlink r = (Field.get ~ty r Stat).nlink
+  let nlink r = (Field.get ~inj r Stat).nlink
   let set_nlink nlink r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with nlink } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with nlink } r
 
-  let uid r = (Field.get ~ty r Stat).uid
+  let uid r = (Field.get ~inj r Stat).uid
   let set_uid uid r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with uid } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with uid } r
 
-  let gid r = (Field.get ~ty r Stat).gid
+  let gid r = (Field.get ~inj r Stat).gid
   let set_gid gid r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with gid } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with gid } r
   
-  let rdev r = (Field.get ~ty r Stat).rdev
+  let rdev r = (Field.get ~inj r Stat).rdev
   let set_rdev rdev r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with rdev } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with rdev } r
 
-  let size r = (Field.get ~ty r Stat).size
+  let size r = (Field.get ~inj r Stat).size
   let set_size size r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with size } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with size } r
 
-  let blksize r = (Field.get ~ty r Stat).blksize
+  let blksize r = (Field.get ~inj r Stat).blksize
   let set_blksize blksize r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with blksize } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with blksize } r
 
-  let blocks r = (Field.get ~ty r Stat).blocks
+  let blocks r = (Field.get ~inj r Stat).blocks
   let set_blocks blocks r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with blocks } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with blocks } r
 
-  let atime r = (Field.get ~ty r Stat).atime
+  let atime r = (Field.get ~inj r Stat).atime
   let set_atime atime r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with atime } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with atime } r
 
-  let mtime r = (Field.get ~ty r Stat).mtime
+  let mtime r = (Field.get ~inj r Stat).mtime
   let set_mtime mtime r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with mtime } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with mtime } r
 
-  let ctime r = (Field.get ~ty r Stat).ctime
+  let ctime r = (Field.get ~inj r Stat).ctime
   let set_ctime ctime r =
-    let t = Field.get ~ty r Stat in
-    Field.set ~ty Stat { t with ctime } r
+    let t = Field.get ~inj r Stat in
+    Field.set ~inj Stat { t with ctime } r
 
   let empty = {
     dev = 0; inode = 0;
@@ -521,7 +526,7 @@ module Stat = struct
   let create
       ~dev ~inode ~kind ~nlink ~uid ~gid
       ~rdev ~size ~atime ~mtime ~ctime r =
-    Field.set ~ty Stat
+    Field.set ~inj Stat
       { dev; inode; kind; mode = Mode.empty;
         nlink; uid; gid; rdev; size;
         blksize = 0; blocks = 0;
@@ -546,62 +551,62 @@ module Ps = struct
   type label += Ps
   let _ = add_label_string Ps "Ps"
 
-  let ty = Field.create_ty ()
+  let inj = Mixmap.create_inj ()
 
-  let user r = (Field.get ~ty r Ps).user
+  let user r = (Field.get ~inj r Ps).user
   let set_user user r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with user } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with user } r
 
-  let pid r = (Field.get ~ty r Ps).pid
+  let pid r = (Field.get ~inj r Ps).pid
   let set_pid pid r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with pid } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with pid } r
 
-  let pcpu r = (Field.get ~ty r Ps).pcpu
+  let pcpu r = (Field.get ~inj r Ps).pcpu
   let set_pcpu pcpu r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with pcpu } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with pcpu } r
 
-  let pmem r = (Field.get ~ty r Ps).pmem
+  let pmem r = (Field.get ~inj r Ps).pmem
   let set_pmem pmem r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with pmem } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with pmem } r
 
-  let vsz r = (Field.get ~ty r Ps).vsz
+  let vsz r = (Field.get ~inj r Ps).vsz
   let set_vsz vsz r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with vsz } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with vsz } r
 
-  let rss r = (Field.get ~ty r Ps).rss
+  let rss r = (Field.get ~inj r Ps).rss
   let set_rss rss r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with rss } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with rss } r
 
-  let tt r = (Field.get ~ty r Ps).tt
+  let tt r = (Field.get ~inj r Ps).tt
   let set_tt tt r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with tt } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with tt } r
 
-  let stat r = (Field.get ~ty r Ps).stat
+  let stat r = (Field.get ~inj r Ps).stat
   let set_stat stat r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with stat } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with stat } r
 
-  let started r = (Field.get ~ty r Ps).started
+  let started r = (Field.get ~inj r Ps).started
   let set_started started r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with started } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with started } r
 
-  let time r = (Field.get ~ty r Ps).time
+  let time r = (Field.get ~inj r Ps).time
   let set_time time r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with time } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with time } r
 
-  let command r = (Field.get ~ty r Ps).command
+  let command r = (Field.get ~inj r Ps).command
   let set_command command r =
-    let t = Field.get ~ty r Ps in
-    Field.set ~ty Ps { t with command } r
+    let t = Field.get ~inj r Ps in
+    Field.set ~inj Ps { t with command } r
 
   let empty = {
     user = "";
@@ -617,7 +622,7 @@ module Ps = struct
   let create
       ~user ~pid ~pcpu ~pmem ~vsz ~rss
       ~tt ~stat ~started ~time ~command r =
-    Field.set ~ty Ps
+    Field.set ~inj Ps
       { user; pid; pcpu; pmem; vsz; rss;
         tt; stat; started; time; command } r
 end
@@ -635,37 +640,37 @@ module Fstab = struct
   type label += Fstab
   let _ = add_label_string Fstab "Fstab"
   
-  let ty = Field.create_ty ()
+  let inj = Mixmap.create_inj ()
   
-  let file_system r = (Field.get ~ty r Fstab).file_system
+  let file_system r = (Field.get ~inj r Fstab).file_system
   let set_file_system file_system r =
-    let t = Field.get ~ty r Fstab in
-    Field.set ~ty Fstab { t with file_system } r
+    let t = Field.get ~inj r Fstab in
+    Field.set ~inj Fstab { t with file_system } r
   
-  let mount_point r = (Field.get ~ty r Fstab).mount_point
+  let mount_point r = (Field.get ~inj r Fstab).mount_point
   let set_mount_point mount_point r =
-    let t = Field.get ~ty r Fstab in
-    Field.set ~ty Fstab { t with mount_point } r
+    let t = Field.get ~inj r Fstab in
+    Field.set ~inj Fstab { t with mount_point } r
 
-  let fstype r = (Field.get ~ty r Fstab).fstype
+  let fstype r = (Field.get ~inj r Fstab).fstype
   let set_fstype fstype r =
-    let t = Field.get ~ty r Fstab in
-    Field.set ~ty Fstab { t with fstype } r
+    let t = Field.get ~inj r Fstab in
+    Field.set ~inj Fstab { t with fstype } r
 
-  let options r = (Field.get ~ty r Fstab).options
+  let options r = (Field.get ~inj r Fstab).options
   let set_options options r =
-    let t = Field.get ~ty r Fstab in
-    Field.set ~ty Fstab { t with options } r
+    let t = Field.get ~inj r Fstab in
+    Field.set ~inj Fstab { t with options } r
 
-  let dump r = (Field.get ~ty r Fstab).dump
+  let dump r = (Field.get ~inj r Fstab).dump
   let set_dump dump r =
-    let t = Field.get ~ty r Fstab in
-    Field.set ~ty Fstab { t with dump } r
+    let t = Field.get ~inj r Fstab in
+    Field.set ~inj Fstab { t with dump } r
 
-  let pass r = (Field.get ~ty r Fstab).pass
+  let pass r = (Field.get ~inj r Fstab).pass
   let set_pass pass r =
-    let t = Field.get ~ty r Fstab in
-    Field.set ~ty Fstab { t with pass } r
+    let t = Field.get ~inj r Fstab in
+    Field.set ~inj Fstab { t with pass } r
 
   let empty = {
     file_system = "";
@@ -679,7 +684,7 @@ module Fstab = struct
   let create
       ~file_system ~mount_point ~fstype
       ~options ~dump ~pass r =
-    Field.set ~ty Fstab
+    Field.set ~inj Fstab
       { file_system; mount_point; fstype;
         options; dump; pass } r
 end
@@ -695,27 +700,27 @@ module Mailcap = struct
   type label += Mailcap
   let _ = add_label_string Mailcap "Mailcap"
 
-  let ty = Field.create_ty ()
+  let inj = Mixmap.create_inj ()
 
-  let content_type r = (Field.get ~ty r Mailcap).content_type
+  let content_type r = (Field.get ~inj r Mailcap).content_type
   let set_content_type content_type r =
-    let t = Field.get ~ty r Mailcap in
-    Field.set ~ty Mailcap { t with content_type } r
+    let t = Field.get ~inj r Mailcap in
+    Field.set ~inj Mailcap { t with content_type } r
 
-  let command r = (Field.get ~ty r Mailcap).command
+  let command r = (Field.get ~inj r Mailcap).command
   let set_command command r =
-    let t = Field.get ~ty r Mailcap in
-    Field.set ~ty Mailcap { t with command } r
+    let t = Field.get ~inj r Mailcap in
+    Field.set ~inj Mailcap { t with command } r
 
-  let flags r = (Field.get ~ty r Mailcap).flags
+  let flags r = (Field.get ~inj r Mailcap).flags
   let set_flags flags r =
-    let t = Field.get ~ty r Mailcap in
-    Field.set ~ty Mailcap { t with flags } r
+    let t = Field.get ~inj r Mailcap in
+    Field.set ~inj Mailcap { t with flags } r
 
-  let fields r = (Field.get ~ty r Mailcap).fields
+  let fields r = (Field.get ~inj r Mailcap).fields
   let set_fields fields r =
-    let t = Field.get ~ty r Mailcap in
-    Field.set ~ty Mailcap { t with fields } r
+    let t = Field.get ~inj r Mailcap in
+    Field.set ~inj Mailcap { t with fields } r
 
   let empty = {
     content_type = "";
@@ -725,35 +730,24 @@ module Mailcap = struct
   }
 
   let create ~content_type ~command ~flags ~fields r =
-    Field.set ~ty Mailcap
+    Field.set ~inj Mailcap
       { content_type; command; flags; fields } r
 end
 
-type label += After | Before
-let _ =
-  add_label_string After "After";
-  add_label_string Before "Before"
-
-let after r = Field.get ~ty:Field.string r After
-let set_after = Field.set ~ty:Field.string After
-
-let before r = Field.get ~ty:Field.string r Before
-let set_before = Field.set ~ty:Field.string Before
-
 let line ?(after = "\n") ?(before = "") raw =
-  M.empty
-  |> Field.set ~ty:Field.string Raw raw
-  |> Field.set ~ty:field_string_thunk Show (fun _ -> raw)
-  |> Field.set ~ty:Field.source Source `None
-  |> Field.set ~ty:Field.int Seq 0
-  |> Field.set ~ty:Key_value.ty Key_value.Key_value Key_value.empty
-  |> Field.set ~ty:Delim.ty Delim.Delim Delim.empty
-  |> Field.set ~ty:Passwd.ty Passwd.Passwd Passwd.empty
-  |> Field.set ~ty:Group.ty Group.Group Group.empty
-  |> Field.set ~ty:Stat.ty Stat.Stat Stat.empty
-  |> Field.set ~ty:Ps.ty Ps.Ps Ps.empty
-  |> Field.set ~ty:Fstab.ty Fstab.Fstab Fstab.empty
-  |> Field.set ~ty:Mailcap.ty Mailcap.Mailcap Mailcap.empty
-  |> Field.set ~ty:Field.string After after
-  |> Field.set ~ty:Field.string Before before
+  Map.empty
+  |> Field.set ~inj:Field.string Raw raw
+  |> Field.set ~inj:field_string_thunk Show (fun _ -> raw)
+  |> Field.set ~inj:Field.source Source `None
+  |> Field.set ~inj:Field.int Seq 0
+  |> Field.set ~inj:Key_value.inj Key_value.Key_value Key_value.empty
+  |> Field.set ~inj:Delim.inj Delim.Delim Delim.empty
+  |> Field.set ~inj:Passwd.inj Passwd.Passwd Passwd.empty
+  |> Field.set ~inj:Group.inj Group.Group Group.empty
+  |> Field.set ~inj:Stat.inj Stat.Stat Stat.empty
+  |> Field.set ~inj:Ps.inj Ps.Ps Ps.empty
+  |> Field.set ~inj:Fstab.inj Fstab.Fstab Fstab.empty
+  |> Field.set ~inj:Mailcap.inj Mailcap.Mailcap Mailcap.empty
+  |> Field.set ~inj:Field.string After after
+  |> Field.set ~inj:Field.string Before before
 

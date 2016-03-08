@@ -1,42 +1,56 @@
-(** Structured records for line-oriented data *)
+(** Structured records for line-oriented data.
 
-(** The type of a structured line. *)
-type t
+    This module defines a {!Line.t} type, useful to represent line-oriented data
+    with structured content. A {!Line.t} can be thought as a (extensible)
+    record, its multiple fields storing the structured data, alongside the raw
+    content of the line, from which they are extracted.
 
-(** Extensible type for field labels.
-    A line (of type [t]) maps labels to values. *)
+    Additionnaly, a line must contain at least the following fields (see
+    {!section:mandatory_fields} for more details): [Raw], [Show], [Source],
+    [Seq], [After] and [Before].
+*)
+
+(** Extensible type for field labels. 
+
+    Field identifiers, or labels, are constructors of the {!label} type, usually
+    of arity zero. Several labels are predefined in this module, and more can be
+    created by extending the {!label} variant type.
+
+    For example, one can define labels [Foo] and [Bar] using [type label += Foo
+    | Bar]. *)
 type label = ..
 
-val string_of_label : label -> string
+(** When defining a new label, it is expected that a conversion to string is
+    registered for it. It will be used by printers, and can be queried using
+    {!string_of_label}. *)
 val add_label_string : label -> string -> unit
 
-(** Type for the source of a line. See {!val: source}. *)
-type source = [
-  | `File of string
-  | `Command of string
-  | `Process of Proc.execspec
-  | `Directory of string
-  | `Other of string
-  | `None
-]
+(** Query the string associated with a label. Raises [Failure "string_of_label"]
+    if such string has not been registered. *)
+val string_of_label : label -> string
 
-module Field : sig
-  type 'a ty
 
-  exception Not_found of label
+(** A mixmap, with {!label}s as keys. We use it to define the type of a
+    structured line. *)
+module Map : Mixmap.S with type key = label
 
-  val create_ty : unit -> 'a ty
+(** The type of a structured line. 
 
-  val get : ty:'a ty -> t -> label -> 'a
-  val get_opt : ty:'a ty -> t -> label -> 'a option
-  val set : ty:'a ty -> label -> 'a -> t -> t
+    A line is a mixmap, with {!label}s as keys, which must contain the fields
+    described in section {!section:mandatory_fields}. *)
+type t = Map.t
 
-  val string : string ty
-  val int : int ty
-  val string_array : string array ty
-  val string_list : string list ty
-  val source : source ty
-end
+(** Construct a line from a string. 
+
+    [after] is the trailing delimiter data associated with the line (default =
+    ["\n"]); [before] is the leading delimiter data associated with the line
+    (default = [""]).
+*)
+val line : ?after: string -> ?before: string -> string -> t
+
+(** {1:mandatory_fields Mandatory fields} *)
+
+type label += Raw | Show | Source | Seq | After | Before
 
 (** The raw string data from which a line was constructed.
 
@@ -63,6 +77,16 @@ val set_show : string -> t -> t
     [Line.select sel ln] is equivalent to [Line.set_show (sel ln) ln]. *)
 val select : (t -> string) -> t -> t
 
+(** Type for the source of a line. *)
+type source = [
+  | `File of string
+  | `Command of string
+  | `Process of Proc.execspec
+  | `Directory of string
+  | `Other of string
+  | `None
+]
+
 (** The source of a line. (accessor, nullable) *)
 val source : t -> source
 
@@ -74,6 +98,50 @@ val seq : t -> int
 
 (** Updater for {!seq} *)
 val set_seq : int -> t -> t
+
+
+(** Trailing delimiter data associated with a line (accessor, required, default = ["\n"]) *)
+val after : t -> string
+
+(** Updater for {!after} *)
+val set_after : string -> t -> t
+
+
+(** Leading delimiter data associated with a line (accessor, required, default = [""]) *)
+val before : t -> string
+
+(** Updater for {!before} *)
+val set_before : string -> t -> t
+
+(** {1 Utility definitions over [Mixmap] } *)
+
+module Field : sig
+  exception Not_found of label
+
+  val get : inj:'a Mixmap.injection -> t -> label -> 'a
+  (** Similar to {!Mixmap.find}, but [get ~inj line lbl] raises [Not_found lbl]
+      if the key [lbl] is not found, or if its value doesn't belong to the right
+      type. *)
+
+  val get_opt : inj:'a Mixmap.injection -> t -> label -> 'a option
+  (** Similar to {!Mixmap.get}. *)
+
+  val set : inj:'a Mixmap.injection -> label -> 'a -> t -> t
+  (** Similar to {!Mixmap.add}. *)
+  
+  (** {2 Injections for base types} *)
+  val string : string Mixmap.injection
+  val int : int Mixmap.injection
+  val string_array : string array Mixmap.injection
+  val string_list : string list Mixmap.injection
+  val source : source Mixmap.injection
+end
+
+(** {1 Line structures}
+
+    Several structures that may be read from a line. If the raw contents of a
+    line matches a structure corresponding to module [Foo], [Foo.create] will
+    parse it and add the corresponding fields to the line. *)
 
 (** Line structure to represent associations of keys with values. *)
 module Key_value : sig
@@ -676,21 +744,3 @@ module Mailcap : sig
     flags: string list ->
     fields: ((string * string) list) -> t -> t
 end
-
-
-(** Trailing delimiter data associated with a line (accessor, required, default = ["\n"]) *)
-val after : t -> string
-
-(** Updater for {!after} *)
-val set_after : string -> t -> t
-
-
-(** Leading delimiter data associated with a line (accessor, required, default = [""]) *)
-val before : t -> string
-
-(** Updater for {!before} *)
-val set_before : string -> t -> t
-
-(** Construct a line from a string. *)
-val line : ?after: string -> ?before: string -> string -> t
-
