@@ -1,4 +1,5 @@
 B _build
+B _build/lib
 PKG pcre
 PKG unix
 PKG lwt.unix
