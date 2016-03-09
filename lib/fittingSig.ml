@@ -5,6 +5,8 @@ open Channel.Dup
 
 module type S = sig
 
+  (** {1 Types} *)
+  
   (** A fitting that consumes values of type ['a] and produces
    * values of type ['b].
   *)
@@ -30,7 +32,7 @@ module type S = sig
   (** Alias for {!initial} {!elem} *)
   type text = initial elem
 
-  (** {3 Values} *)
+  (** {1 Values} *)
 
   (** Connect the output of one fitting to the input of another.
    * This is the most basic fitting combinator, and bears introduction
@@ -40,9 +42,9 @@ module type S = sig
   val pipe       : ('i -> 'm) t -> ('m -> 'o) t -> ('i -> 'o) t
   (** Alias for {!(-|)} *)
 
-  (** {4 Basic Fitting Constructors} *)
-
-  (** {5 Producers}
+  (** {2 Basic Fitting Constructors}
+   *
+   *  {3 Producers}
    *
    * Producers are useful for starting off pipelines.
   *)
@@ -58,7 +60,7 @@ module type S = sig
   val from_shtream: 'o shtream -> ('i -> 'o) t
   (** Produce the contents of a shtream. *)
 
-  (** {5 Consumers}
+  (** {3 Consumers}
    *
    * Consumers are useful for ending pipelines.
    * *)
@@ -80,7 +82,7 @@ module type S = sig
   (** Redirect output to a coshtream.  (A coshtream is a consumer
    * in another process.) *)
 
-  (** {5 Transformers} *)
+  (** {3 Transformers} *)
 
   (** Run an external command as a fitting.  The fitting's input is
    * connected to the command's standard input and the fitting's output
@@ -116,7 +118,7 @@ module type S = sig
   (** Filter the input according to a string predicate. *)
   val grep_string : (string -> bool) -> ('i elem -> 'i elem) t
 
-  (** {4 Fitting Combinators} *)
+  (** {2 Fitting Combinators} *)
 
   val ( /</ )     : (text -> 'o) t -> dup_spec -> (text -> 'o) t
   (** Redirect some inputs to a fitting.  [fitting /</ dups]
@@ -216,7 +218,7 @@ module type S = sig
    * backgrounds its first argument and then continues with its second
    * argument in the foreground. *)
 
-  (** {4 Fitting Runners} *)
+  (** {2 Fitting Runners} *)
 
 
   val run_source : (text -> 'o) t      -> 'o shtream
@@ -259,7 +261,7 @@ module type S = sig
    * The fitting will take its input from the standard input and send
    * its output to the standard output. *)
 
-  (** {4 Convenient Conversions} *)
+  (** {2 Convenient Conversions} *)
 
   (** These conversions use the {!elem} conversions provided to the
    * {!Fitting.Make} functor by {!AnyShtreamSig.ELEM}.  The conversion

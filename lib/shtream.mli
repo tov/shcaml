@@ -42,7 +42,7 @@ include ShtreamSig.S
   with type 'a t := 'a t
    and type 'a co_t := 'a co_t
 
-(** {2 Reading and Writing Shtreams} *)
+(** {1 Reading and Writing Shtreams} *)
 
 (** Make an [in_channel] from a {!Shtream.t}.
  * [Shtream.channel_of writer s] returns an [in_channel] whose contents

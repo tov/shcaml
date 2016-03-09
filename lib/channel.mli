@@ -3,9 +3,9 @@
  *)
 
 (**
- * {2 Types}
+ * {1 Types}
  *
- * {3 Channel Types}
+ * {2 Channel Types}
  *)
 
 (** The abstract type for UNIX file descriptors. *)
@@ -34,7 +34,7 @@ type gen_channel      = [ gen_in_channel
                         | gen_out_channel ]
 
 (**
- * {3 Dup Source Types}
+ * {2 Dup Source Types}
  *)
 
 (** Sources for input dup operations.
@@ -76,7 +76,7 @@ and clobber_spec      = [ `Clobber | `NoClobber | `Append | `AppendOnly ]
 type dup_source       = [ dup_in_source   | dup_out_source ]
 
 (**
- * {3 Common Argument Types}
+ * {2 Common Argument Types}
  *)
 
 type dup_spec         = (dup_source * gen_channel) list
@@ -89,12 +89,10 @@ type procref          = Proc.t option ref
 (** A cell in which to stash a {!Proc.t}. Used as an out-parameter
  *  by functions that fork. *)
 
-(*
- * {2 Values}
- *)
-
 (**
- * {3 Opening and Closing}
+ * {1 Values}
+ *
+ * {2 Opening and Closing}
  *)
 
 (**
@@ -140,7 +138,7 @@ val close_out        : out_channel -> unit
 val close_gen        : gen_channel -> unit
 
 (**
- * Dup and Friends
+ * {2 Dup and Friends}
  *)
 
 (** Copy an underlying file descriptor.  [Channel.dup2 (src, dest)]
@@ -173,150 +171,6 @@ val dup_in           : dup_in_source -> in_channel
  * Duplicate an [out_channel] from an input dup source.
  *)
 val dup_out          : dup_out_source -> out_channel
-
-(**
- * {3 Connecting to Other Processes}
- *)
-
-(**
- * Spawn a thunk, opening pipes.  [Channel.open_thunk ~pipes ~dups
- * thunk] forks and calls [thunk] in the child process.  Any given
- * dups are performed in the child before calling the thunk.  Channels
- * specified in [pipes] are connected to pipes, and the other ends are
- * returned in a list, along with the {!Proc.t} of the child process.
- *
- * The functions {!open_thunk_in}, {!open_thunk_out}, {!open_thunk2},
- * and {!open_thunk3} are special cases.  Rather than return the
- * {!Proc.t}, they stash it in the optional argument [?procref].
- *)
-val open_thunk  : ?pipes:pipe_spec ->
-                  ?dups:dup_spec ->
-                  (unit -> unit) -> Proc.t * any_channel list
-
-val open_thunk_in  : ?procref:procref ->
-                     ?dups:dup_spec ->
-                     (unit -> unit) -> in_channel
-(** Spawn a thunk and pipe from its [stdout]. *) 
-val open_thunk_out : ?procref:procref ->
-                     ?dups:dup_spec ->
-                     (unit -> unit) -> out_channel
-(** Spawn a thunk and pipe to its [stdin]. *) 
-val open_thunk2    : ?procref:procref ->
-                     ?dups:dup_spec ->
-                     (unit -> unit) -> in_channel * in_channel
-(** Spawn a thunk and pipe from its [stdout] and [stderr]. *) 
-val open_thunk3    : ?procref:procref ->
-                     ?dups:dup_spec ->
-                     (unit -> unit) -> out_channel * in_channel * in_channel
-(** Spawn a thunk and pipe its [stdin], [stdout], and [stderr]. *) 
-
-(**
- * Spawn a command, opening pipes.  Like {!open_thunk}, but takes a
- * command to run in the shell.
- *)
-val open_command : ?pipes:pipe_spec ->
-                   ?dups:dup_spec ->
-                   string -> Proc.t * any_channel list
-
-val open_command_in  : ?procref:procref ->
-                       ?dups:dup_spec ->
-                       string -> in_channel
-(** Spawn a command and pipe from its [stdout]. *) 
-val open_command_out : ?procref:procref ->
-                       ?dups:dup_spec ->
-                       string -> out_channel
-(** Spawn a command and pipe to its [stdin]. *) 
-val open_command2    : ?procref:procref ->
-                       ?dups:dup_spec ->
-                       string -> in_channel * in_channel
-(** Spawn a command and pipe from its [stdout] and [stderr]. *) 
-val open_command3    : ?procref:procref ->
-                       ?dups:dup_spec ->
-                       string -> out_channel * in_channel * in_channel
-(** Spawn a command and pipe its [stdin], [stdout], and [stderr]. *) 
-
-(**
- * Spawn a program with arguments, opening pipes.
- * Like {!open_thunk}, but takes a program and arguments.
- *)
-val open_program : ?pipes:pipe_spec ->
-                   ?dups:dup_spec ->
-                   ?path:bool -> string -> ?argv0:string -> string list ->
-                   Proc.t * any_channel list
-
-val open_program_in  : ?procref:procref ->
-                       ?dups:dup_spec ->
-                       ?path:bool -> string -> ?argv0:string -> string list ->
-                       in_channel
-(** Spawn a program and pipe from its [stdout]. *) 
-val open_program_out : ?procref:procref ->
-                       ?dups:dup_spec ->
-                       ?path:bool -> string -> ?argv0:string -> string list ->
-                       out_channel
-(** Spawn a program and pipe to its [stdin]. *) 
-val open_program2    : ?procref:procref ->
-                       ?dups:dup_spec ->
-                       ?path:bool -> string -> ?argv0:string -> string list ->
-                       in_channel * in_channel
-(** Spawn a program and pipe from its [stdout] and [stderr]. *) 
-val open_program3    : ?procref:procref ->
-                       ?dups:dup_spec ->
-                       ?path:bool -> string -> ?argv0:string -> string list ->
-                       out_channel * in_channel * in_channel
-(** Spawn a program and pipe its [stdin], [stdout], and [stderr]. *) 
-
-(**
- * {3 Doing Things with Strings}
- *)
-
-val string_of_channel : in_channel -> string
-(** Read the entire contents a channel into a string. *)
-val string_of_command : ?procref:procref -> string -> string
-(** Collect the output of a command as a string. *)
-val string_of_program : ?procref:procref -> ?path:bool -> string ->
-                        ?argv0:string -> string list -> string
-(** Collect the output of a program as a string. *)
-
-val open_string_in    : string -> in_channel
-(** Open an [in_channel] whose contents is a given string. *)
-val with_out_string   : (out_channel -> 'a) -> 'a * string
-(** Collect the output of a thunk in a string.  Given a thunk, collects
- * everything it prints to [stdout] and returns the return value of the
- * thunk and the collected output. *)
-
-(**
- * {3 Directories}
- *
- * These functions correspond directly to those of the same name in the
- * [Unix] structure.  However, these directory handles are managed by
- * the garbage collected and thus closed if they become unreachable.
- *)
-
-type directory
-(** A managed dir handle. *)
-
-val opendir   : string -> directory
-(** Open a managed dir handle.  See [Unix.opendir]. *)
-val closedir  : directory -> unit
-(** Manually close a managed dir handle.  See [Unix.closedir]. *)
-val readdir   : directory -> string
-(** Read an entry from a managed dir handle.  See [Unix.readdir]. *)
-val rewinddir : directory -> unit
-(** Rewind a managed dir handle. See [Unix.rewinddir]. *)
-
-
-(**
-  * {3 Pretty-printing}
-  *)
-
-val pp_descr : Format.formatter -> descr -> unit
-(** Pretty-printer for {!descr}. *)
-
-val pp_in_channel : Format.formatter -> in_channel -> unit
-(** Pretty-printer for {!in_channel}. *)
-
-val pp_out_channel : Format.formatter -> out_channel -> unit
-(** Pretty-printer for {!out_channel}. *)
 
 (** Convenience operators for specifying shell-style dups.
  *
@@ -446,3 +300,148 @@ module Dup : sig
   val ( /<% )   : in_channel       -> int              -> dup_arg
   (** Dup an [in_channel] from a file descriptor. *)
 end
+
+(**
+ * {2 Connecting to Other Processes}
+ *)
+
+(**
+ * Spawn a thunk, opening pipes.  [Channel.open_thunk ~pipes ~dups
+ * thunk] forks and calls [thunk] in the child process.  Any given
+ * dups are performed in the child before calling the thunk.  Channels
+ * specified in [pipes] are connected to pipes, and the other ends are
+ * returned in a list, along with the {!Proc.t} of the child process.
+ *
+ * The functions {!open_thunk_in}, {!open_thunk_out}, {!open_thunk2},
+ * and {!open_thunk3} are special cases.  Rather than return the
+ * {!Proc.t}, they stash it in the optional argument [?procref].
+ *)
+val open_thunk  : ?pipes:pipe_spec ->
+                  ?dups:dup_spec ->
+                  (unit -> unit) -> Proc.t * any_channel list
+
+val open_thunk_in  : ?procref:procref ->
+                     ?dups:dup_spec ->
+                     (unit -> unit) -> in_channel
+(** Spawn a thunk and pipe from its [stdout]. *) 
+val open_thunk_out : ?procref:procref ->
+                     ?dups:dup_spec ->
+                     (unit -> unit) -> out_channel
+(** Spawn a thunk and pipe to its [stdin]. *) 
+val open_thunk2    : ?procref:procref ->
+                     ?dups:dup_spec ->
+                     (unit -> unit) -> in_channel * in_channel
+(** Spawn a thunk and pipe from its [stdout] and [stderr]. *) 
+val open_thunk3    : ?procref:procref ->
+                     ?dups:dup_spec ->
+                     (unit -> unit) -> out_channel * in_channel * in_channel
+(** Spawn a thunk and pipe its [stdin], [stdout], and [stderr]. *) 
+
+(**
+ * Spawn a command, opening pipes.  Like {!open_thunk}, but takes a
+ * command to run in the shell.
+ *)
+val open_command : ?pipes:pipe_spec ->
+                   ?dups:dup_spec ->
+                   string -> Proc.t * any_channel list
+
+val open_command_in  : ?procref:procref ->
+                       ?dups:dup_spec ->
+                       string -> in_channel
+(** Spawn a command and pipe from its [stdout]. *) 
+val open_command_out : ?procref:procref ->
+                       ?dups:dup_spec ->
+                       string -> out_channel
+(** Spawn a command and pipe to its [stdin]. *) 
+val open_command2    : ?procref:procref ->
+                       ?dups:dup_spec ->
+                       string -> in_channel * in_channel
+(** Spawn a command and pipe from its [stdout] and [stderr]. *) 
+val open_command3    : ?procref:procref ->
+                       ?dups:dup_spec ->
+                       string -> out_channel * in_channel * in_channel
+(** Spawn a command and pipe its [stdin], [stdout], and [stderr]. *) 
+
+(**
+ * Spawn a program with arguments, opening pipes.
+ * Like {!open_thunk}, but takes a program and arguments.
+ *)
+val open_program : ?pipes:pipe_spec ->
+                   ?dups:dup_spec ->
+                   ?path:bool -> string -> ?argv0:string -> string list ->
+                   Proc.t * any_channel list
+
+val open_program_in  : ?procref:procref ->
+                       ?dups:dup_spec ->
+                       ?path:bool -> string -> ?argv0:string -> string list ->
+                       in_channel
+(** Spawn a program and pipe from its [stdout]. *) 
+val open_program_out : ?procref:procref ->
+                       ?dups:dup_spec ->
+                       ?path:bool -> string -> ?argv0:string -> string list ->
+                       out_channel
+(** Spawn a program and pipe to its [stdin]. *) 
+val open_program2    : ?procref:procref ->
+                       ?dups:dup_spec ->
+                       ?path:bool -> string -> ?argv0:string -> string list ->
+                       in_channel * in_channel
+(** Spawn a program and pipe from its [stdout] and [stderr]. *) 
+val open_program3    : ?procref:procref ->
+                       ?dups:dup_spec ->
+                       ?path:bool -> string -> ?argv0:string -> string list ->
+                       out_channel * in_channel * in_channel
+(** Spawn a program and pipe its [stdin], [stdout], and [stderr]. *) 
+
+(**
+ * {2 Doing Things with Strings}
+ *)
+
+val string_of_channel : in_channel -> string
+(** Read the entire contents a channel into a string. *)
+val string_of_command : ?procref:procref -> string -> string
+(** Collect the output of a command as a string. *)
+val string_of_program : ?procref:procref -> ?path:bool -> string ->
+                        ?argv0:string -> string list -> string
+(** Collect the output of a program as a string. *)
+
+val open_string_in    : string -> in_channel
+(** Open an [in_channel] whose contents is a given string. *)
+val with_out_string   : (out_channel -> 'a) -> 'a * string
+(** Collect the output of a thunk in a string.  Given a thunk, collects
+ * everything it prints to [stdout] and returns the return value of the
+ * thunk and the collected output. *)
+
+(**
+ * {2 Directories}
+ *
+ * These functions correspond directly to those of the same name in the
+ * [Unix] structure.  However, these directory handles are managed by
+ * the garbage collected and thus closed if they become unreachable.
+ *)
+
+type directory
+(** A managed dir handle. *)
+
+val opendir   : string -> directory
+(** Open a managed dir handle.  See [Unix.opendir]. *)
+val closedir  : directory -> unit
+(** Manually close a managed dir handle.  See [Unix.closedir]. *)
+val readdir   : directory -> string
+(** Read an entry from a managed dir handle.  See [Unix.readdir]. *)
+val rewinddir : directory -> unit
+(** Rewind a managed dir handle. See [Unix.rewinddir]. *)
+
+
+(**
+  * {2 Pretty-printing}
+  *)
+
+val pp_descr : Format.formatter -> descr -> unit
+(** Pretty-printer for {!descr}. *)
+
+val pp_in_channel : Format.formatter -> in_channel -> unit
+(** Pretty-printer for {!in_channel}. *)
+
+val pp_out_channel : Format.formatter -> out_channel -> unit
+(** Pretty-printer for {!out_channel}. *)
+

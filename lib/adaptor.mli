@@ -73,7 +73,7 @@ module Delim : sig
   (** Split one record according to the given {!Delimited} options. *)
   val splitter : ?options:Delimited.options -> splitter
 
-  (** {3 Functorial Interface} *)
+  (** {2 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized delim adaptor. *)
@@ -153,7 +153,7 @@ module SimpleFlatFile : sig
   val splitter : ?max:int -> char -> splitter
   (** Split a simple flat files record.  See {!adaptor} for options. *)
 
-  (** {3 Functorial Interface} *)
+  (** {2 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized flat file adaptor. *)
@@ -235,7 +235,7 @@ module Key_value : sig
   val splitter : ?quiet:bool -> ?delim:char -> splitter
   (** Split key-value file records and fill in {!Line.Key_value}. *)
 
-  (** {3 Functorial Interface} *)
+  (** {2 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized key-value adaptor. *)
@@ -302,7 +302,7 @@ module Key_value_section : sig
   (** Split key-value records with sections and fill in
    * {!Line.Key_value}, including {!Line.Key_value.section}. *)
 
-  (** {3 Functorial Interface} *)
+  (** {2 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized key-value-section adaptor. *)

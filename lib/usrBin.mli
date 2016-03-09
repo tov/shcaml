@@ -2,7 +2,7 @@
  * High-level user utilities.
  *)
 
-(** {2 Fitting Commands} *)
+(** {1 Fitting Commands} *)
 
 val ls       : string -> ('a -> Line.t) Fitting.t
   (** List a directory, with file metadata.  Given the name of a
@@ -58,7 +58,7 @@ val uniq : ?equal:(Line.t -> Line.t -> bool) -> unit -> (Line.t -> Line.t) Fitti
    * (default compares {!Line.show}), discards all but the first.
    *)
 
-(** {2 File Commands} *)
+(** {1 File Commands} *)
 
 val isatty   : Channel.descr -> bool
   (** Is the given file descriptor a tty? *)
@@ -152,7 +152,7 @@ module Test : sig
         [file] is both readable and non-empty. *)
 end
 
-(** {2 Other Commands} *)
+(** {1 Other Commands} *)
 
 val backquote : string -> string
   (** Run a command and return its output. *)

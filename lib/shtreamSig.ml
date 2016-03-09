@@ -1,5 +1,5 @@
 (* vim: set ft=ocaml : *)
-(** {2 Basic Shtream Operations} *)
+(** {1 Basic Shtream Operations} *)
 
 module type S = sig
   type 'a t
@@ -68,7 +68,7 @@ module type S = sig
   (** Return and discard the next element of a shtream.  If the
    * shtream is empty, returns [None]. *)
 
-  (** {2 Shtream Construction and Observation} *)
+  (** {1 Shtream Construction and Observation} *)
 
   val iter        : ('a -> unit) -> 'a t -> unit
   (** Apply a function to each element of a shtream in turn.  This
@@ -114,9 +114,9 @@ module type S = sig
    * invalidates both [s1] and [s2].
   *)
 
-  (** {3:shtream_errors Shtream Error Handling } *)
+  (** {2:shtream_errors Shtream Error Handling }
 
-  (** Because a shtream may be used far from its creation site, the
+   * Because a shtream may be used far from its creation site, the
    * client code of a shtream may be ill prepared to handle any
    * exceptions the shtream might raise.  To this end, we provide a
    * simple API for signaling and handling shtream errors.
@@ -160,7 +160,7 @@ module type S = sig
   val die_silently_on_errors : error_handler
   (** Just terminate the shtream. *)
 
-  (** {2 Coshtreams}
+  (** {1 Coshtreams}
    *
    * A shtream is a source of typed data; a coshtream, of course, is a
    * sink.  Given a function [f] that consumes a shtream, {!coshtream_of}
@@ -197,7 +197,7 @@ module type S = sig
    * before the shtream is exhausted, data {i may} remain in the shtream.
   *)
 
-  (** {2 Low level (scary stuff)} *)
+  (** {1 Low level (scary stuff)} *)
 
   (** Generate a shtream from a function, and include a close
    * operation.  This is like {!from}, except that the function

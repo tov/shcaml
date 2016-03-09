@@ -19,7 +19,10 @@ runtop: top
 runutop: utop
 	./shutop.top -I _build
 
-docs: lib doc/INDEX
+plugin:
+	$(OB) -cflags -I,+ocamldoc -package compiler-libs doc/plugin.cmxs
+
+docs: lib plugin doc/INDEX
 	$(OB) $(ODOCFLAGS) doc/api.docdir/index.html
 	cp doc/style.css _build/doc/api.docdir/style.css
 

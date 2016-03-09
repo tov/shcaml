@@ -698,7 +698,7 @@ code is much easier to understand than the prose, isn't it?
 In addition to pipes, Shcaml provides analogues to the shell's [&&],
 [||], and [;] sequencing operators.  Take a bit of structured playtime
 and poke around with them.  They're in the fine
-{{:Fitting.html#4_FittingCombinators} manual}.
+{{:FittingSig.S.html#2_FittingCombinators} manual}.
 
 {3 I/O Redirection}
 
@@ -709,8 +709,8 @@ on many different file descriptors (for instance, [stdout] and
 redirection.  Let's start by taking a look at how redirection is
 specified.  
 
-A [dup_spec] is a list of instructions for how I/O redirection should
-be done for a given fitting.  There are a great many operators
+A {!Channel.dup_spec} is a list of instructions for how I/O redirection
+should be done for a given fitting.  There are a great many operators
 provided in {!Channel.Dup} for specifying different sorts of
 interconnections.  Here's a bunch of different examples, each of which
 redirects the standard output to {i /dev/null}:

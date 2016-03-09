@@ -21,7 +21,7 @@
 
 
 (**
-{2 Types}
+{1 Types}
 *)
 
 (** Raised on attempts to get the exit status of a process that
@@ -44,7 +44,7 @@ type status = Unix.process_status =
       signal number. *)
 
 (**
-{2 Process Management}
+{1 Process Management}
 *)
 
 (** Return [Some t] in the parent and [None] in the child *)
@@ -111,7 +111,7 @@ val procs_of_pid        : int -> t list
 val exit_with_status    : status -> 'a
 
 (**
-{3 Autoreaping}
+{2 Autoreaping}
 *)
 
 (** Turn on autoreaping of processes.  When set, Shcaml will
@@ -125,7 +125,7 @@ val autoreap            : unit -> unit
 val don't_autoreap      : unit -> unit
 
 (**
-{2 Running Programs}
+{1 Running Programs}
 *)
 
 (** Run a command and wait for it to exit.
@@ -169,7 +169,7 @@ val exec_program        : ?path:bool -> string ->
                           ?argv0:string -> string list -> 'a
 
 (**
- * {3 The [execspec] Record. }
+ * {2 The [execspec] Record. }
  *)
 
 (** Several Shcaml functions (such as {!exec_program} and
@@ -203,7 +203,7 @@ val with_execspec : execspec ->
                     'a
 
 (**
-{2 Pretty-printing}
+{1 Pretty-printing}
 *)
 
 val pp : Format.formatter -> t -> unit

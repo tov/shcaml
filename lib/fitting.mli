@@ -11,9 +11,7 @@
  * sthreams of other types.
  *)
 
-(** {2 Line Fitting Interface} *)
-
-(** {3 Types} *)
+(** {1 Line Fitting Interface} *)
 
 include FittingSig.S
   with type 'a elem = 'a LineShtream.elem
@@ -21,7 +19,7 @@ include FittingSig.S
    and type 'a shtream = 'a LineShtream.t
    and type 'a coshtream = 'a LineShtream.co_t
 
-(** {2 Functorial Interface} *)
+(** {1 Functorial Interface} *)
 
 (** The input signature of the functor {!Fitting.Make}.
  *
