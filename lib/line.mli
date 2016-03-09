@@ -48,6 +48,9 @@ type t = Map.t
 *)
 val line : ?after: string -> ?before: string -> string -> t
 
+(** Pretty-printer *)
+val pp : Format.formatter -> t -> unit
+
 (** {1:mandatory_fields Mandatory fields} *)
 
 type label += Raw | Show | Source | Seq | After | Before

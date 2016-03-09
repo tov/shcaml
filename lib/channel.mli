@@ -4,9 +4,7 @@
 
 (**
  * {2 Types}
- *)
-
-(**
+ *
  * {3 Channel Types}
  *)
 
@@ -306,6 +304,19 @@ val readdir   : directory -> string
 val rewinddir : directory -> unit
 (** Rewind a managed dir handle. See [Unix.rewinddir]. *)
 
+
+(**
+  * {3 Pretty-printing}
+  *)
+
+val pp_descr : Format.formatter -> descr -> unit
+(** Pretty-printer for {!descr}. *)
+
+val pp_in_channel : Format.formatter -> in_channel -> unit
+(** Pretty-printer for {!in_channel}. *)
+
+val pp_out_channel : Format.formatter -> out_channel -> unit
+(** Pretty-printer for {!out_channel}. *)
 
 (** Convenience operators for specifying shell-style dups.
  *

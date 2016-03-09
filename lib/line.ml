@@ -751,3 +751,5 @@ let line ?(after = "\n") ?(before = "") raw =
   |> Field.set ~inj:Field.string After after
   |> Field.set ~inj:Field.string Before before
 
+let pp fmt line =
+  Format.fprintf fmt "<line:\"%s\">" (String.escaped (show line))

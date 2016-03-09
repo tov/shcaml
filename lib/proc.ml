@@ -234,5 +234,15 @@ let system_program ?path prog ?argv0 args =
 
 let system cmd = wait (vfork cmd)
 
+let pp fmt proc =
+  Format.fprintf fmt "<proc:%d %s>" (pid_of_proc proc)
+    (if is_child proc
+     then match status_of_proc proc with
+      | None                    -> "running"
+      | Some (Unix.WEXITED n)   -> Format.sprintf "exited:%d" n
+      | Some (Unix.WSIGNALED n) -> Format.sprintf "signaled:%d" n
+      | Some (Unix.WSTOPPED n)  -> Format.sprintf "stopped:%d" n
+     else "non-child")
+
 (* Autoreaping is on be default. *)
 let _ = autoreap ()

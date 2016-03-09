@@ -390,3 +390,13 @@ let closedir    = DirDisposal.dispose
 let readdir d   = Unix.readdir d.handle
 let rewinddir d = Unix.rewinddir d.handle
 
+let pp_descr fmt descr =
+  Format.fprintf fmt "<descr:%d>" (fd_of_descr descr)
+
+let pp_in_channel fmt ic =
+  Format.fprintf fmt "<in_channel:%d>"
+    (fd_of_descr (descr_of_gen (`InChannel ic)))
+
+let pp_out_channel fmt oc =
+  Format.fprintf fmt "<out_channel:%d>"
+    (fd_of_descr (descr_of_gen (`OutChannel oc)))

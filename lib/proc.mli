@@ -201,3 +201,10 @@ val with_execspec : execspec ->
                     (?path:bool -> string ->
                      ?argv0:string -> string list -> 'a) ->
                     'a
+
+(**
+{2 Pretty-printing}
+*)
+
+val pp : Format.formatter -> t -> unit
+(** Pretty-printer for {!Proc.t}. *)

@@ -10,6 +10,5 @@ let () =
   Pkg.describe "shcaml" ~builder:(`OCamlbuild []) [
     Pkg.lib "pkg/META";
     Pkg.lib ~exts "shcaml";
-    Pkg.lib ~exts:Exts.module_library "shtop";
-    Pkg.lib ~exts "shtopInit";
-    Pkg.lib "dir_shcaml.ml"; ]
+    Pkg.lib ~exts "shcaml_top";
+    Pkg.lib "shcaml_top_init.ml"; ]

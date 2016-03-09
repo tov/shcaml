@@ -1,7 +1,9 @@
 <**/*.ml{,i}>: bin_annot
 true: package(pcre), package(unix), package(lwt.unix)
+"lib": include
 
 <lib/*.{cmo,cmx}>: for-pack(Shcaml)
+<shcaml_top.*>: package(compiler-libs)
 <shtop.*>: package(compiler-libs)
 <shutop.*>: package(compiler-libs), package(utop), thread
 <myutop_main.*>: package(utop)
