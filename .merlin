@@ -4,3 +4,4 @@ PKG pcre
 PKG unix
 PKG lwt.unix
 PKG compiler-libs
+PKG lambdasoup

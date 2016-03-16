@@ -261,9 +261,9 @@ module type S = sig
    * The fitting will take its input from the standard input and send
    * its output to the standard output. *)
 
-  (** {2 Convenient Conversions} *)
+  (** {2 Convenient Conversions}
 
-  (** These conversions use the {!elem} conversions provided to the
+   * These conversions use the {!elem} conversions provided to the
    * {!Fitting.Make} functor by {!AnyShtreamSig.ELEM}.  The conversion
    * {!AnyShtreamSig.ELEM.string_of} or {!AnyShtreamSig.ELEM.of_string}
    * is completely applied for each of these conversions, so no state

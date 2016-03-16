@@ -52,13 +52,13 @@ h1 + pre { margin-bottom:1.375em} /* Toplevel module description */
 /* Sections and document divisions */
 
 /* .navbar { margin-bottom: -1.375em } */
-h1 { font-weight: bold; font-size: 1.5em; /* margin-top:1.833em; */
+h1 { font-weight: bold; font-size: 1.7em; /* margin-top:1.833em; */
      margin-top:0.917em; padding-top:0.875em;
      border-top-style:solid; border-width:1px; border-color:#AAA; }
 h2 { font-weight: bold; font-size: 1.313em; margin-top: 1.048em }
 h3 { font-weight: bold; font-size: 1.125em; margin-top: 1.222em }
-h3 { font-weight: bold; font-size: 1em; margin-top: 1.375em}
-h4 { font-style: italic;  }
+h4 { font-weight: bold; font-size: 1em; margin-top: 1.375em}
+h5 { font-style: italic;  }
 
 /* Used by OCaml's own library documentation. */
  h6 { font-weight: bold; font-size: 1.125em; margin-top: 1.222em }
@@ -71,6 +71,7 @@ pre.codepre + pre.verbatim { margin-top: 0 }
 .info, .param_info { margin: 0.1em 0em -0.458em 2em;}/* Description of types values etc. */
 .variantinfo { margin: 0.1em 4em 1em 2em;}
 td .info { margin:0; padding:0; margin-left: 2em;} /* Description in indexes */
+.info.module.top { margin-bottom: 1.375em; }
 
 ul, ol { margin-top:0.688em; padding-bottom:0.687em;
    list-style-position:outside}
@@ -89,7 +90,7 @@ a:hover { text-decoration : underline }
 
 /* Code */
 
-.keyword { font-weight: bold; }
+.keyword { font-weight: bold; color : darkred }
 .pipe { margin-right: 0.3em; }
 .comment { color : red }
 .constructor { color : green }

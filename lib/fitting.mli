@@ -31,8 +31,8 @@ module type SHTREAM = AnyShtreamSig.S
 (** The output signature of the functor {!Fitting.Make}. *)
 module type FITTING = FittingSig.S
 
-(** Build a new fittings module.  The {!SHTREAM} parameter specifies the
- * underlying shtream implementation to use. *)
+(** Build a new fittings module.  The {!SHTREAM} parameter {!Shtream} specifies
+ * the underlying shtream implementation to use. *)
 module Make(Shtream : SHTREAM) : FITTING
   with type initial      = Shtream.initial
    and type 'a elem      = 'a Shtream.elem

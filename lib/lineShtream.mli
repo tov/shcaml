@@ -14,7 +14,7 @@
  * {!AnyShtreamSig.ELEM.initial} type for {!LineShtream}. *)
 type sourced = Line.t
 
-(** The parameter given to {!AnyShtream.Make} to build this module. *)
+(** The parameter given to {!AnyShtream.Make} to build {!LineShtream}. *)
 module LineElem : AnyShtreamSig.ELEM
   with type 'a elem = Line.t
    and type initial = sourced

@@ -12,5 +12,5 @@
  *)
 
 (** Build a new shtream module.  The {!ELEM}
- * parameter specifies how to read and print shtream elements. *)
+ * parameter {!E} specifies how to read and print shtream elements. *)
 module Make(E : AnyShtreamSig.ELEM) : AnyShtreamSig.S with module Elem = E

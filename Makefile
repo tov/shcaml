@@ -22,8 +22,12 @@ runutop: utop
 plugin:
 	$(OB) -cflags -I,+ocamldoc -package compiler-libs doc/plugin.cmxs
 
-docs: lib plugin doc/INDEX
+postprocess: doc/postprocess.ml
+	$(OB) -package lambdasoup -no-links doc/postprocess.byte
+
+docs: lib plugin postprocess doc/INDEX
 	$(OB) $(ODOCFLAGS) doc/api.docdir/index.html
+	_build/doc/postprocess.byte
 	cp doc/style.css _build/doc/api.docdir/style.css
 
 doc/INDEX: doc/make-index.sed doc/tutorial.ml
