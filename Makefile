@@ -1,7 +1,7 @@
 OB=ocamlbuild -use-ocamlfind
-ODOCFLAGS=-docflags -colorize-code,-charset,utf8,-stars,-t,"Caml-Shcaml",-intro,doc/INDEX
+ODOCFLAGS=-docflags -colorize-code,-charset,utf8,-stars,-t,"Shcaml",-intro,doc/INDEX
 
-.PHONY: lib top utop docs clean
+.PHONY: lib top utop plugin postprocess docs cleandoc clean
 
 lib:
 	$(OB) shcaml.cma shcaml.cmxa

@@ -1,4 +1,4 @@
-(** Information about this version of Caml-Shcaml *)
+(** Information about this version of Shcaml *)
 
 val version             : string
 (** The current version number. *)
