@@ -20,6 +20,7 @@ lib/Shtream
 lib/ShtreamSig
 lib/Signal
 lib/StringShtream
+lib/Util
 lib/UsrBin
 lib/Version
 lib/WeakPlus
