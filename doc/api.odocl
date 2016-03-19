@@ -12,7 +12,6 @@ lib/Flags
 lib/IVar
 lib/Line
 lib/LineShtream
-lib/Mixmap
 lib/PriorityQueue
 lib/Proc
 lib/Reader

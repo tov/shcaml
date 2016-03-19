@@ -6,8 +6,8 @@
     content of the line, from which they are extracted.
 
     Additionnaly, a line must contain at least the following fields (see
-    {!section:mandatory_fields} for more details): [Raw], [Show], [Source],
-    [Seq], [After] and [Before].
+    {!section:mandatory_fields} for more details): [raw], [show], [source],
+    [seq], [after] and [before].
 *)
 
 (** Extensible type for field labels. 
@@ -30,15 +30,23 @@ val add_label_string : label -> string -> unit
 val string_of_label : label -> string
 
 
-(** A mixmap, with {!label}s as keys. We use it to define the type of a
-    structured line. *)
-module Map : Mixmap.S with type key = label
+(** A heterogeneous map, with keys indexed by {!label}. We use it to define the
+    type of a structured line. *)
+module Fields : Hmap.S with type 'a Key.info = label
+
+(** Exception returned by {!Fields.get} if the queried key is not bound in the
+    map. *)
+exception Field_not_found of label
 
 (** The type of a structured line. 
 
-    A line is a mixmap, with {!label}s as keys, which must contain the fields
-    described in section {!section:mandatory_fields}. *)
-type t = Map.t
+    A line is a heterogeneous map, with keys indexed by {!label}, which must
+    contain the fields described in section {!section:mandatory_fields}. 
+
+    To create a custom line field [foo], one must first define a new label
+    ([type label += Foo]), then create a corresponding map key ([let foo =
+    Fields.Key.create Foo]). *)
+type t = Fields.t
 
 (** Construct a line from a string. 
 
@@ -51,9 +59,15 @@ val line : ?after: string -> ?before: string -> string -> t
 (** Pretty-printer *)
 val pp : Format.formatter -> t -> unit
 
-(** {1:mandatory_fields Mandatory fields} *)
+(** {1:mandatory_fields Mandatory fields}
 
-type label += Raw | Show | Source | Seq | After | Before
+    In this section and the ones that follow, we define several line fields. We
+    do not directly expose the {!label}s and {!Fields.Key.t} created, but
+    instead wrapper functions (accessors, updaters).
+
+    Fields being mandatory means that the accessors and updaters are guaranteed
+    to never raise {!Field_not_found}.
+*)
 
 (** The raw string data from which a line was constructed.
 
@@ -116,35 +130,15 @@ val before : t -> string
 (** Updater for {!before} *)
 val set_before : string -> t -> t
 
-(** {1 Utility definitions over [Mixmap] } *)
-
-module Field : sig
-  exception Not_found of label
-
-  val get : inj:'a Mixmap.injection -> t -> label -> 'a
-  (** Similar to {!Mixmap.find}, but [get ~inj line lbl] raises [Not_found lbl]
-      if the key [lbl] is not found, or if its value doesn't belong to the right
-      type. *)
-
-  val get_opt : inj:'a Mixmap.injection -> t -> label -> 'a option
-  (** Similar to {!Mixmap.get}. *)
-
-  val set : inj:'a Mixmap.injection -> label -> 'a -> t -> t
-  (** Similar to {!Mixmap.add}. *)
-  
-  (** {2 Injections for base types} *)
-  val string : string Mixmap.injection
-  val int : int Mixmap.injection
-  val string_array : string array Mixmap.injection
-  val string_list : string list Mixmap.injection
-  val source : source Mixmap.injection
-end
-
 (** {1 Line structures}
 
     Several structures that may be read from a line. If the raw contents of a
     line matches a structure corresponding to module [Foo], [Foo.create] will
-    parse it and add the corresponding fields to the line. *)
+    parse it and add the corresponding fields to the line. 
+
+    For every module below, accessors and updaters raise exception
+    {!Field_not_found} when the corresponding field is not present in a line.
+*)
 
 (** Line structure to represent associations of keys with values. *)
 module Key_value : sig

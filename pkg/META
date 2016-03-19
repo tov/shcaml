@@ -1,7 +1,7 @@
 name 		= "shcaml"
 version 	= "%%VERSION%%"
 description 	= "Caml-Shcaml is an OCaml library for UNIX shell programming"
-requires	= "unix pcre lwt.unix"
+requires	= "unix hmap pcre lwt.unix"
 archive(byte)	= "shcaml.cma"
 archive(byte, plugin) = "shcaml.cma"
 archive(native)	= "shcaml.cmxa"

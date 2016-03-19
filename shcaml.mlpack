@@ -1,7 +1,6 @@
 lib/Flags
 lib/Util
 lib/Version
-lib/Mixmap
 lib/WeakPlus
 lib/PriorityQueue
 lib/Signal
