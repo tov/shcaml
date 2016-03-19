@@ -35,6 +35,10 @@ doc/INDEX: doc/make-index.sed doc/tutorial.ml
 	mkdir -p _build/doc/
 	cp doc/INDEX _build/doc/INDEX
 
+upload_doc: doc
+	git checkout gh-pages && rm -rf dev/* && cp api.docdir/* dev && \
+	git add --all dev
+
 cleandoc:
 	rm -rf doc/INDEX
 	rm -rf api.docdir
