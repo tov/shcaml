@@ -7,7 +7,10 @@ license: "MIT"
 available: [ ocaml-version >= "4.02.0" ]
 depends: [ "ocamlfind" {build}
            "ocamlbuild" {build}
-           "pcre" ]
+           "pcre"
+           "hmap"
+           "lwt"
+         ]
 build:
 [
   [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
