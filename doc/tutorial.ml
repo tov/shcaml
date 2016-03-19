@@ -11,14 +11,14 @@ UNIX shells provide easy access to UNIX functionality such as pipes,
 signals, file descriptor manipulation, and the file system. Shcaml
 hopes to excel at these same tasks.
 
-{3 Likely Modules}
+{3 Most Useful Modules}
 
 Shcaml has a bunch of modules; these are the ones we think it's likely
 you'll need.  All modules in the system are submodules of the {!Shcaml}
 module.
 
 {!modules:
-  UsrBin 
+  UsrBin
   Adaptor
   Fitting
   Flags
@@ -48,7 +48,7 @@ Shcaml should now be installed.  Try the following:
     run_source (ps () -| cut Line.Ps.command);; ]}
 *)
 (**
-> val processes : string list ... 
+> val processes : string list ...
 
 If all has gone well, you should have a list of all the process
 invocations (whatever's in the "COMMAND" field when you call {i ps auxww})
@@ -60,12 +60,12 @@ This manual is more tutorial style than straight ahead instruction
 manual.  The API is (hopefully!) completely documented, so for
 specific information on any particular bit of the library, check
 there.  This document is here to demonstrate some of the concepts and
-features of Shcaml.  
+features of Shcaml.
 
 {2 Components}
 
 Shcaml is composed of several major components that are the building
-blocks of the library.  Let's start out by examining a few of them.  
+blocks of the library.  Let's start out by examining a few of them.
 
 Follow the instructions above in the "Getting Started" section to get
 Shcaml installed and running.  We'll work in the toploop, with Shcaml
@@ -73,7 +73,7 @@ loaded.  So, run [ocaml], then:
 *)
 
 #use "topfind";;
-(** 
+(**
 > ...
 *)
 #require "shcaml.top";;
@@ -111,20 +111,20 @@ that [hello] were a line that came from a comma-delimited file.  Then
 we would want to think of it as delimited input, rather than simply a
 string.  Lines represent delimited input simply as a list of strings.
 Let's turn our empty line into a more structured piece of data.  We'll
-use [Pcre.asplit] to create to turn the string into an array.
+use [Pcre.asplit] to parse the string into an array.
 *)
 
-let hello_delim = 
+let hello_delim =
   Line.Delim.create
-    (Pcre.asplit ~pat:", " (Line.show hello)) 
+    (Pcre.asplit ~pat:", " (Line.show hello))
     hello;;
 
 (**
 > val hello_delim : Shcaml.Line.t = <line:"hello world, I'm a line!">
 *)
 
-(** 
-Let's now check and make sure you got what I promised you.  Try this:
+(**
+Let's check to make sure you got what I promised.  Try this:
 *)
 
 Line.Delim.fields hello_delim;;
@@ -152,7 +152,7 @@ Now, suppose we wanted to uppercase the strings in the [Delim.fields]
 list:
 *)
 
-let hello_DELIM = 
+let hello_DELIM =
   Line.Delim.set_fields
     (Array.map String.uppercase (Line.Delim.fields hello_delim))
     hello_delim;;
@@ -184,7 +184,7 @@ key-value pairs, a record of its provenance ([source]), and several
 others.  Functions for manipulating this data will often appear in
 submodules of {!Line}, for instance, {!Line.Passwd}.  Let's try
 another example, creating a line with data from the password file in
-it.  (Don't worry, this is all built in, but we want to walk you through it.  
+it.  (Don't worry, this is all built in, but we want to walk you through it.
 It builds character.)  We'll start by making a delimited list of the fields:
 *)
 
@@ -206,9 +206,9 @@ Then, we'll make a function that takes lines with delimited data to
 lines with passwd data as well.
 *)
 
-let passwd_of_delim ln = 
+let passwd_of_delim ln =
   match Line.Delim.fields ln with
-    | [|name;passwd;uid;gid;gecos;home;shell|] -> 
+    | [|name;passwd;uid;gid;gecos;home;shell|] ->
         Line.Passwd.create
           ~name ~passwd ~gecos ~home ~shell
           ~uid:(int_of_string uid) ~gid:(int_of_string gid)
@@ -262,20 +262,19 @@ Line.show root_pw;;
 *)
 
 (**
-Using {!Line.show} and {!Line.select} becomes extremely important when 
-we start working with external processes (that is, running UNIX programs 
-from Ocaml).  When a line is to be piped into some external process, Shcaml
+Using {!Line.show} and {!Line.select} becomes extremely important when
+we start working with external processes (that is, running UNIX programs
+from OCaml).  When a line is to be piped into some external process, Shcaml
 calls [show] on it and sends the string that results along.  Thus,
-when it's important, you can change how your data is rendered when it
-goes to UNIX.
+when it's important, you can change how your data is rendered for output.
 *)
 
 (**
 {3 Shtreams}
 
-{!Shtream}s are similar in intent and operation to Ocaml [Stream]s,
+{!Shtream}s are similar in intent and operation to OCaml [Stream]s,
 but unlike a [Stream], {!Shtream}s have an ['h'].  Additionally, shtreams
-know about Ocaml channels; any shtream may be turned into an Ocaml
+know about OCaml channels; any shtream may be turned into an OCaml
 [in_channel], and vice-versa.  Shtreams have a richer interface than
 streams, which may be explored in the API.  Let's try to make a
 shtream
@@ -289,9 +288,9 @@ let stdin_shtream = Shtream.of_channel input_line stdin;;
 
 Shtream.next stdin_shtream;;
 
-(** 
+(**
 > hello, there. (you type this)
-> 
+>
 > - : string = "  hello, there. (you type this)"
 *)
 
@@ -323,7 +322,7 @@ Hi again!
 (**
 To turn the shtream back into an [in_channel], we needed to give it a
 writer function, here [print_endline].  The writer function should take
-values in the shtream and print them on stdout.  (Bear in mind, shtreams
+values in the shtream and print them to stdout.  (Bear in mind, shtreams
 need not contain strings, so a writer function for an ['a Shtream.t] has
 type ['a -> unit].
 
@@ -342,7 +341,7 @@ To demonstrate that the generating function is called for each element,
 we'll include the argument to the function in each element.
 *)
 
-let yes s = 
+let yes s =
   let builder n = Some (Printf.sprintf "%d: %s" n s) in
     Shtream.from builder;;
 (**
@@ -401,7 +400,7 @@ more facilities for creating, observing, and manipulating shtreams
 are described in the {!Shtream} API documentation.  However, from the
 perspective of Shcaml, shtreams are relatively low-level constructs.
 In addition to extending [Stream]s, Shcaml provides extensions to
-standard Ocaml channels in a module called {!Channel}, and an
+standard OCaml channels in a module called {!Channel}, and an
 abstraction of processes (UNIX programs you run from Shcaml) in
 {!Proc}.  Lines and shtreams combine their powers in {!Fitting}s,
 which we discuss next.
@@ -413,7 +412,7 @@ which we discuss next.
 Fittings provide an embedded process control notation.  That's fancy
 way of saying that we did our best to create some functions that make
 it look (kinda, sorta) like you're writing snippets of shell scripts
-in your Ocaml.  Let's try a simple one:
+in your OCaml.  Let's try a simple one:
 *)
 
 run (command "echo a fitting!");;
@@ -434,7 +433,7 @@ run (command "false");;
 *)
 
 (**
-Let's look a little more closely at that.  There are two things
+Let's take a closer look.  There are two things
 happening.  We construct a fitting with [command "false"].  There are
 several different ways to create fittings: {!Fitting.command} takes a
 string that will be run in the shell (e.g., [command "foo bar baz"] is like
@@ -530,10 +529,10 @@ you where data came from, and [seq], which tells you its line number
 in the source.)
 
 Can you guess what the [(-|)] operator does?  That's
-right, it's a pipe!  (The [|] character is pretty meaningful in Ocaml
+right, it's a pipe!  (The [|] character is pretty meaningful in OCaml
 programs, as are most other shell operators, so we have decorated them
 a little bit to give them the right precedence and to keep them from
-clashing with other Ocaml syntax.)  
+clashing with other OCaml syntax.)
 
 The type of [(-|)] will help us understand fittings a whole lot
 better
@@ -564,18 +563,18 @@ produces the output of the second, ['c]s.  That is, we get an
 
 Fittings provide a general mechanism to pipe together data like this.
 But they also know a whole lot about UNIX, and make it very easy to
-intermix calls to the shell with Ocaml code.  Let's use the system's
+intermix calls to the shell with OCaml code.  Let's use the system's
 [sort] command and our built-in [uniq] functions (we provide a Fitting
 version of [sort] in {!UsrBin}) to get a list of the different shells
-that are in use on the system.  
+that are in use on the system.
 *)
 
 let shells = LineShtream.string_list_of
   (run_source
-     (from_file "/etc/passwd" 
+     (from_file "/etc/passwd"
       -| Adaptor.Passwd.fitting ()
       -| cut Line.Passwd.shell
-      -| command "sort" 
+      -| command "sort"
       -| uniq ()));;
 (**
 > val shells : string list =
@@ -616,7 +615,7 @@ have one input and one output, while UNIX processes may read or write
 on many different file descriptors (for instance, [stdout] and
 [stderr]).  Shcaml provides facilities for sophisticated I/O
 redirection.  Let's start by taking a look at how redirection is
-specified.  
+specified.
 
 A {!Channel.dup_spec} is a list of instructions for how I/O redirection
 should be done for a given fitting.  There are a great many operators
@@ -695,7 +694,7 @@ function that is used to transform shtreams of lines by using the
 convention) in the module; a function [fitting] is
 provided as well, which (as one might expect) provides a version
 of the adaptor as a fitting, so it might be used directly in a
-pipeline.  
+pipeline.
 
 There are adaptor submodules for delimited text, simple flat files,
 comma-separated text, key-value and sectioned key-value (ie, ssh

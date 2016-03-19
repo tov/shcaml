@@ -1,16 +1,16 @@
 (** Structured records for line-oriented data.
 
     This module defines a {!Line.t} type, useful to represent line-oriented data
-    with structured content. A {!Line.t} can be thought as a (extensible)
-    record, its multiple fields storing the structured data, alongside the raw
+    with structured content. A {!Line.t} can be thought of as a (extensible)
+    record. It has multiple fields storing the structured data, alongside the raw
     content of the line, from which they are extracted.
 
-    Additionnaly, a line must contain at least the following fields (see
+    Additionally, a line must contain at least the following fields (see
     {!section:mandatory_fields} for more details): [raw], [show], [source],
     [seq], [after] and [before].
 *)
 
-(** Extensible type for field labels. 
+(** Extensible type for field labels.
 
     Field identifiers, or labels, are constructors of the {!label} type, usually
     of arity zero. Several labels are predefined in this module, and more can be
@@ -38,17 +38,17 @@ module Fields : Hmap.S with type 'a Key.info = label
     map. *)
 exception Field_not_found of label
 
-(** The type of a structured line. 
+(** The type of a structured line.
 
     A line is a heterogeneous map, with keys indexed by {!label}, which must
-    contain the fields described in section {!section:mandatory_fields}. 
+    contain the fields described in section {!section:mandatory_fields}.
 
     To create a custom line field [foo], one must first define a new label
     ([type label += Foo]), then create a corresponding map key ([let foo =
     Fields.Key.create Foo]). *)
 type t = Fields.t
 
-(** Construct a line from a string. 
+(** Construct a line from a string.
 
     [after] is the trailing delimiter data associated with the line (default =
     ["\n"]); [before] is the leading delimiter data associated with the line
@@ -134,7 +134,7 @@ val set_before : string -> t -> t
 
     Several structures that may be read from a line. If the raw contents of a
     line matches a structure corresponding to module [Foo], [Foo.create] will
-    parse it and add the corresponding fields to the line. 
+    parse it and add the corresponding fields to the line.
 
     For every module below, accessors and updaters raise exception
     {!Field_not_found} when the corresponding field is not present in a line.
@@ -170,20 +170,20 @@ module Key_value : sig
       (Case insensitive.) *)
   val as_bool : t -> bool option
 
-  (** The value of the string with interpreted escapes. 
+  (** The value of the string with interpreted escapes.
 
       Backslash escapes are interpreted in the style of {b echo}(1).  The
       optional argument [?quoted] (default [true]) specifies whether to remove
       double-quotes from the string as well (unless they are escaped). *)
   val as_string : ?quoted:bool -> t -> string
 
-  (** The value, split into a list. 
+  (** The value, split into a list.
 
       The optional argument [?delim] (default [' ']) specifies the list
       separator. *)
   val as_list : ?delim:char -> t -> string list
 
-  (** The section in a key-value file. 
+  (** The section in a key-value file.
 
       For example, in SSH configuration files, {i Host} statements begin a new
       section. (accessor, nullable) *)
@@ -196,7 +196,7 @@ module Key_value : sig
   val create : key:string -> value:string -> t -> t
 end
 
-(** Line structure to represent records with delimited fields. 
+(** Line structure to represent records with delimited fields.
 
     For example, this may be appropriate for generic comma- or tab-delimited
     data. *)
@@ -235,14 +235,14 @@ end
 
 (** Line structure for {i /etc/passwd} file records. *)
 module Passwd : sig
-  
+
   (** The username of a password record. (accessor, required) *)
   val name : t -> string
 
   (** Updater for {!name} *)
   val set_name : string -> t -> t
 
-  (** The password of a password record. 
+  (** The password of a password record.
 
       (On modern systems this is usually a dummy marker rather than the
       encrypted password.) (accessor, required) *)
