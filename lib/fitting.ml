@@ -116,7 +116,7 @@ module Make(Shtream : SHTREAM) = struct
     Shtream.add_cleanup cleaner s;
     s
 
-  (* Ocaml allows polymorphic recursion if you tell it the types ahead
+  (* OCaml allows polymorphic recursion if you tell it the types ahead
    * of time using a record.  Whee! *)
   type 'o unit_witness = ('o, unit) out_witness -> unit
 

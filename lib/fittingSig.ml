@@ -196,10 +196,10 @@ module type S = sig
   *)
 
   val caml       : (unit -> ('i -> 'o) t) -> ('i -> 'o) t
-  (** Delay an Ocaml thunk until a fitting is run.  Given a thunk
+  (** Delay an OCaml thunk until a fitting is run.  Given a thunk
    * that produces a fitting, {!caml} constructs a new fitting that,
    * when run, forces the thunk and runs the resulting fitting.
-   * This allows for Ocaml side-effects at arbitrary points during a
+   * This allows for OCaml side-effects at arbitrary points during a
    * fitting.
   *)
 

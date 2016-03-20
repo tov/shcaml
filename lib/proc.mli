@@ -1,4 +1,4 @@
-(** An Ocaml abstraction for UNIX processes.
+(** An OCaml abstraction for UNIX processes.
     The {!Proc} module takes responsiblity for reaping
     children and provides access to exit codes through abstract
     {!Proc.t} objects.  (If you need to reap yourself,

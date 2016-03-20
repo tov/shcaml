@@ -1,6 +1,6 @@
 (*
  * The idea of Proc is to abstract away UNIX processes into something
- * more manageable from Ocaml.  To this end, we create abstract Proc.t
+ * more manageable from OCaml.  To this end, we create abstract Proc.t
  * objects that we store in a weak table; a SIGCHLD handler collects the
  * exit status of child processes and stores them in the Proc.t objects
  * in this table, when possible.
