@@ -277,7 +277,7 @@ but unlike a [Stream], {!Shtream}s have an ['h'].  Additionally, shtreams
 know about OCaml channels; any shtream may be turned into an OCaml
 [in_channel], and vice-versa.  Shtreams have a richer interface than
 streams, which may be explored in the API.  Let's try to make a
-shtream
+shtream:
 *)
 
 let stdin_shtream = Shtream.of_channel input_line stdin;;
@@ -290,8 +290,8 @@ Shtream.next stdin_shtream;;
 
 (**
 > hello, there. (you type this)
->
-> - : string = "  hello, there. (you type this)"
+> 
+> - : string = "hello, there."
 *)
 
 (**
@@ -508,25 +508,18 @@ functions are provided by the {!Adaptor} module).
 let pw_shtream = run_source
   (from_file "/etc/passwd" -| Adaptor.Passwd.fitting ());;
 (**
-> val pw_shtream :
->   <| passwd : Shcaml.Line.present; seq : Shcaml.Line.present;
->      source : Shcaml.Line.present >
->   Shcaml.Line.t Shcaml.Fitting.shtream = <abstr>
+> val pw_shtream : Shcaml.Line.t Shcaml.Fitting.shtream = <abstr>
 *)
 
 Shtream.next pw_shtream;;
 (**
-> - : <| passwd : Shcaml.Line.present; seq : Shcaml.Line.present;
->        source : Shcaml.Line.present >
->     Shcaml.Line.t
-> = <line:"root:x:0:0:root:/root:/bin/bash">
+> - : Shcaml.Line.t = <line:"root:x:0:0:root:/root:/bin/bash">
 *)
 
 (**
-Now we have a shtream that has (take a careful look at those types)
-lines with passwd data in them.  (They also have [source], which tells
-you where data came from, and [seq], which tells you its line number
-in the source.)
+Now we have a shtream that has lines with passwd data in them.  (They
+also have [source], which tells you where data came from, and [seq],
+which tells you its line number in the source.)
 
 Can you guess what the [(-|)] operator does?  That's
 right, it's a pipe!  (The [|] character is pretty meaningful in OCaml
