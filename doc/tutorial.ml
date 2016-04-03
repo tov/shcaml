@@ -80,6 +80,9 @@ loaded.  So, run [ocaml], then:
 (**
 > ...
 
+{e N.B. when using [utop] with Shcaml, we advise you pass the
+[-no-short-paths] option when launching [utop].}
+
 {3 Lines}
 
 {e For Shcaml versions <TODO> and greater, the implementation and interface of
