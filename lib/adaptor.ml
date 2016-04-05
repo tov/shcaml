@@ -11,14 +11,11 @@ module Convert = struct
   let to_float = convert float_of_string "float"
 end
 
-type 'a adaptor = 'b Line.t Shtream.t -> 'c Line.t Shtream.t
-  constraint 'a = 'b -> 'c
+type adaptor = Line.t Shtream.t -> Line.t Shtream.t
 
-type 'a splitter = 'b Line.t -> 'c Line.t
-  constraint 'a = 'b -> 'c
+type splitter = Line.t -> Line.t
 
-type 'a fitting_adaptor = unit -> ('b Line.t -> 'c Line.t) Fitting.t
-  constraint 'a = 'b -> 'c
+type fitting_adaptor = unit -> (Line.t -> Line.t) Fitting.t
 
 let make_adaptor ?reader splitter =
   fun shtream ->
@@ -38,7 +35,7 @@ module Delim = struct
   let reader ?options channel = Delimited.reader ?options channel
 
   let splitter ?options =
-    let options = maybe options {| Delimited.default_options |} id in
+    let options = maybe options (fun _ -> Delimited.default_options) id in
     fun line ->
       let fields = Delimited.splitter ~options (Line.raw line) in
         Line.Delim.set_options options
@@ -55,16 +52,10 @@ module Delim = struct
 
   module type S = sig
     include SPEC
-    val adaptor : 
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
-    val fitting :
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
+    val adaptor : adaptor
+    val fitting : fitting_adaptor
     val reader : Reader.t
-    val splitter :
-      (<Line| delim: Line.absent; .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) splitter
+    val splitter : splitter
   end
 
   module Make(Spec : SPEC) = struct
@@ -83,19 +74,10 @@ module Delim = struct
 
   module type S_NAMES = sig
     include SPEC_NAMES
-    val adaptor : 
-      (<Line| delim: Line.absent;  .. as 'a > ->
-        <Line| delim: <| options: Line.present;
-                         names: Line.present >; .. as 'a >) adaptor
-    val fitting :
-      (<Line| delim: Line.absent;  .. as 'a > ->
-        <Line| delim: <| options: Line.present;
-                         names: Line.present >; .. as 'a >) fitting_adaptor
+    val adaptor : adaptor
+    val fitting : fitting_adaptor
     val reader : Reader.t
-    val splitter :
-      (<Line| delim: Line.absent; .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) splitter
+    val splitter : splitter
   end
 
   module Make_names(Spec : SPEC_NAMES) = struct
@@ -147,16 +129,10 @@ module SimpleFlatFile = struct
 
   module type S = sig
     include SPEC
-    val adaptor : 
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
-    val fitting :
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
+    val adaptor : adaptor
+    val fitting : fitting_adaptor
     val reader : Reader.t
-    val splitter :
-      (<Line| delim: Line.absent; .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) splitter
+    val splitter : splitter
   end
 
   module Make(Spec : SPEC) = struct
@@ -178,19 +154,10 @@ module SimpleFlatFile = struct
 
   module type S_NAMES = sig
     include SPEC_NAMES
-    val adaptor : 
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) adaptor
-    val fitting :
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) fitting_adaptor
+    val adaptor : adaptor
+    val fitting : fitting_adaptor
     val reader : Reader.t
-    val splitter :
-      (<Line| delim: Line.absent; .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) splitter
+    val splitter : splitter
   end
 
   module Make_names(Spec : SPEC_NAMES) = struct
@@ -308,7 +275,7 @@ module Stat = struct
       | Some d -> Filename.concat d (Line.raw file)
       | _      -> Line.raw file in
     let sb = Unix.stat filename in
-      modeify sb.st_perm $
+      modeify sb.st_perm @@
         Line.Stat.create
           ~dev:   sb.st_dev
           ~inode: sb.st_ino
@@ -442,16 +409,10 @@ module Key_value = struct
 
   module type S = sig
     include SPEC
-    val adaptor : 
-      (<Line| key_value: Line.absent;  .. as 'a > ->
-       <Line| key_value: <| >; .. as 'a >) adaptor
-    val fitting :
-      (<Line| key_value: Line.absent;  .. as 'a > ->
-       <Line| key_value: <| >; .. as 'a >) fitting_adaptor
+    val adaptor : adaptor
+    val fitting : fitting_adaptor
     val reader : Reader.t
-    val splitter :
-      (<Line| key_value: Line.absent; .. as 'a > ->
-       <Line| key_value: <| >; .. as 'a >) splitter
+    val splitter : splitter
   end
 
   module Make(Spec : SPEC) : S = struct
@@ -510,16 +471,10 @@ module Key_value_section = struct
 
   module type S = sig
     include SPEC
-    val adaptor : 
-      (<Line| key_value: Line.absent;  .. as 'a > ->
-       <Line| key_value: <| section: Line.present >; .. as 'a >) adaptor
-    val fitting :
-      (<Line| key_value: Line.absent;  .. as 'a > ->
-       <Line| key_value: <| section: Line.present >; .. as 'a >) fitting_adaptor
+    val adaptor : adaptor
+    val fitting : fitting_adaptor
     val reader : Reader.t
-    val new_splitter : unit ->
-      (<Line| key_value: Line.absent; .. as 'a > ->
-       <Line| key_value: <| section: Line.present >; .. as 'a >) splitter
+    val new_splitter : unit -> splitter
   end
 
   module Make(Spec : SPEC) : S = struct

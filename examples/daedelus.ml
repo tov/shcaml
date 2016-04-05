@@ -1,12 +1,12 @@
 #!/usr/bin/env ocaml
 
 #use "topfind";;
-#require "shcaml";;
+#require "shcaml.top";;
 
 open Proc
 
 let isn't_running prog = 
-  Shtream.is_empty ^$
+  Shtream.is_empty @@
     run_source begin
       ps () -|
       grep (Reader.starts_with prog % Line.Ps.command)

@@ -1,7 +1,7 @@
 (** One-shot interprocess exceptions and variables. *)
 
 (**
- * {2 Interprocess Exceptions}
+ * {1 Interprocess Exceptions}
  *)
 
 (** Relay exceptions from a subprocess.
@@ -58,7 +58,7 @@ val with_interprocess_raise_and_okay
   : ((exn -> unit) -> (unit -> unit) -> 'b) -> 'b
 
 (**
- * {2 Interprocess Variables}
+ * {1 Interprocess Variables}
  *)
 
 type 'a read_end

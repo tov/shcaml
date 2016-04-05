@@ -1,18 +1,12 @@
 open Util
 open Fitting
 
-type 'a shtream = 'a Shtream.t
-type 'a line    = 'a Line.t
-type 'a fitting = 'a Fitting.t
-type absent     = Line.absent
-type present    = Line.present
-
 let cat s       = LineShtream.output s
 
-let cut selector = trans $ Shtream.map (Line.select selector)
+let cut selector = trans @@ Shtream.map (Line.select selector)
 
 let set_stat ?dir =
-  Line.set_source (`Directory (maybe dir {| "." |} id)) %
+  Line.set_source (`Directory (maybe dir (fun _ -> ".") id)) %
     Adaptor.Stat.splitter ?dir
 
 let stat filename =
@@ -20,15 +14,16 @@ let stat filename =
            (Line.line (Filename.basename filename))
 
 let from_directory name =
-  caml {|
+  caml (fun _ ->
     let dir = Channel.opendir name in
-    from_shtream ^$
+    from_shtream @@
     Shtream.from_low
-      ~close:{| Channel.closedir dir |}
-      {| try Line.set_source (`Directory name)
+      ~close:(fun _ -> Channel.closedir dir)
+      (fun _ ->
+         try Line.set_source (`Directory name)
                (Line.line (Channel.readdir dir)) with
-         | End_of_file -> raise Shtream.Failure |}
-  |}
+         | End_of_file -> raise Shtream.Failure)
+  )
 
 let ls dir =
   from_directory dir -| Adaptor.Stat.fitting ~dir ()
@@ -92,8 +87,8 @@ module Test = struct
   let tfile f =
     r f && let c = Channel.open_file_in f in
              unwind_protect
-               {| isatty (Unix.descr_of_in_channel c) |}
-               {| Channel.close_in c |}
+               (fun _ -> isatty (Unix.descr_of_in_channel c))
+               (fun _ -> Channel.close_in c)
 
   (* problematic: 
    * -S (capitals in general) *)
@@ -122,7 +117,7 @@ module Test = struct
 end
 
 let echo msg =
-  trans {| Shtream.of_list [ Line.line msg ] |}
+  trans (fun _ -> Shtream.of_list [ Line.line msg ])
 
 let cd    = Unix.chdir
 let pwd   = Unix.getcwd
@@ -144,7 +139,7 @@ let mkpath =
           | "", _  -> mkdir next; next
           | _,  _  -> let dir = rest^"/"^next in
                       mkdir dir; dir in
-        ignore ^$ List.fold_left each "" lst
+        ignore @@ List.fold_left each "" lst
 
 let backquote =
   String.concat " " %
@@ -154,11 +149,11 @@ let backquote =
 let lift_to_line2 f x y = f (Line.show x) (Line.show y)
 
 let sort ?(compare = lift_to_line2 String.compare) () =
-  trans $ Shtream.of_list % (List.fast_sort compare) % Shtream.list_of
+  trans @@ Shtream.of_list % (List.fast_sort compare) % Shtream.list_of
 
 let head n = trans
   (fun s ->
-     Shtream.from ^$ fun i ->
+     Shtream.from @@ fun i ->
        if i < n
        then Shtream.next' s
        else None)
@@ -175,7 +170,7 @@ let head_while pred = trans
 let behead_while pred = 
   trans
     (fun s -> 
-       while maybe (Shtream.peek s) {| false |} pred do
+       while maybe (Shtream.peek s) (fun _ -> false) pred do
          Shtream.junk s
        done; s)
 
@@ -183,10 +178,12 @@ let behead n =
   let count = ref 0 in 
     behead_while 
       (fun s ->
-         !count < n BEFORE (count := !count + 1))
+         let it = !count < n in
+         count := !count + 1;
+         it)
 
 let uniq ?(equal = lift_to_line2 (=)) () =
-  trans $ fun shtr ->
+  trans @@ fun shtr ->
     let memory = ref None in
     let pred line = 
       match !memory with
@@ -199,5 +196,7 @@ let uniq ?(equal = lift_to_line2 (=)) () =
 let renumber from =  
   trans 
     (let count = ref from in
-       Shtream.map (fun line -> Line.set_seq !count line
-                      BEFORE (count := !count + 1)) )
+     Shtream.map (fun line ->
+       let it = Line.set_seq !count line in
+       count := !count + 1;
+       it))

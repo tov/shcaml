@@ -13,29 +13,24 @@
  *)
 
 (** A function on lines.  In particular, an
- * [('a -> 'b) splitter] takes ['a Line.t] to ['b Line.t]. *)
-type 'ab splitter = 'a Line.t -> 'b Line.t
-  constraint 'ab = 'a -> 'b
+ * [splitter] takes [Line.t] to [Line.t]. *)
+type splitter = Line.t -> Line.t
 
 (** A function on line shtreams.  In particular, an
- * [('a -> 'b) adaptor] maps an ['a Line.t Shtream.t] to a
- * ['b Line.t Shtream.t].  It also provides reader hints; that is,
+ * [adaptor] maps an [Line.t Shtream.t] to a
+ * [Line.t Shtream.t].  It also provides reader hints; that is,
  * if the input shtream's reader was selected
  * as a default (rather than by the user), then it may adjust the input
  * shtream's reader. *)
-type 'ab adaptor = 'a Line.t Shtream.t -> 'b Line.t Shtream.t
-  constraint 'ab = 'a -> 'b
+type adaptor = Line.t Shtream.t -> Line.t Shtream.t
 
 (** An adaptor lifted to be used as a fitting. *)
-type 'ab fitting_adaptor = unit -> ('a Line.t -> 'b Line.t) Fitting.t
-  constraint 'ab = 'a -> 'b
+type fitting_adaptor = unit -> (Line.t -> Line.t) Fitting.t
 
 (** Make a shtream adaptor from a reader and a field splitter.  The
  * resulting adaptor can provide reader hints to a shtream from which it
  * reads. *)
-val make_adaptor : ?reader:Reader.t ->
-                   ('a -> 'b) splitter ->
-                   ('a -> 'b) adaptor
+val make_adaptor : ?reader:Reader.t -> splitter -> adaptor
 
 (** Conversions for shtream adaptors.  These produce shtream warnings
  * (calling {!Shtream.warn}) if the value cannot be coerced. *)
@@ -67,24 +62,18 @@ end
 module Delim : sig
 
   (** Split lines according to the given {!Delimited} options. *)
-  val adaptor : ?options:Delimited.options ->
-    (<Line| delim: Line.absent; .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
+  val adaptor : ?options:Delimited.options -> adaptor
 
   (** Fitting for delimited text files. *)
-  val fitting : ?options:Delimited.options ->
-    (<Line| delim: Line.absent; .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
+  val fitting : ?options:Delimited.options -> fitting_adaptor
 
   (** Read records according to the given {!Delimited} options. *)
   val reader : ?options:Delimited.options -> Reader.t
 
   (** Split one record according to the given {!Delimited} options. *)
-  val splitter : ?options:Delimited.options ->
-    (<Line| delim: Line.absent;                .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) splitter
+  val splitter : ?options:Delimited.options -> splitter
 
-  (** {3 Functorial Interface} *)
+  (** {2 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized delim adaptor. *)
@@ -101,22 +90,16 @@ module Delim : sig
     include SPEC
 
     (** Adaptor for a custom delim adaptor. *)
-    val adaptor : 
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
+    val adaptor : adaptor
 
     (** Fitting for a custom delim adaptor. *)
-    val fitting :
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
+    val fitting : fitting_adaptor
 
     (** Reader for a custom delim adaptor. *)
     val reader : Reader.t
 
     (** Splitter for a custom delim adaptor. *)
-    val splitter :
-      (<Line| delim: Line.absent; .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) splitter
+    val splitter : splitter
 
   end
 
@@ -136,22 +119,13 @@ module Delim : sig
   (** Output signature for {!Make}. *)
   module type S_NAMES = sig
     include SPEC_NAMES
-    val adaptor : 
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) adaptor
+    val adaptor : adaptor
     (** Adaptor for a custom delim adaptor. *)
-    val fitting :
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) fitting_adaptor
+    val fitting : fitting_adaptor
     (** Fitting for a custom delim adaptor. *)
     val reader : Reader.t
     (** Reader for a custom delim adaptor. *)
-    val splitter :
-      (<Line| delim: Line.absent; .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) splitter
+    val splitter : splitter
     (** Splitter for a custom delim adaptor. *)
   end
 
@@ -162,9 +136,7 @@ end
 (** Adaptor module for simple flat file tables.
  * Handles blank lines, comments, and capping the number of fields. *)
 module SimpleFlatFile : sig
-  val adaptor : ?comments:string -> ?blanks:bool -> ?max:int -> char ->
-    (<Line| delim: Line.absent;                .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
+  val adaptor : ?comments:string -> ?blanks:bool -> ?max:int -> char -> adaptor
   (** Split lines into {!Line.Delim}.  If [comment] is given (default
    * [None]), lines starting with [comment] (ignoring leading white
    * space) are considered comment lines and are ignored by the reader.
@@ -173,19 +145,15 @@ module SimpleFlatFile : sig
    * then only [max] fields will be produced, and the last field may
    * contain record separatos.  The final [char] argument is the field
    * separator. *)
-  val fitting : ?comments:string -> ?blanks:bool -> ?max:int -> char ->
-    (<Line| delim: Line.absent;                .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
+  val fitting :
+    ?comments:string -> ?blanks:bool -> ?max:int -> char -> fitting_adaptor
   (** Fitting for simple flat files. *)
   val reader : ?comments:string -> ?blanks:bool -> Reader.t
   (** Record reader for simple flat files.  See {!adaptor} for options. *)
-  val splitter :
-    ?max:int -> char ->
-    (<Line| delim: Line.absent; .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) splitter
+  val splitter : ?max:int -> char -> splitter
   (** Split a simple flat files record.  See {!adaptor} for options. *)
 
-  (** {3 Functorial Interface} *)
+  (** {2 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized flat file adaptor. *)
@@ -203,19 +171,13 @@ module SimpleFlatFile : sig
   (** Output signature for {!Make}. *)
   module type S = sig
     include SPEC
-    val adaptor : 
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
+    val adaptor : adaptor
     (** Adaptor for a custom flat file adaptor. *)
-    val fitting :
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
+    val fitting : fitting_adaptor
     (** Fitting for a custom flat file adaptor. *)
     val reader : Reader.t
     (** Reader for a custom flat file adaptor. *)
-    val splitter :
-      (<Line| delim: Line.absent; .. as 'a > ->
-       <Line| delim: <| options: Line.present >; .. as 'a >) splitter
+    val splitter : splitter
     (** Splitter for a custom flat file adaptor. *)
   end
 
@@ -241,22 +203,13 @@ module SimpleFlatFile : sig
   (** Output signature for {!Make}. *)
   module type S_NAMES = sig
     include SPEC_NAMES
-    val adaptor : 
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) adaptor
+    val adaptor : adaptor
     (** Adaptor for a custom flat file adaptor. *)
-    val fitting :
-      (<Line| delim: Line.absent;  .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) fitting_adaptor
+    val fitting : fitting_adaptor
     (** Fitting for a custom flat file adaptor. *)
     val reader : Reader.t
     (** Reader for a custom flat file adaptor. *)
-    val splitter :
-      (<Line| delim: Line.absent; .. as 'a > ->
-       <Line| delim: <| options: Line.present;
-                        names: Line.present >; .. as 'a >) splitter
+    val splitter : splitter
     (** Splitter for a custom flat file adaptor. *)
   end
 
@@ -270,25 +223,19 @@ end
  * comment lines and join lines ending in a backslash.
  *)
 module Key_value : sig
-  val adaptor : ?quiet:bool -> ?comment:string -> ?delim:char ->
-    (<Line| key_value: Line.absent;  .. as 'a > ->
-     <Line| key_value: <| >; .. as 'a >) adaptor
+  val adaptor : ?quiet:bool -> ?comment:string -> ?delim:char -> adaptor
   (** Adaptor to parse a key-value file. Lines starting with [?comment]
    * (default ["#"] are considered comments and discarded.  Lines are
    * then split between a key and a value at [?delim] (default ['=']),
    * and leading and trailing white space is discarded. *)
-  val fitting : ?quiet:bool -> ?comment:string -> ?delim:char ->
-    (<Line| key_value: Line.absent;  .. as 'a > ->
-     <Line| key_value: <| >; .. as 'a >) fitting_adaptor
+  val fitting : ?quiet:bool -> ?comment:string -> ?delim:char -> fitting_adaptor
   (** Fitting for key-value files. *)
   val reader : ?comment:string -> Reader.t
   (** Read key-value records. *)
-  val splitter : ?quiet:bool -> ?delim:char ->
-    (<Line| key_value: Line.absent; .. as 'a > ->
-     <Line| key_value: <| >; .. as 'a >) splitter
+  val splitter : ?quiet:bool -> ?delim:char -> splitter
   (** Split key-value file records and fill in {!Line.Key_value}. *)
 
-  (** {3 Functorial Interface} *)
+  (** {2 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized key-value adaptor. *)
@@ -302,19 +249,13 @@ module Key_value : sig
   (** Output signature for {!Make}. *)
   module type S = sig
     include SPEC
-    val adaptor : 
-      (<Line| key_value: Line.absent;  .. as 'a > ->
-       <Line| key_value: <| >; .. as 'a >) adaptor
+    val adaptor : adaptor
     (** Adaptor for a custom key-value. *)
-    val fitting :
-      (<Line| key_value: Line.absent;  .. as 'a > ->
-       <Line| key_value: <| >; .. as 'a >) fitting_adaptor
+    val fitting : fitting_adaptor
     (** Fitting for a custom key-value. *)
     val reader : Reader.t
     (** Reader for a custom key-value. *)
-    val splitter :
-      (<Line| key_value: Line.absent; .. as 'a > ->
-       <Line| key_value: <| >; .. as 'a >) splitter
+    val splitter : splitter
     (** Splitter for a custom key-value. *)
   end
 
@@ -327,10 +268,10 @@ end
  * recognizing when new sections starts and, optionally, when they end.
  *)
 module Key_value_section : sig
-  val adaptor : ?comment:string -> ?delim:char ->
-                ?end_section:string -> string ->
-    (<Line| key_value: Line.absent;  .. as 'a > ->
-     <Line| key_value: <| section: Line.present >; .. as 'a >) adaptor
+  val adaptor :
+    ?comment:string -> ?delim:char ->
+    ?end_section:string -> string ->
+    adaptor
   (** Adaptor to parse a key-value file with sections.
    * [Key_value_section.adaptor pat] creates an adaptor for key-value
    * files, using [pat] to recognize sections.  In particular, [pat]
@@ -347,21 +288,21 @@ module Key_value_section : sig
    * empty string for subsequent records.  The other optional arguments
    * are as in {!Key_value}.
    *)
-  val fitting : ?comment:string -> ?delim:char ->
-                ?end_section:string -> string ->
-    (<Line| key_value: Line.absent;  .. as 'a > ->
-     <Line| key_value: <| section: Line.present >; .. as 'a >) fitting_adaptor
+  val fitting :
+    ?comment:string -> ?delim:char ->
+    ?end_section:string -> string ->
+    fitting_adaptor
   (** Fitting for key-value files with sections. *)
   val reader : ?comment:string -> Reader.t
   (** Read key-value records. *)
-  val splitter : ?delim:char ->
-                 ?end_section:string -> string ->
-    (<Line| key_value: Line.absent; .. as 'a > ->
-     <Line| key_value: <| section: Line.present >; .. as 'a >) splitter
+  val splitter :
+    ?delim:char ->
+    ?end_section:string -> string ->
+    splitter
   (** Split key-value records with sections and fill in
    * {!Line.Key_value}, including {!Line.Key_value.section}. *)
 
-  (** {3 Functorial Interface} *)
+  (** {2 Functorial Interface} *)
 
   (** Input signature for {!Make}.  Specifies the values necessary for
    * building a specialized key-value-section adaptor. *)
@@ -380,19 +321,13 @@ module Key_value_section : sig
   (** Output signature for {!Make}. *)
   module type S = sig
     include SPEC
-    val adaptor : 
-      (<Line| key_value: Line.absent;  .. as 'a > ->
-       <Line| key_value: <| section: Line.present >; .. as 'a >) adaptor
+    val adaptor : adaptor
     (** Adaptor for a custom key-value-section. *)
-    val fitting :
-      (<Line| key_value: Line.absent;  .. as 'a > ->
-       <Line| key_value: <| section: Line.present >; .. as 'a >) fitting_adaptor
+    val fitting : fitting_adaptor
     (** Fitting for a custom key-value-section. *)
     val reader : Reader.t
     (** Reader for a custom key-value-section. *)
-    val new_splitter : unit ->
-      (<Line| key_value: Line.absent; .. as 'a > ->
-       <Line| key_value: <| section: Line.present >; .. as 'a >) splitter
+    val new_splitter : unit -> splitter
     (** Splitter constructor for a custom key-value-section.  This
      * function takes [()] as its first argument in order to initialize
      * internal state that keeps track of the current section.  That is,
@@ -408,92 +343,62 @@ end
 
 (** Adaptor module for comma-separated values files. *)
 module Csv : sig
-  val adaptor : ?trim_space:bool ->
-    (<Line| delim: Line.absent;                .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) adaptor
+  val adaptor : ?trim_space:bool -> adaptor
   (** Adaptor to split a shtream of CSV records. *)
-  val fitting : ?trim_space:bool ->
-    (<Line| delim: Line.absent;                .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) fitting_adaptor
+  val fitting : ?trim_space:bool -> fitting_adaptor
   (** Fitting for CSV records. *)
   val reader : Reader.t
   (** Read CSV records, including quoting and embedded newlines. *)
-  val splitter : ?trim_space:bool ->
-    (<Line| delim: Line.absent; .. as 'a > ->
-     <Line| delim: <| options: Line.present >; .. as 'a >) splitter
+  val splitter : ?trim_space:bool -> splitter
   (** Split a CSV record into fields. *)
 end
 
 (** Adaptor module for {b passwd}(5) files. *)
 module Passwd : sig
-  val adaptor :
-    (<Line| passwd: Line.absent;  .. as 'a > ->
-     <Line| passwd: Line.present; .. as 'a >) adaptor
+  val adaptor : adaptor
   (** Adaptor to parse a passwd file. *)
-  val fitting :
-    (<Line| passwd: Line.absent;  .. as 'a > ->
-     <Line| passwd: Line.present; .. as 'a >) fitting_adaptor
+  val fitting : fitting_adaptor
   (** Fitting for passwd files *)
   val reader : Reader.t
   (** Reader for a passwd file. *)
-  val splitter :
-    (<Line| passwd: Line.absent; .. as 'a > ->
-     <Line| passwd: Line.present; .. as 'a >) splitter
+  val splitter : splitter
   (** Split a passwd file record. *)
 end
 
 (** Adaptor module for {b group}(5) files. *)
 module Group : sig
-  val adaptor :
-    (<Line| group: Line.absent;  .. as 'a > ->
-     <Line| group: Line.present; .. as 'a >) adaptor
+  val adaptor : adaptor
   (** Adaptor to parse a group file. *)
-  val fitting :
-    (<Line| group: Line.absent;  .. as 'a > ->
-     <Line| group: Line.present; .. as 'a >) fitting_adaptor
+  val fitting : fitting_adaptor
   (** Fitting for group files *)
   val reader : Reader.t
   (** Reader for a group file. *)
-  val splitter :
-    (<Line| group: Line.absent; .. as 'a > ->
-     <Line| group: Line.present; .. as 'a >) splitter
+  val splitter : splitter
   (** Split a group file record. *)
 end
 
 (** Adaptor module for {b fstab}(5) and {b mtab}(5). *)
 module Fstab : sig
-  val adaptor :
-    (<Line| fstab: Line.absent;  .. as 'a > ->
-     <Line| fstab: Line.present; .. as 'a >) adaptor
+  val adaptor : adaptor
   (** Adaptor to parse an fstab file. *)
-  val fitting :
-    (<Line| fstab: Line.absent;  .. as 'a > ->
-     <Line| fstab: Line.present; .. as 'a >) fitting_adaptor
+  val fitting : fitting_adaptor
   (** Fitting for fstab files. *)
   val reader : Reader.t
   (** Reader for an fstab file. *)
-  val splitter :
-    (<Line| fstab: Line.absent; .. as 'a > ->
-     <Line| fstab: Line.present; .. as 'a >) splitter
+  val splitter : splitter
   (** Split an fstab file record. *)
 end
 
 (** Adaptor module for retrieving file status and mode information. *)
 module Stat : sig
-  val adaptor : ?dir:string ->
-    (<Line| stat: Line.absent;             .. as 'a > ->
-     <Line| stat: <| mode: Line.present >; .. as 'a >) adaptor
+  val adaptor : ?dir:string -> adaptor
   (** Fill in the {!Line.Stat} line submodule for a shtream of
    * filenames. *)
-  val fitting : ?dir:string ->
-    (<Line| stat: Line.absent;             .. as 'a > ->
-     <Line| stat: <| mode: Line.present >; .. as 'a >) fitting_adaptor
+  val fitting : ?dir:string -> fitting_adaptor
   (** Fitting for add file metadata. *)
   val reader : Reader.t
   (** Reader for a newline-separated list of filenames. *)
-  val splitter : ?dir:string ->
-    (<Line| stat: Line.absent; .. as 'a > ->
-     <Line| stat: <| mode: Line.present >; .. as 'a >) splitter
+  val splitter : ?dir:string -> splitter
   (** Fill in the {!Line.Stat} line submodule for the file named
    * in {!Line.raw}. *)
 end
@@ -502,40 +407,28 @@ end
  * Note that the functions in this module require input lines
  * to have {!Line.seq}, which they use to skip the {b ps} header. *)
 module Ps : sig
-  val adaptor : ?skip:bool ->
-    (<Line| ps: Line.absent;  seq: Line.present; .. as 'a > ->
-     <Line| ps: Line.present; seq: Line.present; .. as 'a >) adaptor
+  val adaptor : ?skip:bool -> adaptor
   (** Map the output of {b ps}(1) into {!Line.Ps}.
    * The optional argument [?skip] (default [true]) specifies
    * whether the first line is a {b ps} header and should be
    * skipped. *)
-  val fitting : ?skip:bool ->
-    (<Line| ps: Line.absent;  seq: Line.present; .. as 'a > ->
-     <Line| ps: Line.present; seq: Line.present; .. as 'a >) fitting_adaptor
+  val fitting : ?skip:bool -> fitting_adaptor
   (** Fitting for parsing {b ps}(1) output. *)
   val reader : Reader.t
   (** Read {b ps}(1) output lines. *)
-  val splitter : ?skip:bool ->
-    (<Line| ps: Line.absent;  seq: Line.present; .. as 'a > ->
-     <Line| ps: Line.present; seq: Line.present; .. as 'a >) splitter
+  val splitter : ?skip:bool -> splitter
   (** Split a ps record into {!Line.Ps}. *)
 end
 
 (** Adaptor module for mailcap files (RFC 1524) *)
 module Mailcap : sig
-  val adaptor :
-    (<Line| mailcap: Line.absent;  .. as 'a > ->
-     <Line| mailcap: Line.present; .. as 'a >) adaptor
+  val adaptor : adaptor
   (** Adaptor to parse a mailcap file. *)
-  val fitting :
-    (<Line| mailcap: Line.absent;  .. as 'a > ->
-     <Line| mailcap: Line.present; .. as 'a >) fitting_adaptor
+  val fitting : fitting_adaptor
   (** Fitting for mailcap files. *)
   val reader : Reader.t
   (** Read mailcap file records. *)
-  val splitter :
-    (<Line| mailcap: Line.absent; .. as 'a > ->
-     <Line| mailcap: Line.present; .. as 'a >) splitter
+  val splitter : splitter
   (** Split mailcap file records and fill in {!Line.Mailcap}. *)
 end
 

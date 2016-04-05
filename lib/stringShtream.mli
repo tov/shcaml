@@ -7,10 +7,10 @@
  * for reading and writing [string Stream.t]s.
  *)
 
-(** The parameter given to {!AnyShtream.Make} to build this module. *)
-module StringElem : AnyShtream.ELEM
+(** The parameter given to {!AnyShtream.Make} to build {!StringShtream}. *)
+module StringElem : AnyShtreamSig.ELEM
   with type 'a elem = string
    and type initial = unit
 
 (** The real contents of {!StringShtream}. *)
-include AnyShtream.ANYSHTREAM with module Elem = StringElem
+include AnyShtreamSig.S with module Elem = StringElem

@@ -49,9 +49,9 @@ val make     : [ `Char  of char
  * nonetheless. *)
 val lines        : t
 
-(** {3 Reader Transformers} *)
+(** {2 Reader Transformers}
 
-(** Reader transformers add behavior to a reader. *)
+    Reader transformers add behavior to a reader. *)
 
 val ignore_if    : (string -> bool) -> t -> t
 (** Ignore records satisfying a string predicate.  Given a predicate and

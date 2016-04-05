@@ -15,12 +15,12 @@ let rec bg_list commands kont =
   match commands with
   | []      -> kont []
   | x :: xs -> command x ^&= fun proc ->
-               bg_list xs ^$ fun procs ->
+               bg_list xs @@ fun procs ->
                kont (proc :: procs)
 
-let main args = ignore ^$ run begin
-  bg_list args ^$ fun procs ->
-  ignore ^$ Proc.wait_any procs;
+let main args = ignore @@ run begin
+  bg_list args @@ fun procs ->
+  ignore @@ Proc.wait_any procs;
   List.iter (Proc.kill ~raise:false 9) procs;
   yield (Proc.WEXITED 0)
 end

@@ -2,103 +2,72 @@
  * High-level user utilities.
  *)
 
-(** {2 Type Aliases} *)
+(** {1 Fitting Commands} *)
 
-type 'a fitting = 'a Fitting.t
-  (** Alias for {!Fitting.t} *)
-type 'a shtream = 'a Shtream.t
-  (** Alias for {!Shtream.t} *)
-type 'a line    = 'a Line.t
-  (** Alias for {!Line.t} *)
-type absent     = Line.absent
-  (** Alias for {!Line.absent} *)
-type present    = Line.present
-  (** Alias for {!Line.present} *)
-
-(** {2 Fitting Commands} *)
-
-val ls       : string ->
-               ('a ->
-                <Line| stat: <| mode: present >;
-                       source: present > line) fitting
+val ls       : string -> ('a -> Line.t) Fitting.t
   (** List a directory, with file metadata.  Given the name of a
    * directory, produces a fitting which outputs filenames with
    * {!Line.Stat} present. *)
 
-val from_directory : string ->
-                     ('a -> <Line| source: present > line) fitting
+val from_directory : string -> ('a -> Line.t) Fitting.t
   (** Get the filenames in a directory.  Doesn't provide metadata. *)
 
-val ps       : unit ->
-                ('a -> 
-                  <Line| ps: present; 
-                         seq: present; 
-                         source: present > line) fitting
+val ps       : unit -> ('a -> Line.t) Fitting.t
   (** Get a information about currently running processes.
    * Returns a fitting which outputs {b ps}(1) output with process metadata
    * in the {!Line.Ps} structure. *)
 
-val cut      : ('a line -> string) -> ('a Line.t -> 'a Line.t) fitting
+val cut      : (Line.t -> string) -> (Line.t -> Line.t) Fitting.t
   (** Select a particular field for each line passing through the fitting.
    *  Given a function to show lines, sets {!Line.show} for each line in the
    *  input. *)
 
-val head : int -> ('a -> 'a) fitting
+val head : int -> ('a -> 'a) Fitting.t
   (** [UsrBin.head n] is a fitting that only produces the first [n] 
    *  elements of its input. It leaves the rest for subsequent readers. *)
 
-val head_while : ('a -> bool) -> ('a -> 'a) fitting
+val head_while : ('a -> bool) -> ('a -> 'a) Fitting.t
   (** A fitting that passes through elements satisfying a
    * predicate until encountering one that doesn't.
    * Leaves the remaining elements behind. *)
 
-val behead     : int -> ('a -> 'a) fitting
+val behead     : int -> ('a -> 'a) Fitting.t
   (** [UsrBin.behead n] is a fitting that drops the first [n] lines of
    * its input. *)
 
-val behead_while : ('a -> bool) -> ('a -> 'a) fitting
+val behead_while : ('a -> bool) -> ('a -> 'a) Fitting.t
   (** A fitting that deletes lines satisfying a predicate until reaching
    * one that doesn't. *)
 
-val echo : string -> ('a -> Line.empty Line.t) fitting
+val echo : string -> ('a -> Line.t) Fitting.t
   (** A fitting to print a string. *)
 
-val renumber : int -> 
-  (<Line| .. as 'a>  line ->
-     <Line| seq: present; .. as 'a> line) fitting
+val renumber : int -> (Line.t -> Line.t) Fitting.t
   (** Update the sequence numbers in the lines passing through the pipeline
    *  to reflect the current sequence.  The optional argument [?from] 
    *  (default [0]) specifies the number for the first element. *)
 
-val sort : ?compare:('a line -> 'a line -> int) -> unit ->
-           ('a line -> 'a line) fitting
+val sort : ?compare:(Line.t -> Line.t -> int) -> unit -> (Line.t -> Line.t) Fitting.t
   (** Sort the lines coming into the fitting.  Since {!sort} must eagerly
    * consume its in order to sort it, attempts to sort infinite shtreams
    * will require patience. *)
 
-val uniq : ?equal:('a line -> 'a line -> bool) -> unit ->
-           ('a line -> 'a line) fitting
+val uniq : ?equal:(Line.t -> Line.t -> bool) -> unit -> (Line.t -> Line.t) Fitting.t
   (** Remove (adjacent) duplicate lines from the fitting's input.  When
    * several lines are equal according the the predicate [?equal]
    * (default compares {!Line.show}), discards all but the first.
    *)
 
-(** {2 File Commands} *)
+(** {1 File Commands} *)
 
 val isatty   : Channel.descr -> bool
   (** Is the given file descriptor a tty? *)
 
-val set_stat : ?dir:string ->
-               <Line| stat: absent;
-                            .. as 'a > line ->
-               <Line| stat: <| mode: present >;
-                               source: present;
-                               .. as 'a > line
+val set_stat : ?dir:string -> Line.t -> Line.t
   (** Add file metadata to a {!line}.  Uses the filename
    *  in {!Line.raw} *)
 
-val stat     : string -> 
-               <Line| stat: <| mode: present >; source: present > line
+val stat     : string -> Line.t
   (** Get file metadata for one file.
    * Creates a {!line} with {!Line.Stat} present. *)
 
@@ -183,7 +152,7 @@ module Test : sig
         [file] is both readable and non-empty. *)
 end
 
-(** {2 Other Commands} *)
+(** {1 Other Commands} *)
 
 val backquote : string -> string
   (** Run a command and return its output. *)

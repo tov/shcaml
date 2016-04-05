@@ -88,9 +88,9 @@ let dup_in = function
                       close_in c; c
   | `Null        -> null_in ()
   | #gen_in_channel as g
-                 -> InDisposal.manage ^$
-                      Unix.in_channel_of_descr ^$
-                        Unix.dup ^$ descr_of_gen g
+                 -> InDisposal.manage @@
+                      Unix.in_channel_of_descr @@
+                        Unix.dup @@ descr_of_gen g
 
 let get_flags = function
   | `Clobber    -> [Unix.O_WRONLY; Unix.O_CREAT; Unix.O_TRUNC]
@@ -107,9 +107,9 @@ let rec dup_out = function
   | `Close      -> let c = open_file_out "/dev/null" in
                      close_out c; c
   | #gen_channel as g
-                -> OutDisposal.manage ^$
-                     Unix.out_channel_of_descr ^$
-                       Unix.dup ^$ descr_of_gen g
+                -> OutDisposal.manage @@
+                     Unix.out_channel_of_descr @@
+                       Unix.dup @@ descr_of_gen g
 
 let dup2 =
   let flush_in c =
@@ -154,21 +154,21 @@ let mov2 (source, dest) =
 
 let with_dup (source, dest) thunk =
   let destd = descr_of_gen dest in
-  let saved = option_of_exn {| Unix.dup destd |} in
+  let saved = option_of_exn (fun _ -> Unix.dup destd) in
   begin try
     maybe saved ignore Unix.set_close_on_exec;
     dup2 (source, dest)
   with e -> maybe saved ignore Unix.close; raise e end;
-  unwind_protect thunk {|
+  unwind_protect thunk (fun _ ->
     match saved, dest with
     | None  , _                -> close_gen dest
     | Some d, #gen_in_channel  -> mov2 (`InDescr d, dest)
     | Some d, #gen_out_channel -> mov2 (`OutDescr d, dest)
-  |}
+  )
 
 let rec with_dups dups thunk = match dups with
   | []    -> thunk ()
-  | x::xs -> with_dup x {| with_dups xs thunk |}
+  | x::xs -> with_dup x (fun _ -> with_dups xs thunk)
 
 let rec connect_child =
   let connect_in fd (ifd, ofd) =
@@ -198,11 +198,11 @@ let connect_parent = function
 let open_thunk ?(pipes=[]) ?(dups=[]) thunk =
   let ceci_n'est_pas_une_liste_des_pipes =
       List.map (Unix.pipe % ignore) pipes in
-  let proc = Proc.spawn {|
+  let proc = Proc.spawn (fun _ ->
         List.iter2 connect_child pipes ceci_n'est_pas_une_liste_des_pipes;
         List.iter dup2 dups;
         thunk ()
-      |} in
+      ) in
   proc, List.map2 connect_parent pipes ceci_n'est_pas_une_liste_des_pipes
 
 let stash pid = function
@@ -242,11 +242,11 @@ let open_thunk3 ?procref ?dups thunk =
   | _ -> raise Bug
 
 let protect_thunk kont thunk =
-  IVar.with_interprocess_protect ^$ fun protect ->
-    kont {| protect thunk |}
+  IVar.with_interprocess_protect @@ fun protect ->
+    kont (fun _ -> protect thunk)
 
 let with_command kont command =
-  protect_thunk kont {| Proc.exec command |}
+  protect_thunk kont (fun _ -> Proc.exec command)
 
 let open_command ?pipes ?dups =
   with_command (open_thunk ?pipes ?dups)
@@ -264,7 +264,7 @@ let open_command3 ?procref ?dups =
   with_command (open_thunk3 ?procref ?dups)
 
 let with_program kont ?path prog ?argv0 args =
-  protect_thunk kont {| Proc.exec_program ?path prog ?argv0 args |}
+  protect_thunk kont (fun _ -> Proc.exec_program ?path prog ?argv0 args)
 
 let open_program ?pipes ?dups =
   with_program (open_thunk ?pipes ?dups)
@@ -282,7 +282,7 @@ let open_program3 ?procref ?dups =
   with_program (open_thunk3 ?procref ?dups)
 
 let open_string_in str =
-  open_thunk_in {| print_string str |}
+  open_thunk_in (fun _ -> print_string str)
 
 let string_of_channel c =
   let bufsize = 1024 in
@@ -297,25 +297,25 @@ let string_of_channel c =
 
 let string_of_command ?procref cmd =
   let c = open_command_in ?procref cmd in
-    unwind_protect {| string_of_channel c |} {| close_in c |}
+    unwind_protect (fun _ -> string_of_channel c) (fun _ -> close_in c)
 
 let string_of_program ?procref ?path prog ?argv0 args =
   let c = open_program_in ?procref ?path prog ?argv0 args in
-    unwind_protect {| string_of_channel c |} {| close_in c |}
+    unwind_protect (fun _ -> string_of_channel c) (fun _ -> close_in c)
 
 let with_out_string kont =
-  let subin, subout, suberr = open_thunk3 {|
+  let subin, subout, suberr = open_thunk3 (fun _ ->
     print_string (string_of_channel stdin)
-  |} in
-  unwind_protect {|
+  ) in
+  unwind_protect (fun _ ->
     let r = kont subin in
       close_out subin;
       r, string_of_channel subout
-  |} {|
+  ) (fun _ ->
     close_out subin;
     close_in subout;
     close_in suberr
-  |}
+  )
 
 module Dup = struct
   type dup_arg = dup_source * gen_channel
@@ -390,3 +390,13 @@ let closedir    = DirDisposal.dispose
 let readdir d   = Unix.readdir d.handle
 let rewinddir d = Unix.rewinddir d.handle
 
+let pp_descr fmt descr =
+  Format.fprintf fmt "<descr:%d>" (fd_of_descr descr)
+
+let pp_in_channel fmt ic =
+  Format.fprintf fmt "<in_channel:%d>"
+    (fd_of_descr (descr_of_gen (`InChannel ic)))
+
+let pp_out_channel fmt oc =
+  Format.fprintf fmt "<out_channel:%d>"
+    (fd_of_descr (descr_of_gen (`OutChannel oc)))

@@ -1,7 +1,7 @@
 #!/usr/bin/env ocaml
 
 #use "topfind";;
-#require "shcaml";;
+#require "shcaml.top";;
 
 (** This is a quick one-shot to downsample all the mp3s in the current
     directory into a subdirectory called lofi/.  I actually do this
@@ -15,12 +15,12 @@
 
 let main () =
   let files = 
-    run_source (command "ls" |-
-                grep (Readers.ends_with ".mp3" % Line.show)) in
+    run_source (command "ls" -|
+                grep (Reader.ends_with ".mp3" % Line.show)) in
     mkpath "lofi";
     Shtream.iter (fun l -> 
                     let name = "'" ^ Line.show l ^ "'" in
-                      ignore $
+                      ignore @@
                         Proc.system
                         ("lame --preset sw " ^ name ^ " lofi/" ^ name)) files
 

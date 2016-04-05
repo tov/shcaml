@@ -1,14 +1,14 @@
 #!/usr/bin/env ocaml
 
 #use "topfind";;
-#require "shcaml";;
+#require "shcaml.top";;
 
 open Channel
 open Shtream
 open Util
 
 let gettime args = 
-  Int64.of_string $ 
+  Int64.of_string @@ 
     backquote ("date -d " ^ args ^ " +%s")
 
 let poor_man's_daemonize () =

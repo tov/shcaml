@@ -1,7 +1,7 @@
 #!/usr/bin/env ocaml
 
 #use "topfind";;
-#require "shcaml";;
+#require "shcaml.top";;
 
 let usage  = "[-s SECONDS] [COMMAND ARGS...]"
 let lookup = Flags.go ~usage "-s <SECONDS:int>"

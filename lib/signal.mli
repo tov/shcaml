@@ -1,5 +1,5 @@
 (**
- * Treat UNIX signals as Ocaml exceptions.
+ * Treat UNIX signals as OCaml exceptions.
  *)
 
 (** Raised by {!signal_protect} when a signal is delivered. *)

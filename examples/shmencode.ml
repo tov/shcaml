@@ -124,14 +124,14 @@ let encode album_tags track =
 
 let build_dag (tracks, album) =
   let each (mp3s, prev) track =
-    let wav = DepDAG.make ~prio:1 {|
+    let wav = DepDAG.make ~prio:1 (fun _ ->
                 printf "Ripping  %s\n%!" track.wav;
                 run_bg (rip track)
-              |} prev in
-    let mp3 = DepDAG.make ~prio:2 {|
+              ) prev in
+    let mp3 = DepDAG.make ~prio:2 (fun _ ->
                 printf "Encoding %s\n%!" track.mp3;
                 run_bg (encode album track)
-              |} [wav] in
+              ) [wav] in
     (mp3::mp3s, [wav]) in
   let mp3s, _ = List.fold_left each ([], []) tracks in
     DepDAG.make_par mp3s

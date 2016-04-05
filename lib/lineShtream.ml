@@ -1,13 +1,13 @@
 open Util
 
-type sourced = <Line| seq: Line.present; source: Line.present >
+type sourced = Line.t
 
 let annotate source =
   let counter = ref 0 in
   let each line =
     let seq = !counter in
       counter := seq + 1;
-      Line.set_seq seq ^$ Line.set_source source line in
+      Line.set_seq seq @@ Line.set_source source line in
   Shtream.map each
 
 let parse_raw_lines source =
@@ -15,8 +15,8 @@ let parse_raw_lines source =
   fun raw ->
     let seq = !counter in
       counter := seq + 1;
-      Line.set_seq seq ^$
-        Line.set_source source ^$
+      Line.set_seq seq @@
+        Line.set_source source @@
           Line.line ~before:raw.Reader.before
                     ~after:raw.Reader.after
                     raw.Reader.content
@@ -25,7 +25,7 @@ let line_reader ?(source = `None) reader =
   parse_raw_lines source % reader
 
 module LineElem = struct
-  type 'a elem  = 'a Line.t
+  type 'a elem  = Line.t
   type initial  = sourced
   let reader    () = line_reader Reader.lines
   let string_of () = Line.show
