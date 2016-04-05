@@ -11,10 +11,10 @@ module Config = struct
     | `Error _ -> "" in
 
     [ "NAME", "shcaml";
-      "VERSION", "0.1.3";
-      "CODENAME", "Shmeer";
+      "VERSION", "0.2.0";
+      "CODENAME", "Shmaltz";
 
-      (* shlock shmaltz shadken shanda shaygets shayner shiksa
+      (* shlock shadken shanda shaygets shayner shiksa
          shlemiel shlep shmendrick shmegegge
          shmutzik shnorrer shtik shtetl shtunk
          shvitz
@@ -24,6 +24,7 @@ module Config = struct
          0.1.1 shmooz
          0.1.2 shlimazl
          0.1.3 shmeer
+         0.2.0 shmaltz
        *)
 
       "BUILDTIME", time; ]
