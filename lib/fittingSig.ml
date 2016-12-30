@@ -1,5 +1,5 @@
 (* vim: set ft=ocaml : *)
-(** Generic signature for Fittings *)
+(** Generic signature for Fittings. *)
 
 open Channel
 open Channel.Dup

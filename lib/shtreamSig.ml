@@ -1,5 +1,5 @@
 (* vim: set ft=ocaml : *)
-(** Generic signature for Shtreams *)
+(** Generic signature for Shtreams. *)
 
 module type S = sig
   (** {1 Basic Shtream Operations} *)
@@ -227,7 +227,7 @@ module type S = sig
   (** Possibly change the channel reader of a shtream.  This is like
    * {!set_reader}, but it only changes the reader if the current
    * reader was defaulted rather than supplied by the user.  For
-   * example, if a shtream is created with {!AnyShtream.ANYSHTREAM.of_channel}
+   * example, if a shtream is created with {!AnyShtream.S.of_channel}
    * and the user does not supply its option [?reader] argument, then
    * the reader may be changed by the system using {!hint_reader};
    * but if the user explictly specifies a reader, then {!hint_reader}

@@ -55,9 +55,6 @@ end
  *   [Elem.reader ()].
  * - [?(parse : string -> initial elem)] defaults to [Elem.of_string ()].
  * - [?(show : 'a elem -> string)] defaults to [Elem.string_of ()].
- *
- * This signature is equivalent to {!Fitting.SHTREAM},
- * the input signature of the functor {!Fitting.Make}.
  *)
 module type S = sig
   (** The result of {!AnyShtream.Make} contains all the type-indifferent

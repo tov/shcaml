@@ -29,6 +29,9 @@ module.
   Proc
 }
 
+A {{:#2_Glossary} glossary}, and a {{:#1_Toplevelmodules} complete index of the
+library} can be found at the bottom of this page.
+
 {3 Getting Started}
 
 Shcaml is available in opam. To install it, simply run:
@@ -80,7 +83,7 @@ loaded.  So, run [ocaml], then:
 (**
 > ...
 
-{e N.B. when using [utop] with Shcaml, we advise you pass the
+{e N.B. when using Shcaml with [utop], we advise you pass the
 [-no-short-paths] option when launching [utop].}
 
 {3 Lines}
@@ -165,7 +168,7 @@ let hello_DELIM =
 
 Line.Delim.fields hello_DELIM;;
 (**
-> - : string array = [|"Hello world"; "I'm a line!"|]
+> - : string array = [|"HELLO WORLD"; "I'M A LINE!"|]
 *)
 
 (**

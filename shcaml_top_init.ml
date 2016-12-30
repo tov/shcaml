@@ -1,6 +1,6 @@
 (*
- * Loaded by shcaml.top; installs printers and opens ShcamlCommon for
- * interactive use.  
+ * Loaded by shcaml.top; installs printers and opens common modules
+ * interactive use.
  *)
 
 open Shcaml;;

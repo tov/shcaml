@@ -1,7 +1,7 @@
 OB=ocamlbuild -use-ocamlfind
 ODOCFLAGS=-docflags -colorize-code,-charset,utf8,-stars,-t,"Shcaml",-intro,doc/INDEX
 
-.PHONY: lib top utop plugin postprocess docs cleandoc clean
+.PHONY: lib top utop plugin postprocess doc cleandoc clean
 
 lib:
 	$(OB) shcaml.cma shcaml.cmxa
@@ -25,7 +25,7 @@ plugin:
 postprocess: doc/postprocess.ml
 	$(OB) -package lambdasoup -no-links doc/postprocess.byte
 
-docs: lib plugin postprocess doc/INDEX
+doc: lib plugin postprocess doc/INDEX
 	$(OB) $(ODOCFLAGS) doc/api.docdir/index.html
 	_build/doc/postprocess.byte
 	cp doc/style.css _build/doc/api.docdir/style.css
