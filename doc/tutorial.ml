@@ -1,7 +1,7 @@
 (**
  
 
-OCaml excels at "programming in the large," but for small or
+OCaml excels at "programming in the large", but for small or
 write-once tasks, even the veteran functional programmer often prefers
 a language that feels lighter. Throwaway scripts, however, often live
 longer than expected, and what started as 14 lines of AWK may
