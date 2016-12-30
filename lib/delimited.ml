@@ -148,7 +148,7 @@ let splitter ?(options = default_options) record =
                 else
                   char_of_int(16 * hex_digit record.[i + 2] +
                               hex_digit record.[i + 3]), 4
-      | ('0' .. '7') -> 
+      | ('0' .. '7') ->
           if i + 3 >= limit then
             failwith "Csv.splitter: unfinished \\xHH code"
           else
@@ -363,7 +363,7 @@ module OF = struct
         escapes options field channel limit
       else if options.rec_backslash then
         backslash options field channel 0 0 limit
-      else 
+      else
         failwith "Csv.output_field: options provide insufficient quoting"
     else if options.rec_backslash ||
             options.rec_escapes then
