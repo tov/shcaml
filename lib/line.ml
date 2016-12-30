@@ -183,7 +183,7 @@ module Delim = struct
     Fields.add delim_k { t with options } r
 
   let output channel line =
-    Delimited.output_record channel ~options: (options line) (fields line)
+    Delimited.output_line channel ~options: (options line) (fields line)
 
   let empty = {
     fields = [| |];

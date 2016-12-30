@@ -51,6 +51,5 @@ val splitter : ?options:options -> string -> string array
 (** Output a single field, escaped as necessary for CSV. *)
 val output_field : ?options:options -> out_channel -> string -> unit
 
-(** Output a CSV record, including the newline. *)
-val output_record : ?options:options -> out_channel -> string array -> unit
-
+(** Output a CSV line, including the newline. *)
+val output_line : ?options:options -> out_channel -> string array -> unit

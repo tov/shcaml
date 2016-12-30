@@ -374,7 +374,7 @@ end
 
 let output_field = OF.output_field
 
-let output_record ?(options = default_options) channel record =
+let output_line ?(options = default_options) channel record =
   let limit = Array.length record in
   if limit > 0 then begin
     output_field ~options channel record.(0);

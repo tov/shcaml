@@ -2,13 +2,13 @@ open Util
 open Pcre
 
 module Convert = struct
-  let convert convertor ty loc str =
+  let convert ~tyname ~loc convertor str =
     try convertor str with
     | Failure _ ->
-        Shtream.warn "%s: %s expected, got `%s'" loc ty str
+        Shtream.warn "%s: %s expected, got `%s'" loc tyname str
 
-  let to_int   = convert int_of_string "int"
-  let to_float = convert float_of_string "float"
+  let to_int   = convert ~tyname:"int" int_of_string
+  let to_float = convert ~tyname:"float" float_of_string
 end
 
 type adaptor = Line.t Shtream.t -> Line.t Shtream.t

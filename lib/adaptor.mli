@@ -38,22 +38,22 @@ val make_adaptor : ?reader:Reader.t -> splitter -> adaptor
 module Convert : sig
 
   (** Create a custom conversion.
-   * [Adaptor.Convert.convert conv tyname loc str]
+   * [Adaptor.Convert.convert ~tyname ~loc conv str]
    * applies the conversion [conv] to [str]; if the conversion raises
    * [Failure], then it produces a warning, with [tyname] as the name of
    * the target type and [loc] as the name of the function given in the
    * message. *)
-  val convert : (string -> 'a) -> string -> string -> string -> 'a
+  val convert : tyname:string -> loc:string -> (string -> 'a) -> string -> 'a
 
   (** Convert a string to an integer, with shtream warning on failure.
    * [Convert.to_int loc str] returns [str] as an integer or raises a warning
    * attributed to [loc]. *)
-  val to_int    : string -> string -> int
+  val to_int    : loc:string -> string -> int
 
   (** Convert a string to a float, with shtream warning on failure.
    * [Convert.to_float loc str] returns [str] as a float or raises a warning
    * attributed to [loc]. *)
-  val to_float  : string -> string -> float
+  val to_float  : loc:string -> string -> float
 
 end
 
