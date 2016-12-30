@@ -15,7 +15,6 @@ lib/PriorityQueue
 lib/Proc
 lib/Reader
 lib/Shtream
-lib/ShtreamSig
 lib/Signal
 lib/StringShtream
 lib/Util

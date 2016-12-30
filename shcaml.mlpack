@@ -13,7 +13,6 @@ lib/Proc
 lib/Line
 lib/Channel
 lib/Shtream
-lib/ShtreamSig
 lib/AnyShtream
 lib/StringShtream
 lib/LineShtream

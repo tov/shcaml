@@ -786,7 +786,6 @@ List of all the direct submodules of the {!Shcaml} module:
   Proc
   Reader
   Shtream
-  ShtreamSig
   Signal
   StringShtream
   Util
