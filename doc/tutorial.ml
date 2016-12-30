@@ -679,7 +679,7 @@ run (from_file "file2");;
 The {!Adaptor} module provides record readers and splitters for a
 variety of file formats.  The readers and splitters for each format
 are contained in a submodule named for the format (for instance, the
-functions for {i /etc/mailcap} are in {!Adaptor.Mailcap}.  Record readers
+functions for {i /etc/mailcap} are in {!Adaptor.Mailcap}.  Readers
 read "raw data off the wire".  That is, a reader is a function from an
 [in_channel] to a {!Reader.raw_line}, which is a record of string data,
 possibly including some delimiter junk.
@@ -735,8 +735,8 @@ more formalized sense.  This glossary documents Shcaml (and related)
 - {b raw}: The unprocessed text from which a {!Line.t} was created.
   Accessed with {!Line.raw}.  Use {!Line.show} to get the current
   (possibly processed) text of a line.
-- {b reader}: A function for splitting channel input into records,
-  before analysing the contents of each record.  See {!Reader} for how
+- {b reader}: A function for splitting channel input into raw lines,
+  before analysing the contents of each raw line.  See {!Reader} for how
   {i readers} are defined.  Most {!Adaptor}s also come with a reader
   for their format.
 - {b runner}: A function in {!Fitting} for executing a fitting, which

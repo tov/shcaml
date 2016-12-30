@@ -3,17 +3,18 @@
  * other line fields.
  *
  * Each adaptor module typically contains three functions:
- * - [adaptor] maps a [LineShtream.initial LineShtream.elem LineShtream.t]
- *   to contain the specified data; if the shtream is being read from a
- *   channel, then it hints to the source shtream the proper record
- *   reader to use.
+ * - [adaptor] maps a [Line.t Shtream.t] to a [Line.t Shtream.t]
+ *   where the [Line.t]s have been enriched with additionnal fields,
+ *   containing the specified data parsed from the input line.
+ *   If the shtream is being read from a channel, then it hints to
+ *   the source shtream the proper record reader to use.
  * - [reader] is the record reader for the given kind of file.
  * - [splitter] is the field splitter that can be used on a single
  *   record or mapped over a shtream.
  *)
 
-(** A function on lines.  In particular, an
- * [splitter] takes [Line.t] to [Line.t]. *)
+(** A function on lines, which typically parses the line and add
+     fields corresponding to the structured information extracted. *)
 type splitter = Line.t -> Line.t
 
 (** A function on line shtreams.  In particular, an
