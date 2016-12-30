@@ -8,9 +8,9 @@
  *)
 
 (** The parameter given to {!AnyShtream.Make} to build {!StringShtream}. *)
-module StringElem : AnyShtreamSig.ELEM
+module StringElem : AnyShtream.ELEM
   with type 'a elem = string
    and type initial = unit
 
 (** The real contents of {!StringShtream}. *)
-include AnyShtreamSig.S with module Elem = StringElem
+include AnyShtream.S with module Elem = StringElem

@@ -265,8 +265,8 @@ module type S = sig
   (** {2 Convenient Conversions}
 
    * These conversions use the {!elem} conversions provided to the
-   * {!Fitting.Make} functor by {!AnyShtreamSig.ELEM}.  The conversion
-   * {!AnyShtreamSig.ELEM.string_of} or {!AnyShtreamSig.ELEM.of_string}
+   * {!Fitting.Make} functor by {!AnyShtream.ELEM}.  The conversion
+   * {!AnyShtream.ELEM.string_of} or {!AnyShtream.ELEM.of_string}
    * is completely applied for each of these conversions, so no state
    * (should there be any) is retained in between calls.
   *)

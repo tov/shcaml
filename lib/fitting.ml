@@ -3,7 +3,7 @@ open Util
 open Channel
 open Channel.Dup
 
-module type SHTREAM = AnyShtreamSig.S
+module type SHTREAM = AnyShtream.S
 module type FITTING = FittingSig.S
 
 module Make(Shtream : SHTREAM) = struct
@@ -88,7 +88,7 @@ module Make(Shtream : SHTREAM) = struct
     loop
 
   (*
-   * Interpretation of Fittings 
+   * Interpretation of Fittings
    *)
 
   let has_descr d dups =
@@ -184,7 +184,7 @@ module Make(Shtream : SHTREAM) = struct
           }
         ) in
         run_low.s_s (r.par_fg proc) s
-      | Seq r      -> 
+      | Seq r      ->
         let s1  = run_low.s_s r.seq_fst s in
         let snd = ref None in
         Shtream.from_low
@@ -482,7 +482,7 @@ module Make(Shtream : SHTREAM) = struct
   let (~||) = function
     | x::xs -> List.fold_left (||^) x xs
     | []    -> yield (Proc.WEXITED 1)
-  let commands = 
+  let commands =
     (function
       | x::xs -> List.fold_left (-|) x xs
       | []    -> ~>>[]) % (List.map command)

@@ -1,7 +1,6 @@
 lib/Abort
 lib/Adaptor
 lib/AnyShtream
-lib/AnyShtreamSig
 lib/Channel
 lib/Delimited
 lib/DepDAG

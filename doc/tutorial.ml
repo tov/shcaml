@@ -769,7 +769,6 @@ List of all the direct submodules of the {!Shcaml} module:
   Abort
   Adaptor
   AnyShtream
-  AnyShtreamSig
   Channel
   Delimited
   DepDAG

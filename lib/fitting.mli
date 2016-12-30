@@ -23,10 +23,10 @@ include FittingSig.S
 
 (** The input signature of the functor {!Fitting.Make}.
  *
- * This matches {!AnyShtreamSig.S}, the output signature of
+ * This matches {!AnyShtream.S}, the output signature of
  * {!AnyShtream.Make}.
  * *)
-module type SHTREAM = AnyShtreamSig.S
+module type SHTREAM = AnyShtream.S
 
 (** The output signature of the functor {!Fitting.Make}. *)
 module type FITTING = FittingSig.S

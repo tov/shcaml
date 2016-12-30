@@ -1,7 +1,68 @@
 (* vim: set ft=ocaml : *)
 open Util
 
-module Make (E : AnyShtreamSig.ELEM) = struct
+module type ELEM = sig
+  type 'a elem
+  type initial
+  val reader    : unit -> in_channel -> initial elem
+  val of_string : unit -> string -> initial elem
+  val string_of : unit -> 'a elem -> string
+end
+
+module type S = sig
+  include Shtream.COMMON
+    with type 'a t = 'a Shtream.t
+     and type 'a co_t = 'a Shtream.co_t
+
+  module Elem : ELEM
+
+  type 'a elem = 'a Elem.elem
+  type initial = Elem.initial
+
+  val elem_reader : Reader.t -> (in_channel -> initial elem)
+  val output      : ?channel:out_channel ->
+    ?init:('a elem -> string) ->
+    ?term:('a elem -> string) ->
+    ?show:('a elem -> string) ->
+    'a elem t ->
+    unit
+  val channel_of  : ?procref:Channel.procref ->
+    ?before:(unit -> unit) ->
+    ?after:(unit -> unit) ->
+    ?init:('a elem -> string) ->
+    ?term:('a elem -> string) ->
+    ?show:('a elem -> string) ->
+    'a elem t -> in_channel
+  val string_list_of      : ?show:('a elem -> string) ->
+    'a elem t -> string list
+  val string_stream_of    : ?show:('a elem -> string) ->
+    'a elem t -> string Stream.t
+  val of_channel  : ?reader:(in_channel -> initial elem) ->
+    in_channel -> initial elem t
+  val of_file     : ?reader:(in_channel -> initial elem) ->
+    string -> initial elem t
+  val of_command  : ?procref:Channel.procref ->
+    ?dups:Channel.dup_spec ->
+    ?reader:(in_channel -> initial elem) ->
+    string ->
+    initial elem t
+  val of_program  : ?procref:Channel.procref ->
+    ?dups:Channel.dup_spec ->
+    ?reader:(in_channel -> initial elem) ->
+    ?path:bool -> string -> ?argv0:string -> string list ->
+    initial elem t
+  val of_thunk  : ?procref:Channel.procref ->
+    ?dups:Channel.dup_spec ->
+    ?reader:(in_channel -> initial elem) ->
+    (unit -> unit) ->
+    initial elem t
+  val of_string_list   : ?parse:(string -> initial elem) ->
+    string list -> initial elem t
+  val of_string_stream : ?parse:(string -> initial elem) ->
+    string Stream.t -> initial elem t
+end
+
+module Make (E : ELEM) : (S with module Elem = E) = struct
   include Shtream
 
   module Elem = E
