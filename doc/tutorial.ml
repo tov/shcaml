@@ -687,7 +687,7 @@ read "raw data off the wire".  That is, a reader is a function from an
 [in_channel] to a {!Reader.raw_line}, which is a record of string data,
 possibly including some delimiter junk.
 Splitters do field-splitting.  Given a line, they will use the {!Line.raw}
-data in the line to produce a line the relevant fields.  In
+data in the line to produce a new line with the relevant fields.  In
 addition to readers and splitters, each module exports an [adaptor]
 function that is used to transform shtreams of lines by using the
 [reader] and [splitter] functions (they all have these names by
