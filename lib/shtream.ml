@@ -118,7 +118,7 @@ let of_stream stream =
 
 (* Error handling *)
 
-type error_handler = [`Warning of string | `Exception of exn] -> unit 
+type error_handler = [`Warning of string | `Exception of exn] -> unit
 
 let string_of_shtream_error = function
   | `Warning w   -> w
@@ -238,7 +238,7 @@ let is_empty s = match next' s with
  | None   -> true
  | _      -> false
 
-let status s = 
+let status s =
   ignore (peek s);
   match s.data with
  | TheEnd n -> Some n

@@ -9,7 +9,7 @@ let fix_include_with file signame to_add =
     |> filter (fun n -> (n $ "a" |> R.leaf_text) = signame)
     |> R.first in
   (* make this function idempotent *)
-  enclosing_pre $ "a" $$ "~ *" |> iter delete; 
+  enclosing_pre $ "a" $$ "~ *" |> iter delete;
   append_child enclosing_pre (parse to_add);
   write_file file (to_string soup)
 
