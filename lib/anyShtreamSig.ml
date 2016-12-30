@@ -1,5 +1,7 @@
 (* vim: set ft=ocaml : *)
 
+(** Signatures used in {!AnyShtream}. *)
+
 (** The input signature of the functor {!AnyShtream.Make}. *)
 module type ELEM = sig
 (** The element type may be polymorphic, in which case the conversion

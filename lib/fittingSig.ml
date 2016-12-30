@@ -1,4 +1,5 @@
 (* vim: set ft=ocaml : *)
+(** Generic signature for Fittings *)
 
 open Channel
 open Channel.Dup
@@ -6,7 +7,7 @@ open Channel.Dup
 module type S = sig
 
   (** {1 Types} *)
-  
+
   (** A fitting that consumes values of type ['a] and produces
    * values of type ['b].
   *)
@@ -53,7 +54,7 @@ module type S = sig
   (** Produce the contents of a file.
    * [from_file file -| fitting] is like {v     % fitting < file v} *)
   val from_null   : ('i -> text) t
-  (** Produce nothing.  
+  (** Produce nothing.
    * [from_null -| fitting] is like {v     % fitting < /dev/null v} *)
   val from_gen    : Channel.dup_in_source -> ('i -> text) t
   (** Produce the contents of a {!Channel.dup_in_source}. *)
@@ -186,7 +187,7 @@ module type S = sig
   (** Run a list of fittings in sequence with {!(||^)}.
    * Terminates the sequence when any component succeeds. *)
   val commands    : string list     -> (text -> text) t
-  (** Run a list of commands, piping the output of each 
+  (** Run a list of commands, piping the output of each
    * into the next. *)
 
   val yield      : Proc.status -> ('i -> 'o) t
@@ -232,7 +233,7 @@ module type S = sig
    * will take its input from the standard input. *)
 
   val run_shtream : ('i -> 'o) t  -> 'i shtream -> 'o shtream
-  (** 
+  (**
    * Transform a fitting into a shtream transformer.
   *)
 

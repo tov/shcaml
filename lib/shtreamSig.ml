@@ -1,7 +1,9 @@
 (* vim: set ft=ocaml : *)
-(** {1 Basic Shtream Operations} *)
+(** Generic signature for Shtreams *)
 
 module type S = sig
+  (** {1 Basic Shtream Operations} *)
+
   type 'a t
   type 'a co_t
 
@@ -24,7 +26,7 @@ module type S = sig
   val list_of     : 'a t -> 'a list
   (** Return the contents of a shtream as a list.  If the shtream is
    * infinite, this function won't terminate. *)
-  val of_stream   : 'a Stream.t -> 'a t 
+  val of_stream   : 'a Stream.t -> 'a t
   (** Convert a {i standard library} [Stream.t] to a shtream. *)
   val stream_of   : 'a t -> 'a Stream.t
   (** Convert a shtream to a {i standard library} [Stream.t]. *)
@@ -76,7 +78,7 @@ module type S = sig
   val filter      : ('a -> bool) -> 'a t -> 'a t
   (** Lazily filter a shtream according to a predicate.
    * [Shtream.filter pred s] returns a new
-   * shtream containing all the elements of [s] that satisfy [pred]. 
+   * shtream containing all the elements of [s] that satisfy [pred].
    * The order of the elements is preserved, and [s] becomes
    * invalid. *)
   val map         : ('a -> 'b) -> 'a t -> 'b t
@@ -139,7 +141,7 @@ module type S = sig
    * [st].
   *)
 
-  type error_handler = [`Warning of string | `Exception of exn] -> unit 
+  type error_handler = [`Warning of string | `Exception of exn] -> unit
   (** The type for a shtream error handler.  If a shtream generator
    * calls [warn s] then the error handler receives [`Warning s].  If
    * a shtream generator raises an exception [e], then the error_handler

@@ -107,14 +107,14 @@ let hello = Line.line "hello world, I'm a line!";;
 (**
 I know it looks like [hello] has our greeting in it, but at the moment
 it doesn't contain any structured information. What gives?  Well, all
-lines are constructed from a raw string, in this case ["hello world,
-I'm a line!"].  But that doesn't actually tell us any useful
-information about what kind of data is in that string.  Let's suppose
-that [hello] were a line that came from a comma-delimited file.  Then
-we would want to think of it as delimited input, rather than simply a
-string.  Lines represent delimited input simply as a list of strings.
-Let's turn our empty line into a more structured piece of data.  We'll
-use [Pcre.asplit] to parse the string into an array.
+lines are constructed from a raw string, in this case ["hello world, I'm a line!"].
+But that doesn't actually tell us any useful information about what
+kind of data is in that string.  Let's suppose that [hello] were a
+line that came from a comma-delimited file.  Then we would want to
+think of it as delimited input, rather than simply a string.  Lines
+represent delimited input simply as a list of strings.  Let's turn our
+empty line into a more structured piece of data.  We'll use
+[Pcre.asplit] to parse the string into an array.
 *)
 
 let hello_delim =
@@ -293,7 +293,7 @@ Shtream.next stdin_shtream;;
 
 (**
 > hello, there. (you type this)
-> 
+>  
 > - : string = "hello, there."
 *)
 
@@ -317,8 +317,9 @@ let newstdin = Shtream.channel_of print_endline stdin_shtream;;
 > val newstdin : in_channel = <in_channel:4>
 *)
 input_line newstdin;;
-Hi again!
 (**
+> Hi again!
+>  
 > - : string = "  Hi again!"
 *)
 
