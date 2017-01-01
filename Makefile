@@ -25,7 +25,7 @@ plugin:
 postprocess: doc/postprocess.ml
 	$(OB) -package lambdasoup -no-links doc/postprocess.byte
 
-doc: lib plugin postprocess doc/INDEX
+doc: lib postprocess doc/INDEX
 	$(OB) $(ODOCFLAGS) doc/api.docdir/index.html
 	_build/doc/postprocess.byte
 	cp doc/style.css _build/doc/api.docdir/style.css

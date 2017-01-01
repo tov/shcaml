@@ -7,5 +7,3 @@ true: package(pcre), package(hmap), package(unix), package(lwt.unix)
 <shtop.*>: package(compiler-libs)
 <shutop.*>: package(compiler-libs), package(utop), thread
 <myutop_main.*>: package(utop)
-
-<doc/*.docdir>: plugin(doc/plugin.cma)
