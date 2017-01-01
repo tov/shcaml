@@ -1,23 +1,11 @@
 OB=ocamlbuild -use-ocamlfind
 ODOCFLAGS=-docflags -colorize-code,-charset,utf8,-stars,-t,"Shcaml",-intro,doc/INDEX
 
-.PHONY: lib top utop plugin postprocess doc cleandoc clean
+.PHONY: lib plugin postprocess doc upload_doc cleandoc clean
 
 lib:
 	$(OB) shcaml.cma shcaml.cmxa
 	$(OB) shcaml_top.cma shcaml_top.cmxa
-
-top:
-	$(OB) shtop.top
-
-utop:
-	$(OB) shutop.top
-
-runtop: top
-	rlwrap ./shtop.top -I _build
-
-runutop: utop
-	./shutop.top -I _build
 
 plugin:
 	$(OB) -cflags -I,+ocamldoc -package compiler-libs doc/plugin.cmxs
