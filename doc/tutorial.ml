@@ -88,7 +88,7 @@ loaded.  So, run [ocaml], then:
 
 {3 Lines}
 
-{e For Shcaml versions <TODO> and greater, the implementation and interface of
+{e For Shcaml versions 0.2.0 and greater, the implementation and interface of
 {!Line} differs from what is described in the
 {{:http://users.eecs.northwestern.edu/~jesse/pubs/caml-shcaml/} Shcaml paper}.
 The [Line.t] having a phantom parameter with row polymorphism has been replaced
