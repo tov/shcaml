@@ -732,4 +732,24 @@ let line ?(after = "\n") ?(before = "") raw =
   |> Fields.add before_k before
 
 let pp fmt line =
-  Format.fprintf fmt "<line:\"%s\">" (String.escaped (show line))
+  let additional_labels =
+    Fields.fold (fun (Fields.B (k, _)) acc ->
+      (Fields.Key.info k :> label) :: acc
+    ) line []
+    |> List.filter (fun l ->
+      not (List.mem l [Raw; Show; Source; Seq; After; Before])
+    )
+  in
+  let b = Buffer.create 15 in
+  let rec loop = function
+    | [] -> ()
+    | [l] -> Buffer.add_string b (string_of_label l)
+    | l::ls ->
+      Buffer.add_string b (string_of_label l);
+      Buffer.add_char b ' ';
+      loop ls
+  in
+  loop additional_labels;
+  Format.fprintf fmt "<line:\"%s\"|%s>"
+    (String.escaped (show line))
+    (Buffer.contents b)
