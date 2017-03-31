@@ -43,7 +43,7 @@ Shcaml should now be installed.  Try the following:
 > # #use "topfind";;
 > ...
 > # #require "shcaml.top";;
->         Caml-Shcaml version 0.1.3 (Shmeer)
+>         Caml-Shcaml version %%VERSION%% (%%CODENAME%%)
 *)
 
 (**

@@ -5,4 +5,4 @@ let () =
   Topdirs.dir_use silently "shcaml_top_init.ml";
   if !Sys.interactive
   then Printf.printf "\tCaml-Shcaml version %s (%s)\n\n%!"
-      Version.version Version.version_name
+      Shcaml.Version.version Shcaml.Version.version_name

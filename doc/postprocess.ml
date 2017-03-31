@@ -14,7 +14,7 @@ let fix_include_with file signame to_add =
   write_file file (to_string soup)
 
 let _ =
-  Unix.chdir "api.docdir";
+  Unix.chdir "doc/api.docdir";
 
   fix_include_with "Fitting.html" "FittingSig.S"
     {|<code class="type">
