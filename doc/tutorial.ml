@@ -156,6 +156,12 @@ Line.Delim.fields hello;;
 So we get an exception, because [hello] does not contain a [delim]
 field; while we added one to [hello_delim] using {!Line.Delim.create}.
 
+{e Caveat: as of now (OCaml 4.04), when using the toplevel, the name
+of the field is not shown when [Field_not_found] is raised, and
+[<extension>] is printed instead. This is due to the
+{{: https://caml.inria.fr/mantis/view.php?id=7156} following bug}, that
+hasn't been fixed yet.}
+
 Now, suppose we wanted to uppercase the strings in the [Delim.fields]
 list:
 *)
