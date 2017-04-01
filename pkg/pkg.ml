@@ -29,7 +29,7 @@ let build_cmd c os files =
   )
 
 let build = Pkg.build ~cmd:build_cmd ()
-let opams = [Pkg.opam_file ~lint_deps_excluding:(Some ["cppo"]) "opam"]
+let opams = [Pkg.opam_file ~lint_deps_excluding:(Some ["cppo"; "lambdasoup"]) "opam"]
 let distrib =
   let watermarks = ("CODENAME", `String codename) :: Pkg.watermarks in
   Pkg.distrib ~watermarks ()

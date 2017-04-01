@@ -1,6 +1,6 @@
 # Shcaml
 
-Caml-Shcaml is an Ocaml library for Unix shell programming.
+Shcaml is an OCaml library for Unix shell programming.
 
 Unix shells provide easy access to Unix functionality such as pipes, signals,
 file descriptor manipulation, and the file system. Shcaml hopes to excel at
@@ -18,5 +18,5 @@ instructions.
 ## Documentation & tutorial
 
 You can find Shcaml's documentation (including a tutorial) online at
-http://www.ccs.neu.edu/~tov/code/shcaml/doc/ or build a local copy with `make
-docs`.
+http://tov.github.io/doc/shcaml or build a local copy with `make
+doc`.
