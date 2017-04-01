@@ -104,7 +104,7 @@ the passwd file, or the output of {i ps}.  Let's make one:
 let hello = Line.line "hello world, I'm a line!";;
 
 (**
-> val hello : Shcaml.Line.t = <line:"hello world, I'm a line!">
+> val hello : Shcaml.Line.t = <line:"hello world, I'm a line!"|>
 *)
 
 (**
@@ -126,7 +126,7 @@ let hello_delim =
     hello;;
 
 (**
-> val hello_delim : Shcaml.Line.t = <line:"hello world, I'm a line!">
+> val hello_delim : Shcaml.Line.t = <line:"hello world, I'm a line!"|delim>
 *)
 
 (**
@@ -140,7 +140,9 @@ Line.Delim.fields hello_delim;;
 
 (**
 We just added some structured information to the previously "empty"
-line. Now consider, [hello] does not have a [delim] field.  What would
+line. This is indicated by the "[|delim>]" bit printed after the line
+contents: it indicates the presence of a "[delim]" structured field.
+Now consider, [hello] does not have a [delim] field.  What would
 happen if we try to get the [Delim.fields] list from [hello]?
 *)
 
@@ -160,10 +162,10 @@ list:
 
 let hello_DELIM =
   Line.Delim.set_fields
-    (Array.map String.uppercase (Line.Delim.fields hello_delim))
+    (Array.map String.uppercase_ascii (Line.Delim.fields hello_delim))
     hello_delim;;
 (**
-> val hello_DELIM : Shcaml.Line.t = <line:"hello world, I'm a line!">
+> val hello_DELIM : Shcaml.Line.t = <line:"hello world, I'm a line!"|delim>
 *)
 
 Line.Delim.fields hello_DELIM;;
@@ -177,7 +179,7 @@ To wrap it up, we can define a function that does just that:
 
 let uppercase_delims ln =
       Line.Delim.set_fields
-        (Array.map String.uppercase (Line.Delim.fields ln))
+        (Array.map String.uppercase_ascii (Line.Delim.fields ln))
  	ln;;
 (**
 > val uppercase_delims : Shcaml.Line.t -> Shcaml.Line.t = <fun>
@@ -197,14 +199,14 @@ It builds character.)  We'll start by making a delimited list of the fields:
 let root = Line.line "root:x:0:0:Enoch Root:/root:/bin/shcaml";;
 (**
 > val root : Shcaml.Line.t =
->   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml">
+>   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|>
 *)
 
 let root_delim = Line.Delim.create
   (Pcre.asplit ~pat:":" (Line.show root)) root;;
 (**
 > val root_delim : Shcaml.Line.t =
->   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml">
+>   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|delim>
 *)
 
 (**
@@ -234,7 +236,7 @@ will be discussed below).  Let's try it out:
 let root_pw = passwd_of_delim root_delim;;
 (**
 > val root_pw : Shcaml.Line.t =
->   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml">
+>   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|passwd delim>
 *)
 
 Line.Passwd.uid root_pw;;
@@ -254,7 +256,7 @@ when they tried to [show] [root_pw]:
 
 let root_un = Line.select Line.Passwd.name root_pw;;
 (**
-> val root_un : Shcaml.Line.t = <line:"root">
+> val root_un : Shcaml.Line.t = <line:"root"|passwd delim>
 *)
 
 Line.show root_un;;
@@ -520,7 +522,7 @@ let pw_shtream = run_source
 
 Shtream.next pw_shtream;;
 (**
-> - : Shcaml.Line.t = <line:"root:x:0:0:root:/root:/bin/bash">
+> - : Shcaml.Line.t = <line:"root:x:0:0:root:/root:/bin/bash"|passwd>
 *)
 
 (**
