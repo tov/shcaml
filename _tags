@@ -5,3 +5,4 @@ true: package(pcre), package(hmap), package(unix)
 <lib/*.{cmo,cmx}> and not <lib/shcaml*>: for-pack(Shcaml)
 <lib/shcaml_top.*>: package(compiler-libs)
 <doc/postprocess.*>: package(lambdasoup)
+<doc/api.docdir/*>: html

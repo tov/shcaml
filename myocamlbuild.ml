@@ -6,7 +6,6 @@ let generate_INDEX env build =
 let build_shcaml_doc env build =
   let generate_html =
     Ocamlbuild_pack.Ocaml_tools.document_ocaml_project
-      ~tags:["html"]
       ~ocamldoc:Ocamlbuild_pack.Ocaml_tools.ocamldoc_l_dir
       "doc/api.odocl"
       "doc/api.docdir/index.html"
