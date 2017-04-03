@@ -18,7 +18,7 @@ instructions.
 ## Documentation & tutorial
 
 You can find Shcaml's documentation (including a tutorial) online at
-http://tov.github.io/doc/shcaml or build a local copy with `make
+http://tov.github.io/shcaml/doc or build a local copy with `make
 doc`.
 
 See also the [companion
