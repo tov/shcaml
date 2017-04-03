@@ -2,13 +2,13 @@ open Util
 open Pcre
 
 module Convert = struct
-  let convert convertor ty loc str =
+  let convert ~tyname ~loc convertor str =
     try convertor str with
     | Failure _ ->
-        Shtream.warn "%s: %s expected, got `%s'" loc ty str
+        Shtream.warn "%s: %s expected, got `%s'" loc tyname str
 
-  let to_int   = convert int_of_string "int"
-  let to_float = convert float_of_string "float"
+  let to_int   = convert ~tyname:"int" int_of_string
+  let to_float = convert ~tyname:"float" float_of_string
 end
 
 type adaptor = Line.t Shtream.t -> Line.t Shtream.t
@@ -255,7 +255,7 @@ module Stat = struct
 
   let modeify bits =
     let is_set n = (bits land n) > 0 in
-      Line.Stat.Mode.create 
+      Line.Stat.Mode.create
         ~bits:   bits
         ~xoth:   (is_set 0o0001)
         ~woth:   (is_set 0o0002)
@@ -270,7 +270,7 @@ module Stat = struct
         ~sgid:   (is_set 0o2000)
         ~suid:   (is_set 0o4000)
 
-  let splitter ?dir file = 
+  let splitter ?dir file =
     let filename = match dir with
       | Some d -> Filename.concat d (Line.raw file)
       | _      -> Line.raw file in
@@ -313,7 +313,7 @@ module Ps = struct
     match split_string (Line.raw line) with
     | [| user; pid; pcpu; pmem; vsz; rss;
          tt; stat; started; time; command; |] ->
-        Line.Ps.create 
+        Line.Ps.create
           ~user
           ~pcpu:(Convert.to_float loc pcpu)
           ~pmem:(Convert.to_float loc pmem)

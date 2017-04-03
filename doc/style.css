@@ -14,9 +14,9 @@ table { border-collapse: collapse; border-spacing: 0; }
 
 /* Basic page layout */
 
-body { font: normal 10pt/1.375em helvetica, arial, sans-serif; text-align:left;
+body { font: normal 12pt/1.375em helvetica, arial, sans-serif; text-align:left;
        margin: 1.375em 10%; min-width: 40ex; max-width: 72ex;
-       color: black; background: white /* url(line-height-22.gif) */; }
+       color: black; background: #FAFAFA /* url(line-height-22.gif) */; }
 
 b { font-weight: bold }
 em { font-style: italic }
@@ -27,7 +27,7 @@ pre code { font-size : inherit; }
 .verbatim { margin-bottom:1.375em /* after code example we introduce space. */ }
 
 pre { padding: 5px; }
-/* code.code, */ pre.codepre, pre.verbatim { background-color: #f2f2f2; border-radius: 3px; }
+/* code.code, */ pre.codepre, pre.verbatim { background-color: #E9E9E9; border-radius: 3px; }
 code.code { font-size: 95%; padding: 0.1em 0.2em; }
 pre.codepre code.code { padding: 0; }
 

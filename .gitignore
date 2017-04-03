@@ -1,7 +1,4 @@
 .*sw?
-META
-shtop.top
-shutop.top
 lib/flags.ml
 doc/INDEX
 doc/api.docdir
@@ -12,3 +9,6 @@ doc/man
 *.cmx
 *.doc
 *.doci
+_build
+shcaml.install
+api.docdir

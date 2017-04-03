@@ -1,4 +1,5 @@
 opam-version: "1.2"
+authors: "Jesse A. Tov <jesse.tov@gmail.com>"
 maintainer: "Armael <armael@isomorphis.me>"
 homepage: "https://github.com/tov/shcaml"
 dev-repo: "git+https://github.com/tov/shcaml.git"
@@ -7,12 +8,16 @@ license: "MIT"
 available: [ ocaml-version >= "4.02.0" ]
 depends: [ "ocamlfind" {build}
            "ocamlbuild" {build}
+           "topkg" {build & >= "0.9.0"}
+           "cppo" {build}
            "pcre"
            "hmap"
-           "lwt"
          ]
+depopts: [ "lwt" ]
 build:
 [
-  [ "ocaml" "pkg/build.ml" "native=%{ocaml-native}%"
-                           "native-dynlink=%{ocaml-native-dynlink}%" ]
+  [ "ocaml" "pkg/pkg.ml" "build"
+      "--dev-pkg" "%{pinned}%"
+      "--with-lwt" "%{lwt:installed}%"
+  ]
 ]

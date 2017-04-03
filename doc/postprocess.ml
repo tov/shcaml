@@ -9,12 +9,12 @@ let fix_include_with file signame to_add =
     |> filter (fun n -> (n $ "a" |> R.leaf_text) = signame)
     |> R.first in
   (* make this function idempotent *)
-  enclosing_pre $ "a" $$ "~ *" |> iter delete; 
+  enclosing_pre $ "a" $$ "~ *" |> iter delete;
   append_child enclosing_pre (parse to_add);
   write_file file (to_string soup)
 
 let _ =
-  Unix.chdir "api.docdir";
+  Unix.chdir "doc/api.docdir";
 
   fix_include_with "Fitting.html" "FittingSig.S"
     {|<code class="type">
@@ -23,18 +23,18 @@ let _ =
    and type 'a shtream   = 'a <a href="LineShtream.html">LineShtream</a>.t
    and type 'a coshtream = 'a <a href="LineShtream.html">LineShtream</a>.co_t</code>|};
 
-  fix_include_with "LineShtream.html" "AnyShtreamSig.S"
+  fix_include_with "LineShtream.html" "AnyShtream.S"
     {|<code class="type"> with module Elem = <a href="LineShtream.LineElem.html">LineElem</a></code>|};
 
-  fix_include_with "StringShtream.html" "AnyShtreamSig.S"
+  fix_include_with "StringShtream.html" "AnyShtream.S"
     {|<code class="type"> with module Elem = <a href="StringShtream.StringElem.html">StringElem</a></code>|};
 
-  fix_include_with "AnyShtreamSig.S.html" "Shtream.COMMON"
+  fix_include_with "AnyShtream.S.html" "Shtream.COMMON"
     {|<code class="type">
   with type 'a t    = 'a <a href="Shtream.html">Shtream</a>.t
    and type 'a co_t = 'a <a href="Shtream.html">Shtream</a>.co_t</code>|};
 
-  fix_include_with "Shtream.html" "ShtreamSig.S"
+  fix_include_with "Shtream.html" "Shtream.COMMON"
     {|<code class="type">
   with type 'a t    := 'a <a href="Shtream.html#TYPEt">t</a>
    and type 'a co_t := 'a <a href="Shtream.html#TYPEco_t">co_t</a></code>|}

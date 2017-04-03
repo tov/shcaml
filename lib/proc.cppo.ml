@@ -72,6 +72,20 @@ let rec wait_and_save ?(pid = -1) flags =
   with Unix.Unix_error (Unix.EINTR, "waitpid", _)
     -> wait_and_save ~pid flags
 
+(* Because of what is apparenly a bug in Utop
+ * (https://github.com/diml/utop/issues/152), we have to use [Lwt_unix.fork]
+ * instead of [Unix.fork] in shcaml for it to work with Utop.
+
+ * As a workaround, we depend optionally on lwt, and detect at compile time if
+ * it is installed. If so, we use [Lwt_unix.fork].
+ *)
+let system_fork =
+#ifdef WITH_LWT
+  Lwt_unix.fork
+#else
+  Unix.fork
+#endif
+
 (* We need to block SIGCHLD while forking, because otherwise there's a
  * race condition between the child exiting and the parent adding the
  * child to its known process table.
@@ -115,7 +129,7 @@ let rec handle_sigchld num =
 
 let autoreap ()       = handle_sigchld Sys.sigchld
 let don't_autoreap () = Sys.set_signal Sys.sigchld Sys.Signal_default
-      
+
 let rec wait proc =
   if not proc.child then raise Not_child;
   match proc.status with

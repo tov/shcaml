@@ -1,4 +1,4 @@
-(** Parsers for delmited text formats, especially CSV.  This module
+(** Parsers for delimited text formats, especially CSV.  This module
  * provides a record reader, field splitter, and printer.
  * The delimiter, quoting, and whitespace behavior are all
  * configurable. *)
@@ -39,11 +39,11 @@ type options = {
  *)
 val default_options : options
 
-(** The CSV reader.  Splits a file into records, but doesn't interpret
+(** The CSV reader.  Splits a file into raw lines, but doesn't interpret
  * any quoting; that is, you get out what you put in. *)
-val reader   : ?options:options -> in_channel -> Reader.raw_line
+val reader   : ?options:options -> Reader.t
 
-(** The CSV splitter.  Given a single CSV record, splits it into
+(** The CSV splitter.  Given a single CSV raw line content, splits it into
  * fields and interprets quoting and escaping properly to recover
  * the original strings. *)
 val splitter : ?options:options -> string -> string array
@@ -51,6 +51,5 @@ val splitter : ?options:options -> string -> string array
 (** Output a single field, escaped as necessary for CSV. *)
 val output_field : ?options:options -> out_channel -> string -> unit
 
-(** Output a CSV record, including the newline. *)
-val output_record : ?options:options -> out_channel -> string array -> unit
-
+(** Output a CSV line, including the newline. *)
+val output_line : ?options:options -> out_channel -> string array -> unit

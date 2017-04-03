@@ -1,7 +1,6 @@
 lib/Abort
 lib/Adaptor
 lib/AnyShtream
-lib/AnyShtreamSig
 lib/Channel
 lib/Delimited
 lib/DepDAG
@@ -16,7 +15,6 @@ lib/PriorityQueue
 lib/Proc
 lib/Reader
 lib/Shtream
-lib/ShtreamSig
 lib/Signal
 lib/StringShtream
 lib/Util

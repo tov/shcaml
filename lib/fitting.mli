@@ -21,19 +21,9 @@ include FittingSig.S
 
 (** {1 Functorial Interface} *)
 
-(** The input signature of the functor {!Fitting.Make}.
- *
- * This matches {!AnyShtreamSig.S}, the output signature of
- * {!AnyShtream.Make}.
- * *)
-module type SHTREAM = AnyShtreamSig.S
-
-(** The output signature of the functor {!Fitting.Make}. *)
-module type FITTING = FittingSig.S
-
-(** Build a new fittings module.  The {!SHTREAM} parameter {!Shtream} specifies
- * the underlying shtream implementation to use. *)
-module Make(Shtream : SHTREAM) : FITTING
+(** Build a new fittings module. The {!Shtream} parameter specifies the
+    underlying shtream implementation to use. *)
+module Make(Shtream : AnyShtream.S) : FittingSig.S
   with type initial      = Shtream.initial
    and type 'a elem      = 'a Shtream.elem
    and type 'a shtream   = 'a Shtream.t

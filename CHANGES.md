@@ -1,3 +1,17 @@
+Caml-Shcaml 0.2.0
+-----------------
+
+- Drop the dependency on camlp4, mainly by replacing the static typing of
+  structured fields by a lighter, dynamically-checked discipline. This trades
+  static guarantees for maintenability.
+
+- Build system changes, switch to ocamlbuild+topkg
+
+- Some API refactoring; improve API browsing at the price of some signature
+  duplication in the source.
+
+- Documentation improvements
+
 Caml-Shcaml 0.1.2
 -----------------
 - [23 Sep 2008] We no longer distinguish input and output dups.  This

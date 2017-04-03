@@ -1,15 +1,16 @@
-(** Readers are responsible for breaking input data into records.
- * A reader need not be concerned with the meaning of data {i in} a
- * record.  Its goal is merely to determine record boundaring.  Given an
- * [in_channel] from which to read, a reader must produce a string
- * containing one record from the channel, and should also keep track of
- * any non-data (formatting or record separators) that it encounters,
- * making its operation somewhat invertible.
- *)
+(** Readers are responsible for breaking input data into pieces, or
+ "raw lines". A [Reader.t] need not be concerned with the meaning of
+ data {i in} a line. Its goal is merely to determine boundaires. Given
+ an [in_channel] from which to read, a reader reads some data, and
+ produces a [Reader.raw_line] record. It should keep track of any
+ non-data (formatting or record separators) that it encounters, using
+ the [before] and [after] fields, making its operation somewhat
+ invertible.
+*)
 
-(** An untyped record as returned by a reader *)
+(** An raw line as returned by a reader *)
 type raw_line = {
-  content : string; (** The data of the record *)
+  content : string; (** The data of the line *)
   before  : string; (** Delimiting text from before the data *)
   after   : string; (** Delimiting text from after the data *)
 }
@@ -18,20 +19,20 @@ type raw_line = {
  * channel. *)
 type t = in_channel -> raw_line
 
-(** Construct an untyped record from its contents.  The optional
+(** Construct an raw line from its contents.  The optional
  * parameter [?before] defaults to [""] and [?after] defaults to
  * ["\n"]. *)
 val raw_of_string : ?before:string -> ?after:string -> string -> raw_line
 
 (** Construct a reader with a predefined behavior.
- * - [`Char c] means that records are terminated by the character [c].
- * - [`Set s] means that records are separated by a sequence of one or
- * more characters from the string [s].  Record separator characters may
+ * - [`Char c] means that raw lines are terminated by the character [c].
+ * - [`Set s] means that raw lines are separated by a sequence of one or
+ * more characters from the string [s].  Line separator characters may
  * be returned in either the preceding or following {!raw_line}.
- * - [`Fixed (n, m)] means that records comprise [n] characters of data
+ * - [`Fixed (n, m)] means that raw lines comprise [n] characters of data
  * followed by [m] characters of garbage.
  * - [`Buf f] uses the function [f] to determine whether the input
- * buffer contains a complete record.  If [f] returns [Some r], then [r]
+ * buffer contains a complete raw line.  If [f] returns [Some r], then [r]
  * is returns the buffer is flushed; otherwise, one more character is
  * read and then [f] is tried again.  At end-of-file, [f] is passed
  * [~eof:true].
@@ -44,7 +45,7 @@ val make     : [ `Char  of char
                | `Buf   of eof:bool -> Buffer.t -> raw_line option ]
                -> t
 
-(** Read newline-terminated lines.  If the last line is not
+(** Read newline-terminated raw lines.  If the last line is not
  * newline-terminated, a newline is stored in the trailing delimiter
  * nonetheless. *)
 val lines        : t
@@ -54,13 +55,13 @@ val lines        : t
     Reader transformers add behavior to a reader. *)
 
 val ignore_if    : (string -> bool) -> t -> t
-(** Ignore records satisfying a string predicate.  Given a predicate and
- * a reader, returns a new reader that skips records whose content
+(** Ignore raw lines satisfying a string predicate.  Given a predicate and
+ * a reader, returns a new reader that skips lines whose content
  * satisfies the predicate. *)
 val join_on      : char -> t -> t
-(** Read records with a line continuation character.  If a record
+(** Read raw lines with a line continuation character.  If a line
  * ends with the given character, the character will be removed and the
- * next record will be concatenated. *)
+ * next line will be concatenated. *)
 
 val empty        : string -> bool
 (** Predicate for empty strings. *)

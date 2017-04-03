@@ -118,7 +118,7 @@ let of_stream stream =
 
 (* Error handling *)
 
-type error_handler = [`Warning of string | `Exception of exn] -> unit 
+type error_handler = [`Warning of string | `Exception of exn] -> unit
 
 let string_of_shtream_error = function
   | `Warning w   -> w
@@ -238,7 +238,7 @@ let is_empty s = match next' s with
  | None   -> true
  | _      -> false
 
-let status s = 
+let status s =
   ignore (peek s);
   match s.data with
  | TheEnd n -> Some n
@@ -404,7 +404,54 @@ let annihilate shtream coshtream =
   end
 
 module type COMMON = sig
+  type 'a t
+  type 'a co_t
   exception Failure
   exception CoFailure
-  include ShtreamSig.S
+
+  val from        : (int -> 'a option) -> 'a t
+  val close       : 'a t -> unit
+  val of_list     : 'a list -> 'a t
+  val list_of     : 'a t -> 'a list
+  val of_stream   : 'a Stream.t -> 'a t
+  val stream_of   : 'a t -> 'a Stream.t
+  val npeek       : ?n:int -> 'a t -> 'a list
+  val peek        : ?n:int -> 'a t -> 'a option
+  val empty       : 'a t -> unit
+  val is_empty    : 'a t -> bool
+  val status      : 'a t -> Proc.status option
+  val junk        : ?n:int -> 'a t -> unit
+  val next        : 'a t -> 'a
+  val next'       : 'a t -> 'a option
+  val iter        : ('a -> unit) -> 'a t -> unit
+  val filter      : ('a -> bool) -> 'a t -> 'a t
+  val map         : ('a -> 'b) -> 'a t -> 'b t
+  val concat_map  : ('a -> 'b list) -> 'a t -> 'b t
+  val fold_left   : ('b -> 'a -> 'b) -> 'b -> 'a t -> 'b
+  val fold_right  : ('a -> 'b Lazy.t -> 'b) -> 'a t -> 'b -> 'b
+  val nil         : unit -> 'a t
+  val insert      : 'a -> 'a t -> unit
+  val cons        : 'a -> 'a t -> 'a t
+  val append      : 'a t -> 'a t -> 'a t
+  val try_again   : unit   -> 'a
+  val warn        : ('a, unit, string, 'b) format4 -> 'a
+  val fail_with   : Proc.status -> 'a
+  type error_handler = [`Warning of string | `Exception of exn] -> unit
+  val current_error_handler  : error_handler ref
+  val ignore_errors          : error_handler
+  val warn_on_errors         : error_handler
+  val die_on_errors          : error_handler
+  val die_silently_on_errors : error_handler
+  val coshtream_of : ?procref:Channel.procref -> ('a t -> 'b) -> 'a co_t
+  val conil        : unit -> 'a co_t
+  val conext       : 'a co_t -> 'a -> unit
+  val coclose      : 'a co_t -> unit
+  val annihilate   : 'a t -> 'a co_t -> unit
+  val from_low    : ?close:(unit -> unit) -> (int -> 'a) -> 'a t
+  val claim       : 'a t -> 'a t
+  val set_reader  : 'a t -> (in_channel -> 'a) -> unit
+  val hint_reader : 'a t -> Reader.t -> unit
+  type protector = Util.protector
+  val add_protection : protector -> 'a t -> unit
+  val add_cleanup : (unit -> unit) -> 'a t -> unit
 end

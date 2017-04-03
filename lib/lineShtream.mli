@@ -11,20 +11,20 @@
  *)
 
 (** A line with source and sequence information.  This is the
- * {!AnyShtreamSig.ELEM.initial} type for {!LineShtream}. *)
+ * {!AnyShtream.ELEM.initial} type for {!LineShtream}. *)
 type sourced = Line.t
 
 (** The parameter given to {!AnyShtream.Make} to build {!LineShtream}. *)
-module LineElem : AnyShtreamSig.ELEM
+module LineElem : AnyShtream.ELEM
   with type 'a elem = Line.t
    and type initial = sourced
 
 (** Most of the types and values in {!LineShtream} come from the
  * result of apply {!AnyShtream.Make}. *)
-include AnyShtreamSig.S with module Elem = LineElem
+include AnyShtream.S with module Elem = LineElem
 
 (** Construct a {!Line.t} reader from a record reader.  This is like
- * {!AnyShtreamSig.S.elem_reader}, but allows specifying a
+ * {!AnyShtream.S.elem_reader}, but allows specifying a
  * {!Line.source} to store in the lines. *)
 val line_reader : ?source:Line.source -> Reader.t ->
                   (in_channel -> initial elem)

@@ -24,7 +24,7 @@ module Fields = struct
 
   let get k m = try M.get k m with
     Invalid_argument _ -> raise (Field_not_found (M.Key.info k))
-end  
+end
 
 type t = Fields.t
 
@@ -119,7 +119,7 @@ module Key_value = struct
     with
     | [| str |] -> str
     | _ -> raise Util.Bug
-             
+
   let as_list ?(delim = ' ') line =
     Array.to_list
       (Delimited.splitter
@@ -183,7 +183,7 @@ module Delim = struct
     Fields.add delim_k { t with options } r
 
   let output channel line =
-    Delimited.output_record channel ~options: (options line) (fields line)
+    Delimited.output_line channel ~options: (options line) (fields line)
 
   let empty = {
     fields = [| |];
@@ -221,7 +221,7 @@ module Passwd = struct
   let set_passwd passwd r =
     let t = Fields.get passwd_k r in
     Fields.add passwd_k { t with passwd } r
-  
+
   let uid r = (Fields.get passwd_k r).uid
   let set_uid uid r =
     let t = Fields.get passwd_k r in
@@ -271,7 +271,7 @@ module Group = struct
 
   type label += Group
   let _ = add_label_string Group "group"
-  
+
   let group_k = Fields.Key.create Group
 
   let name r = (Fields.get group_k r).name
@@ -309,7 +309,7 @@ end
 module Stat = struct
   type label += Stat
   let _ = add_label_string Stat "stat"
-  
+
   type mode = {
     rusr: bool; wusr: bool; xusr: bool;
     rgrp: bool; wgrp: bool; xgrp: bool;
@@ -464,7 +464,7 @@ module Stat = struct
   let set_gid gid r =
     let t = Fields.get stat_k r in
     Fields.add stat_k { t with gid } r
-  
+
   let rdev r = (Fields.get stat_k r).rdev
   let set_rdev rdev r =
     let t = Fields.get stat_k r in
@@ -627,14 +627,14 @@ module Fstab = struct
 
   type label += Fstab
   let _ = add_label_string Fstab "fstab"
-  
+
   let fstab_k = Fields.Key.create Fstab
-  
+
   let file_system r = (Fields.get fstab_k r).file_system
   let set_file_system file_system r =
     let t = Fields.get fstab_k r in
     Fields.add fstab_k { t with file_system } r
-  
+
   let mount_point r = (Fields.get fstab_k r).mount_point
   let set_mount_point mount_point r =
     let t = Fields.get fstab_k r in
@@ -732,4 +732,24 @@ let line ?(after = "\n") ?(before = "") raw =
   |> Fields.add before_k before
 
 let pp fmt line =
-  Format.fprintf fmt "<line:\"%s\">" (String.escaped (show line))
+  let additional_labels =
+    Fields.fold (fun (Fields.B (k, _)) acc ->
+      (Fields.Key.info k :> label) :: acc
+    ) line []
+    |> List.filter (fun l ->
+      not (List.mem l [Raw; Show; Source; Seq; After; Before])
+    )
+  in
+  let b = Buffer.create 15 in
+  let rec loop = function
+    | [] -> ()
+    | [l] -> Buffer.add_string b (string_of_label l)
+    | l::ls ->
+      Buffer.add_string b (string_of_label l);
+      Buffer.add_char b ' ';
+      loop ls
+  in
+  loop additional_labels;
+  Format.fprintf fmt "<line:\"%s\"|%s>"
+    (String.escaped (show line))
+    (Buffer.contents b)

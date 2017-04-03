@@ -1,19 +1,20 @@
-(** Record readers and splitters for a variety of file formats.
+(** Line readers and splitters for a variety of file formats.
  * Splitters get raw data from {!Line.raw} and use it to set
  * other line fields.
  *
  * Each adaptor module typically contains three functions:
- * - [adaptor] maps a [LineShtream.initial LineShtream.elem LineShtream.t]
- *   to contain the specified data; if the shtream is being read from a
- *   channel, then it hints to the source shtream the proper record
- *   reader to use.
- * - [reader] is the record reader for the given kind of file.
+ * - [adaptor] maps a [Line.t Shtream.t] to a [Line.t Shtream.t]
+ *   where the [Line.t]s have been enriched with additionnal fields,
+ *   containing the specified data parsed from the input line.
+ *   If the shtream is being read from a channel, then it hints to
+ *   the source shtream the proper line reader to use.
+ * - [reader] is the line reader for the given kind of file.
  * - [splitter] is the field splitter that can be used on a single
- *   record or mapped over a shtream.
+ *   line or mapped over a shtream.
  *)
 
-(** A function on lines.  In particular, an
- * [splitter] takes [Line.t] to [Line.t]. *)
+(** A function on lines, which typically parses the line and add
+     fields corresponding to the structured information extracted. *)
 type splitter = Line.t -> Line.t
 
 (** A function on line shtreams.  In particular, an
@@ -37,22 +38,22 @@ val make_adaptor : ?reader:Reader.t -> splitter -> adaptor
 module Convert : sig
 
   (** Create a custom conversion.
-   * [Adaptor.Convert.convert conv tyname loc str]
+   * [Adaptor.Convert.convert ~tyname ~loc conv str]
    * applies the conversion [conv] to [str]; if the conversion raises
    * [Failure], then it produces a warning, with [tyname] as the name of
    * the target type and [loc] as the name of the function given in the
    * message. *)
-  val convert : (string -> 'a) -> string -> string -> string -> 'a
+  val convert : tyname:string -> loc:string -> (string -> 'a) -> string -> 'a
 
   (** Convert a string to an integer, with shtream warning on failure.
    * [Convert.to_int loc str] returns [str] as an integer or raises a warning
    * attributed to [loc]. *)
-  val to_int    : string -> string -> int
+  val to_int    : loc:string -> string -> int
 
   (** Convert a string to a float, with shtream warning on failure.
    * [Convert.to_float loc str] returns [str] as a float or raises a warning
    * attributed to [loc]. *)
-  val to_float  : string -> string -> float
+  val to_float  : loc:string -> string -> float
 
 end
 
@@ -67,10 +68,10 @@ module Delim : sig
   (** Fitting for delimited text files. *)
   val fitting : ?options:Delimited.options -> fitting_adaptor
 
-  (** Read records according to the given {!Delimited} options. *)
+  (** Read raw lines according to the given {!Delimited} options. *)
   val reader : ?options:Delimited.options -> Reader.t
 
-  (** Split one record according to the given {!Delimited} options. *)
+  (** Split one line according to the given {!Delimited} options. *)
   val splitter : ?options:Delimited.options -> splitter
 
   (** {2 Functorial Interface} *)
@@ -141,17 +142,17 @@ module SimpleFlatFile : sig
    * [None]), lines starting with [comment] (ignoring leading white
    * space) are considered comment lines and are ignored by the reader.
    * If [blanks] is true (default [true]), lines consisting entirely of
-   * white space are ignored by the record reader.  If [max] is given,
+   * white space are ignored by the line reader.  If [max] is given,
    * then only [max] fields will be produced, and the last field may
-   * contain record separatos.  The final [char] argument is the field
+   * contain line separators.  The final [char] argument is the field
    * separator. *)
   val fitting :
     ?comments:string -> ?blanks:bool -> ?max:int -> char -> fitting_adaptor
   (** Fitting for simple flat files. *)
   val reader : ?comments:string -> ?blanks:bool -> Reader.t
-  (** Record reader for simple flat files.  See {!adaptor} for options. *)
+  (** Raw line reader for simple flat files.  See {!adaptor} for options. *)
   val splitter : ?max:int -> char -> splitter
-  (** Split a simple flat files record.  See {!adaptor} for options. *)
+  (** Split a simple flat files line.  See {!adaptor} for options. *)
 
   (** {2 Functorial Interface} *)
 
@@ -231,9 +232,9 @@ module Key_value : sig
   val fitting : ?quiet:bool -> ?comment:string -> ?delim:char -> fitting_adaptor
   (** Fitting for key-value files. *)
   val reader : ?comment:string -> Reader.t
-  (** Read key-value records. *)
+  (** Read key-value raw lines. *)
   val splitter : ?quiet:bool -> ?delim:char -> splitter
-  (** Split key-value file records and fill in {!Line.Key_value}. *)
+  (** Split key-value file lines and fill in {!Line.Key_value}. *)
 
   (** {2 Functorial Interface} *)
 
@@ -278,14 +279,14 @@ module Key_value_section : sig
    * must be Perl-compatible regular expression containing exactly one
    * parenthesized back-reference form, for example, ["\\[(.+)\\]"] or
    * ["Host (.+)"], in which case the matched substring becomes the
-   * section heading for subsequent records.  At the beginning of
+   * section heading for subsequent lines.  At the beginning of
    * parsing, before [pat] has matched, the current section heading is
    * [""].
    *
    * The optional argument [?end_section] gives a Perl-compatible
    * regular expression that, if it matches a line, indicates the end of
    * the current section.  When this happens, the section reverts to the
-   * empty string for subsequent records.  The other optional arguments
+   * empty string for subsequent lines.  The other optional arguments
    * are as in {!Key_value}.
    *)
   val fitting :
@@ -294,12 +295,12 @@ module Key_value_section : sig
     fitting_adaptor
   (** Fitting for key-value files with sections. *)
   val reader : ?comment:string -> Reader.t
-  (** Read key-value records. *)
+  (** Read key-value raw lines. *)
   val splitter :
     ?delim:char ->
     ?end_section:string -> string ->
     splitter
-  (** Split key-value records with sections and fill in
+  (** Split key-value lines with sections and fill in
    * {!Line.Key_value}, including {!Line.Key_value.section}. *)
 
   (** {2 Functorial Interface} *)
@@ -344,13 +345,13 @@ end
 (** Adaptor module for comma-separated values files. *)
 module Csv : sig
   val adaptor : ?trim_space:bool -> adaptor
-  (** Adaptor to split a shtream of CSV records. *)
+  (** Adaptor to split a shtream of CSV lines. *)
   val fitting : ?trim_space:bool -> fitting_adaptor
-  (** Fitting for CSV records. *)
+  (** Fitting for CSV lines. *)
   val reader : Reader.t
-  (** Read CSV records, including quoting and embedded newlines. *)
+  (** Read CSV raw lines, including quoting and embedded newlines. *)
   val splitter : ?trim_space:bool -> splitter
-  (** Split a CSV record into fields. *)
+  (** Split a CSV line into fields. *)
 end
 
 (** Adaptor module for {b passwd}(5) files. *)
@@ -362,7 +363,7 @@ module Passwd : sig
   val reader : Reader.t
   (** Reader for a passwd file. *)
   val splitter : splitter
-  (** Split a passwd file record. *)
+  (** Split a passwd file line. *)
 end
 
 (** Adaptor module for {b group}(5) files. *)
@@ -374,7 +375,7 @@ module Group : sig
   val reader : Reader.t
   (** Reader for a group file. *)
   val splitter : splitter
-  (** Split a group file record. *)
+  (** Split a group file line. *)
 end
 
 (** Adaptor module for {b fstab}(5) and {b mtab}(5). *)
@@ -386,7 +387,7 @@ module Fstab : sig
   val reader : Reader.t
   (** Reader for an fstab file. *)
   val splitter : splitter
-  (** Split an fstab file record. *)
+  (** Split an fstab file line. *)
 end
 
 (** Adaptor module for retrieving file status and mode information. *)
@@ -417,7 +418,7 @@ module Ps : sig
   val reader : Reader.t
   (** Read {b ps}(1) output lines. *)
   val splitter : ?skip:bool -> splitter
-  (** Split a ps record into {!Line.Ps}. *)
+  (** Split a ps line into {!Line.Ps}. *)
 end
 
 (** Adaptor module for mailcap files (RFC 1524) *)
@@ -427,9 +428,9 @@ module Mailcap : sig
   val fitting : fitting_adaptor
   (** Fitting for mailcap files. *)
   val reader : Reader.t
-  (** Read mailcap file records. *)
+  (** Read mailcap file raw lines. *)
   val splitter : splitter
-  (** Split mailcap file records and fill in {!Line.Mailcap}. *)
+  (** Split mailcap file lines and fill in {!Line.Mailcap}. *)
 end
 
 (** Adaptor module for {i /etc/ssh/ssh_config}, etc. *)

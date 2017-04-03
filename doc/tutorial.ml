@@ -1,7 +1,7 @@
 (**
  
 
-OCaml excels at "programming in the large," but for small or
+OCaml excels at "programming in the large", but for small or
 write-once tasks, even the veteran functional programmer often prefers
 a language that feels lighter. Throwaway scripts, however, often live
 longer than expected, and what started as 14 lines of AWK may
@@ -29,6 +29,9 @@ module.
   Proc
 }
 
+A {{:#2_Glossary} glossary}, and a {{:#1_Toplevelmodules} complete index of the
+library} can be found at the bottom of this page.
+
 {3 Getting Started}
 
 Shcaml is available in opam. To install it, simply run:
@@ -40,7 +43,7 @@ Shcaml should now be installed.  Try the following:
 > # #use "topfind";;
 > ...
 > # #require "shcaml.top";;
->         Caml-Shcaml version 0.1.3 (Shmeer)
+>         Caml-Shcaml version %%VERSION%% (%%CODENAME%%)
 *)
 
 (**
@@ -80,12 +83,12 @@ loaded.  So, run [ocaml], then:
 (**
 > ...
 
-{e N.B. when using [utop] with Shcaml, we advise you pass the
+{e N.B. when using Shcaml with [utop], we advise you pass the
 [-no-short-paths] option when launching [utop].}
 
 {3 Lines}
 
-{e For Shcaml versions <TODO> and greater, the implementation and interface of
+{e For Shcaml versions 0.2.0 and greater, the implementation and interface of
 {!Line} differs from what is described in the
 {{:http://users.eecs.northwestern.edu/~jesse/pubs/caml-shcaml/} Shcaml paper}.
 The [Line.t] having a phantom parameter with row polymorphism has been replaced
@@ -101,20 +104,20 @@ the passwd file, or the output of {i ps}.  Let's make one:
 let hello = Line.line "hello world, I'm a line!";;
 
 (**
-> val hello : Shcaml.Line.t = <line:"hello world, I'm a line!">
+> val hello : Shcaml.Line.t = <line:"hello world, I'm a line!"|>
 *)
 
 (**
 I know it looks like [hello] has our greeting in it, but at the moment
 it doesn't contain any structured information. What gives?  Well, all
-lines are constructed from a raw string, in this case ["hello world,
-I'm a line!"].  But that doesn't actually tell us any useful
-information about what kind of data is in that string.  Let's suppose
-that [hello] were a line that came from a comma-delimited file.  Then
-we would want to think of it as delimited input, rather than simply a
-string.  Lines represent delimited input simply as a list of strings.
-Let's turn our empty line into a more structured piece of data.  We'll
-use [Pcre.asplit] to parse the string into an array.
+lines are constructed from a raw string, in this case ["hello world, I'm a line!"].
+But that doesn't actually tell us any useful information about what
+kind of data is in that string.  Let's suppose that [hello] were a
+line that came from a comma-delimited file.  Then we would want to
+think of it as delimited input, rather than simply a string.  Lines
+represent delimited input simply as a list of strings.  Let's turn our
+empty line into a more structured piece of data.  We'll use
+[Pcre.asplit] to parse the string into an array.
 *)
 
 let hello_delim =
@@ -123,7 +126,7 @@ let hello_delim =
     hello;;
 
 (**
-> val hello_delim : Shcaml.Line.t = <line:"hello world, I'm a line!">
+> val hello_delim : Shcaml.Line.t = <line:"hello world, I'm a line!"|delim>
 *)
 
 (**
@@ -137,7 +140,9 @@ Line.Delim.fields hello_delim;;
 
 (**
 We just added some structured information to the previously "empty"
-line. Now consider, [hello] does not have a [delim] field.  What would
+line. This is indicated by the "[|delim>]" bit printed after the line
+contents: it indicates the presence of a "[delim]" structured field.
+Now consider, [hello] does not have a [delim] field.  What would
 happen if we try to get the [Delim.fields] list from [hello]?
 *)
 
@@ -151,21 +156,27 @@ Line.Delim.fields hello;;
 So we get an exception, because [hello] does not contain a [delim]
 field; while we added one to [hello_delim] using {!Line.Delim.create}.
 
+{e Caveat: as of now (OCaml 4.04), when using the toplevel, the name
+of the field is not shown when [Field_not_found] is raised, and
+[<extension>] is printed instead. This is due to the
+{{: https://caml.inria.fr/mantis/view.php?id=7156} following bug}, that
+hasn't been fixed yet.}
+
 Now, suppose we wanted to uppercase the strings in the [Delim.fields]
 list:
 *)
 
 let hello_DELIM =
   Line.Delim.set_fields
-    (Array.map String.uppercase (Line.Delim.fields hello_delim))
+    (Array.map String.uppercase_ascii (Line.Delim.fields hello_delim))
     hello_delim;;
 (**
-> val hello_DELIM : Shcaml.Line.t = <line:"hello world, I'm a line!">
+> val hello_DELIM : Shcaml.Line.t = <line:"hello world, I'm a line!"|delim>
 *)
 
 Line.Delim.fields hello_DELIM;;
 (**
-> - : string array = [|"Hello world"; "I'm a line!"|]
+> - : string array = [|"HELLO WORLD"; "I'M A LINE!"|]
 *)
 
 (**
@@ -174,7 +185,7 @@ To wrap it up, we can define a function that does just that:
 
 let uppercase_delims ln =
       Line.Delim.set_fields
-        (Array.map String.uppercase (Line.Delim.fields ln))
+        (Array.map String.uppercase_ascii (Line.Delim.fields ln))
  	ln;;
 (**
 > val uppercase_delims : Shcaml.Line.t -> Shcaml.Line.t = <fun>
@@ -194,14 +205,14 @@ It builds character.)  We'll start by making a delimited list of the fields:
 let root = Line.line "root:x:0:0:Enoch Root:/root:/bin/shcaml";;
 (**
 > val root : Shcaml.Line.t =
->   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml">
+>   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|>
 *)
 
 let root_delim = Line.Delim.create
   (Pcre.asplit ~pat:":" (Line.show root)) root;;
 (**
 > val root_delim : Shcaml.Line.t =
->   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml">
+>   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|delim>
 *)
 
 (**
@@ -231,7 +242,7 @@ will be discussed below).  Let's try it out:
 let root_pw = passwd_of_delim root_delim;;
 (**
 > val root_pw : Shcaml.Line.t =
->   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml">
+>   <line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|passwd delim>
 *)
 
 Line.Passwd.uid root_pw;;
@@ -251,7 +262,7 @@ when they tried to [show] [root_pw]:
 
 let root_un = Line.select Line.Passwd.name root_pw;;
 (**
-> val root_un : Shcaml.Line.t = <line:"root">
+> val root_un : Shcaml.Line.t = <line:"root"|passwd delim>
 *)
 
 Line.show root_un;;
@@ -293,7 +304,7 @@ Shtream.next stdin_shtream;;
 
 (**
 > hello, there. (you type this)
-> 
+>  
 > - : string = "hello, there."
 *)
 
@@ -317,8 +328,9 @@ let newstdin = Shtream.channel_of print_endline stdin_shtream;;
 > val newstdin : in_channel = <in_channel:4>
 *)
 input_line newstdin;;
-Hi again!
 (**
+> Hi again!
+>  
 > - : string = "  Hi again!"
 *)
 
@@ -516,7 +528,7 @@ let pw_shtream = run_source
 
 Shtream.next pw_shtream;;
 (**
-> - : Shcaml.Line.t = <line:"root:x:0:0:root:/root:/bin/bash">
+> - : Shcaml.Line.t = <line:"root:x:0:0:root:/root:/bin/bash"|passwd>
 *)
 
 (**
@@ -678,12 +690,12 @@ run (from_file "file2");;
 The {!Adaptor} module provides record readers and splitters for a
 variety of file formats.  The readers and splitters for each format
 are contained in a submodule named for the format (for instance, the
-functions for {i /etc/mailcap} are in {!Adaptor.Mailcap}.  Record readers
+functions for {i /etc/mailcap} are in {!Adaptor.Mailcap}.  Readers
 read "raw data off the wire".  That is, a reader is a function from an
 [in_channel] to a {!Reader.raw_line}, which is a record of string data,
 possibly including some delimiter junk.
 Splitters do field-splitting.  Given a line, they will use the {!Line.raw}
-data in the line to produce a line the relevant fields.  In
+data in the line to produce a new line with the relevant fields.  In
 addition to readers and splitters, each module exports an [adaptor]
 function that is used to transform shtreams of lines by using the
 [reader] and [splitter] functions (they all have these names by
@@ -734,8 +746,8 @@ more formalized sense.  This glossary documents Shcaml (and related)
 - {b raw}: The unprocessed text from which a {!Line.t} was created.
   Accessed with {!Line.raw}.  Use {!Line.show} to get the current
   (possibly processed) text of a line.
-- {b reader}: A function for splitting channel input into records,
-  before analysing the contents of each record.  See {!Reader} for how
+- {b reader}: A function for splitting channel input into raw lines,
+  before analysing the contents of each raw line.  See {!Reader} for how
   {i readers} are defined.  Most {!Adaptor}s also come with a reader
   for their format.
 - {b runner}: A function in {!Fitting} for executing a fitting, which
@@ -768,7 +780,6 @@ List of all the direct submodules of the {!Shcaml} module:
   Abort
   Adaptor
   AnyShtream
-  AnyShtreamSig
   Channel
   Delimited
   DepDAG
@@ -783,7 +794,6 @@ List of all the direct submodules of the {!Shcaml} module:
   Proc
   Reader
   Shtream
-  ShtreamSig
   Signal
   StringShtream
   Util
