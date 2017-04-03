@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Flags.html">
+<link rel="next" href="Line.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><link title="Interprocess Exceptions" rel="Section" href="#1_InterprocessExceptions">
+<link title="Interprocess Variables" rel="Section" href="#1_InterprocessVariables">
+<title>Shcaml : IVar</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Flags.html" title="Flags">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Line.html" title="Line">Next</a>
+</div>
+<h1>Module <a href="type_IVar.html">IVar</a></h1>
+
+<pre><span class="keyword">module</span> IVar: <code class="code"><span class="keyword">sig</span></code> <a href="IVar.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+One-shot interprocess exceptions and variables.<br>
+</div>
+<hr width="100%">
+<br>
+ <h1 id="1_InterprocessExceptions">Interprocess Exceptions</h1><br>
+
+<pre><span id="VALwith_interprocess_protect"><span class="keyword">val</span> with_interprocess_protect</span> : <code class="type">(((unit -> 'a) -> 'a) -> 'b) -> 'b</code></pre><div class="info ">
+Relay exceptions from a subprocess.
+    <code class="code">with_interprocess_protect&nbsp;kont</code> calls <code class="code">kont</code> with one
+    argument, <code class="code">protect:&nbsp;(unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a</code>.
+<p>
+
+    The function <code class="code">kont</code> <b>must</b> fork into an <i>observer</i> process and an
+    <i>observed</i> process.  The observed process <b>must not</b> return from the
+    call to <code class="code">kont</code>; it must, however, call <code class="code">protect&nbsp;thunk</code> exactly
+    once with some thunk, which <code class="code">protect</code> will call.  When <code class="code">kont</code>
+    returns in the observer process, it blocks until the thunk
+    returns.  If the thunk returns normally (or execs, or exits), then
+    <code class="code">protect&nbsp;thunk</code> returns the result of the thunk in the observed
+    process, and <code class="code">with_interprocess_protect</code> returns the result of
+    <code class="code">kont</code> in the observer process.  However, if the thunk raises an
+    exception, then the observed process terminates with status 2 and
+    the call to <code class="code">with_interprocess_protect</code> in the <i>observer</i>
+    returns abnormally by re-raising the exception.
+<p>
+
+    In this example, if <a href="Proc.html#VALexec"><code class="code"><span class="constructor">Proc</span>.exec</code></a> raises an exception in the child process,
+    then <code class="code">with_interprocess_protect</code> will re-raise that exception in
+    the parent process:
+<p>
+
+<pre class="codepre"><code class="code">  with_interprocess_protect
+    (<span class="keyword">fun</span> protect <span class="keywordsign">-&gt;</span>
+       <span class="keyword">match</span> <span class="constructor">Proc</span>.fork () <span class="keyword">with</span>
+       <span class="keywordsign">|</span> <span class="constructor">None</span>     <span class="keywordsign">-&gt;</span>
+           protect (<span class="keyword">fun</span> () <span class="keywordsign">-&gt;</span> <span class="constructor">Proc</span>.exec prog args);
+           exit 3 <span class="comment">(* can't happen *)</span>
+       <span class="keywordsign">|</span> <span class="constructor">Some</span> proc <span class="keywordsign">-&gt;</span> proc)
+</code></pre><br>
+</div>
+
+<pre><span id="VALwith_interprocess_raise_and_okay"><span class="keyword">val</span> with_interprocess_raise_and_okay</span> : <code class="type">((exn -> unit) -> (unit -> unit) -> 'b) -> 'b</code></pre><div class="info ">
+Relay exceptions from another process.
+    <code class="code">with_interprocess_raise_and_okay&nbsp;kont</code> calls <code class="code">kont</code> with two
+    arguments, <code class="code">{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;oops&nbsp;:&nbsp;exn&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;okay&nbsp;:&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}</code>
+<p>
+
+    The function <code class="code">kont</code> <b>must</b> fork into an <i>observed</i> process and an
+    <i>observer</i> process.  When the call to <code class="code">kont</code> returns in
+    the <i>observer</i> process, <code class="code">with_interprocess_raise_and_okay</code> then
+    waits for either <code class="code">oops</code> or <code class="code">okay</code> to be called in the <i>observed</i>
+    process.  If <code class="code">okay&nbsp;()</code> is called, then it returns the result of
+    <code class="code">kont</code>; if <code class="code">oops&nbsp;e</code> is called, then it instead raises the exception
+    <code class="code">e</code> in the <i>observer</i> process.  If the observed process fails to call
+    either <code class="code">oops</code> or <code class="code">okay</code>, then the observer process will block
+    indefinitely.<br>
+</div>
+<br>
+ <h1 id="1_InterprocessVariables">Interprocess Variables</h1><br>
+
+<pre><span id="TYPEread_end"><span class="keyword">type</span> <code class="type">'a</code> read_end</span> </pre>
+<div class="info ">
+The read-end of an interprocess variable.<br>
+</div>
+
+
+<pre><span id="TYPEwrite_end"><span class="keyword">type</span> <code class="type">'a</code> write_end</span> </pre>
+<div class="info ">
+The write-end of an interprocess variable.<br>
+</div>
+
+
+<pre><span id="EXCEPTIONDead"><span class="keyword">exception</span> Dead</span></pre>
+<div class="info ">
+Raised on attempts to re-use an <a href="IVar.html"><code class="code"><span class="constructor">IVar</span></code></a>.
+    IVars allow (require, in fact) exactly one read and one write.<br>
+</div>
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">unit -> 'a <a href="IVar.html#TYPEread_end">read_end</a> * 'a <a href="IVar.html#TYPEwrite_end">write_end</a></code></pre><div class="info ">
+Create a channel pair <code class="code">(r,&nbsp;w)</code>.  The protocol is then as
+    follows.  One process must execute:<ul>
+<li><code class="code">read&nbsp;r</code></li>
+</ul>
+
+    This operation will block, until another process does one of:<ul>
+<li>  <code class="code">write&nbsp;w&nbsp;v</code> :    read returns <code class="code"><span class="constructor">Some</span>&nbsp;v</code></li>
+<li>  <code class="code">close&nbsp;w</code> :      read returns <code class="code"><span class="constructor">None</span></code></li>
+<li>  <code class="code">exec&nbsp;...</code> :     read returns <code class="code"><span class="constructor">None</span></code></li>
+<li>  <code class="code">exit&nbsp;...</code> :     read returns <code class="code"><span class="constructor">None</span>&nbsp;</code></li>
+</ul>
+
+    The <a href="IVar.html#VALwrite"><code class="code"><span class="constructor">IVar</span>.write</code></a> call may or may not block, depending on the underlying
+    implementation.  In any case, it is <b>imperative</b> that read
+    happens in a separate process from the write/close/exec/exit, or
+    the program may block indefinitely.<br>
+</div>
+
+<pre><span id="VALread"><span class="keyword">val</span> read</span> : <code class="type">'a <a href="IVar.html#TYPEread_end">read_end</a> -> 'a option</code></pre><div class="info ">
+Read an <code class="code"><span class="keywordsign">'</span>a&nbsp;option</code> from an <a href="IVar.html"><code class="code"><span class="constructor">IVar</span></code></a>.
+    Blocks until the associated <a href="IVar.html#TYPEwrite_end"><code class="code"><span class="constructor">IVar</span>.write_end</code></a> is written or closed.
+    If <code class="code">x</code> is written on the other end, returns <code class="code"><span class="constructor">Some</span>&nbsp;x</code>; if
+    the other end is closed (including by exit or exec), returns
+    <code class="code"><span class="constructor">None</span></code>.<br>
+</div>
+
+<pre><span id="VALwrite"><span class="keyword">val</span> write</span> : <code class="type">'a <a href="IVar.html#TYPEwrite_end">write_end</a> -> 'a -> unit</code></pre><div class="info ">
+Write to an <a href="IVar.html"><code class="code"><span class="constructor">IVar</span></code></a>.<br>
+</div>
+
+<pre><span id="VALclose"><span class="keyword">val</span> close</span> : <code class="type">'a <a href="IVar.html#TYPEwrite_end">write_end</a> -> unit</code></pre><div class="info ">
+Close an <a href="IVar.html"><code class="code"><span class="constructor">IVar</span></code></a> without writing.<br>
+</div>
+</body></html>

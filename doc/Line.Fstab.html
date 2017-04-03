@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Line.Ps.html">
+<link rel="next" href="Line.Mailcap.html">
+<link rel="Up" href="Line.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><title>Shcaml : Line.Fstab</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Line.Ps.html" title="Line.Ps">Previous</a>
+&nbsp;<a class="up" href="Line.html" title="Line">Up</a>
+&nbsp;<a class="post" href="Line.Mailcap.html" title="Line.Mailcap">Next</a>
+</div>
+<h1>Module <a href="type_Line.Fstab.html">Line.Fstab</a></h1>
+
+<pre><span class="keyword">module</span> Fstab: <code class="code"><span class="keyword">sig</span></code> <a href="Line.Fstab.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Line structure for the file system table <i>/etc/fstab</i>
+    records.  See <b>fstab</b>(5).<br>
+</div>
+<hr width="100%">
+
+<pre><span id="VALfile_system"><span class="keyword">val</span> file_system</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> string</code></pre><div class="info ">
+The filesystem to mount. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_file_system"><span class="keyword">val</span> set_file_system</span> : <code class="type">string -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Fstab.html#VALfile_system"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Fstab</span>.file_system</code></a><br>
+</div>
+
+<pre><span id="VALmount_point"><span class="keyword">val</span> mount_point</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> string</code></pre><div class="info ">
+The mount point for the filesystem. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_mount_point"><span class="keyword">val</span> set_mount_point</span> : <code class="type">string -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Fstab.html#VALmount_point"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Fstab</span>.mount_point</code></a><br>
+</div>
+
+<pre><span id="VALfstype"><span class="keyword">val</span> fstype</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> string</code></pre><div class="info ">
+The filesystem type (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_fstype"><span class="keyword">val</span> set_fstype</span> : <code class="type">string -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Fstab.html#VALfstype"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Fstab</span>.fstype</code></a><br>
+</div>
+
+<pre><span id="VALoptions"><span class="keyword">val</span> options</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> string list</code></pre><div class="info ">
+Mount options (e.g. ro, user, noauto) (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_options"><span class="keyword">val</span> set_options</span> : <code class="type">string list -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Fstab.html#VALoptions"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Fstab</span>.options</code></a><br>
+</div>
+
+<pre><span id="VALdump"><span class="keyword">val</span> dump</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> int</code></pre><div class="info ">
+Used by <b>dump</b>(8) to determine which filesystem to dump. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_dump"><span class="keyword">val</span> set_dump</span> : <code class="type">int -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Fstab.html#VALdump"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Fstab</span>.dump</code></a><br>
+</div>
+
+<pre><span id="VALpass"><span class="keyword">val</span> pass</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> int</code></pre><div class="info ">
+Pass on which to mount this filesystem (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_pass"><span class="keyword">val</span> set_pass</span> : <code class="type">int -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Fstab.html#VALpass"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Fstab</span>.pass</code></a><br>
+</div>
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">file_system:string -><br>       mount_point:string -><br>       fstype:string -><br>       options:string list -> dump:int -> pass:int -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Add the <a href="Line.Fstab.html"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Fstab</span></code></a> substructure to a line.<br>
+</div>
+</body></html>

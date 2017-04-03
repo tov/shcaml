@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="Up" href="Channel.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><title>Shcaml : Channel.Dup</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="Channel.html" title="Channel">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Channel.Dup.html">Channel.Dup</a></h1>
+
+<pre><span class="keyword">module</span> Dup: <code class="code"><span class="keyword">sig</span></code> <a href="Channel.Dup.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Convenience operators for specifying shell-style dups.
+<p>
+
+ This module provides one prefix operator and a surfeit of infix
+ operators.  The prefix operator <a href="Channel.Dup.html#VAL(!%)"><code class="code"><span class="constructor">Channel</span>.<span class="constructor">Dup</span>.(!%)</code></a> reveals the integer value of
+ an abstract UNIX file descriptor.  The infix operators are for
+ specifying dups, as follows:
+<p>
+<ul>
+<li>Each operator dups its right argument onto its left.  This is the
+   <i>reverse</i> of <a href="Channel.html#VALdup2"><code class="code"><span class="constructor">Channel</span>.dup2</code></a> and corresponds to the syntax of the Bourne
+   shell.</li>
+<li>The <code class="code">&lt;</code> or <code class="code">&gt;</code> indicates the direction of IO: <code class="code">&lt;</code> is for input
+   channels and <code class="code">&gt;</code> for output channels.</li>
+<li>Each operator has a prefix sigil that indicates the type of its
+ first argument: <ul>
+<li><code class="code">*</code> is for <a href="Channel.html#TYPEgen_in_channel"><code class="code"><span class="constructor">Channel</span>.gen_in_channel</code></a>s and <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a>s</li>
+<li><code class="code">%</code> is for integer file descriptors</li>
+<li><code class="code">/</code> is for <code class="code">in_channel</code>s and <code class="code">out_channel</code>s</li>
+<li>Use <code class="code">(!%)</code> on <a href="Channel.html#TYPEdescr"><code class="code"><span class="constructor">Channel</span>.descr</code></a> to get an <code class="code">int</code> suitable for the <code class="code">%</code>
+  operations.)</li>
+</ul>
+</li>
+<li>Some operators have a suffix sigil that indicates the type
+ of their second arguments: <ul>
+<li><code class="code"><span class="keywordsign">&amp;</span></code> means the second argument is the same type as the first</li>
+<li><code class="code">*</code>, <code class="code">%</code>, <code class="code">/</code> are as for the first argument</li>
+</ul>
+</li>
+<li>Operators that dup from files indicate the mode in which to open
+ the file: <ul>
+<li><code class="code">&lt;</code> opens a file for reading</li>
+<li><code class="code">&gt;</code> opens a file for writing, using the mode from <a href="Channel.html#VALclobber"><code class="code"><span class="constructor">Channel</span>.clobber</code></a></li>
+<li><code class="code">&gt;!</code> opens for writing, always clobbering (<code class="code"><span class="keywordsign">`</span><span class="constructor">Clobber</span></code>)</li>
+<li><code class="code">&gt;?</code> opens for writing, never clobbering (<code class="code"><span class="keywordsign">`</span><span class="constructor">NoClobber</span></code>)</li>
+<li><code class="code">&gt;&gt;</code> opens for appending (<code class="code"><span class="keywordsign">`</span><span class="constructor">Append</span></code>)</li>
+<li><code class="code">&gt;&gt;!</code> opens for appending but won't create (<code class="code"><span class="keywordsign">`</span><span class="constructor">AppendOnly</span></code>)</li>
+</ul>
+</li>
+</ul>
+
+ Some example dups:<ul>
+<li><code class="code">&nbsp;2&nbsp;%&gt;&amp;&nbsp;1&nbsp;</code> redirects error output onto standard output</li>
+<li><code class="code">&nbsp;0&nbsp;%&lt;&nbsp;<span class="string">"file"</span>&nbsp;</code> redirects input to come from the file</li>
+<li><code class="code">&nbsp;1&nbsp;%&gt;/&nbsp;c&nbsp;</code>, where <code class="code">c&nbsp;:&nbsp;out_channel</code>, redirects standard output
+   into the channel</li>
+<li><code class="code">&nbsp;c&nbsp;/&lt;*&nbsp;<span class="keywordsign">`</span><span class="constructor">Close</span>&nbsp;</code> closes <code class="code">c&nbsp;:&nbsp;in_channel</code></li>
+</ul>
+<br>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEdup_arg"><span class="keyword">type</span> <code class="type"></code>dup_arg</span> = <code class="type"><a href="Channel.html#TYPEdup_source">Channel.dup_source</a> * <a href="Channel.html#TYPEgen_channel">Channel.gen_channel</a></code> </pre>
+<div class="info ">
+An argument to dup.<br>
+</div>
+
+
+<pre><span id="VAL(!%)"><span class="keyword">val</span> (!%)</span> : <code class="type"><a href="Channel.html#TYPEdescr">Channel.descr</a> -> int</code></pre><div class="info ">
+Get the integer value of an abstract file descriptor.<br>
+</div>
+
+<pre><span id="VAL( *<& )"><span class="keyword">val</span> ( *&lt;&amp; )</span> : <code class="type"><a href="Channel.html#TYPEgen_in_channel">Channel.gen_in_channel</a> -> <a href="Channel.html#TYPEdup_in_source">Channel.dup_in_source</a> -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a <a href="Channel.html#TYPEdup_in_source"><code class="code"><span class="constructor">Channel</span>.dup_in_source</code></a> onto a <a href="Channel.html#TYPEgen_in_channel"><code class="code"><span class="constructor">Channel</span>.gen_in_channel</code></a>.<br>
+</div>
+
+<pre><span id="VAL( *< )"><span class="keyword">val</span> ( *&lt; )</span> : <code class="type"><a href="Channel.html#TYPEgen_in_channel">Channel.gen_in_channel</a> -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file for reading on a <a href="Channel.html#TYPEgen_in_channel"><code class="code"><span class="constructor">Channel</span>.gen_in_channel</code></a>.<br>
+</div>
+
+<pre><span id="VAL( *>& )"><span class="keyword">val</span> ( *&gt;&amp; )</span> : <code class="type"><a href="Channel.html#TYPEgen_out_channel">Channel.gen_out_channel</a> -> <a href="Channel.html#TYPEdup_out_source">Channel.dup_out_source</a> -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a <a href="Channel.html#TYPEdup_out_source"><code class="code"><span class="constructor">Channel</span>.dup_out_source</code></a> onto a <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a>.<br>
+</div>
+
+<pre><span id="VAL( *> )"><span class="keyword">val</span> ( *&gt; )</span> : <code class="type"><a href="Channel.html#TYPEgen_out_channel">Channel.gen_out_channel</a> -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file for writing on a <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a>.<br>
+</div>
+
+<pre><span id="VAL( *>! )"><span class="keyword">val</span> ( *&gt;! )</span> : <code class="type"><a href="Channel.html#TYPEgen_out_channel">Channel.gen_out_channel</a> -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on a <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a>, clobbering.<br>
+</div>
+
+<pre><span id="VAL( *>? )"><span class="keyword">val</span> ( *&gt;? )</span> : <code class="type"><a href="Channel.html#TYPEgen_out_channel">Channel.gen_out_channel</a> -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on a <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a>, without clobbering.<br>
+</div>
+
+<pre><span id="VAL( *>> )"><span class="keyword">val</span> ( *&gt;&gt; )</span> : <code class="type"><a href="Channel.html#TYPEgen_out_channel">Channel.gen_out_channel</a> -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on a <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a>, appending.<br>
+</div>
+
+<pre><span id="VAL( *>>! )"><span class="keyword">val</span> ( *&gt;&gt;! )</span> : <code class="type"><a href="Channel.html#TYPEgen_out_channel">Channel.gen_out_channel</a> -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on a <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a>, appending, without
+ creating.<br>
+</div>
+
+<pre><span id="VAL(%<&)"><span class="keyword">val</span> (%&lt;&amp;)</span> : <code class="type">int -> int -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a file descriptor from another file descriptor.<br>
+</div>
+
+<pre><span id="VAL(%<)"><span class="keyword">val</span> (%&lt;)</span> : <code class="type">int -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file for reading on a file descriptor.<br>
+</div>
+
+<pre><span id="VAL(%>&)"><span class="keyword">val</span> (%&gt;&amp;)</span> : <code class="type">int -> int -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a file descriptor from another file descriptor.<br>
+</div>
+
+<pre><span id="VAL(%>)"><span class="keyword">val</span> (%&gt;)</span> : <code class="type">int -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file for writing on a file descriptor.<br>
+</div>
+
+<pre><span id="VAL(%>!)"><span class="keyword">val</span> (%&gt;!)</span> : <code class="type">int -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on a file descriptor, clobbering.<br>
+</div>
+
+<pre><span id="VAL(%>?)"><span class="keyword">val</span> (%&gt;?)</span> : <code class="type">int -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on a file descriptor, without clobbering.<br>
+</div>
+
+<pre><span id="VAL(%>>)"><span class="keyword">val</span> (%&gt;&gt;)</span> : <code class="type">int -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on a file descriptor, appending.<br>
+</div>
+
+<pre><span id="VAL(%>>!)"><span class="keyword">val</span> (%&gt;&gt;!)</span> : <code class="type">int -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on a file descriptor, appending, without creating.<br>
+</div>
+
+<pre><span id="VAL(/<&)"><span class="keyword">val</span> (/&lt;&amp;)</span> : <code class="type">Pervasives.in_channel -> Pervasives.in_channel -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup an <code class="code">in_channel</code> from another <code class="code">in_channel</code>.<br>
+</div>
+
+<pre><span id="VAL(/<)"><span class="keyword">val</span> (/&lt;)</span> : <code class="type">Pervasives.in_channel -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file for reading on an <code class="code">in_channel</code>.<br>
+</div>
+
+<pre><span id="VAL(/>&)"><span class="keyword">val</span> (/&gt;&amp;)</span> : <code class="type">Pervasives.out_channel -> Pervasives.out_channel -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup an <code class="code">out_channel</code> from another <code class="code">out_channel</code>.<br>
+</div>
+
+<pre><span id="VAL(/>)"><span class="keyword">val</span> (/&gt;)</span> : <code class="type">Pervasives.out_channel -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file for writing on an <code class="code">out_channel</code>.<br>
+</div>
+
+<pre><span id="VAL(/>!)"><span class="keyword">val</span> (/&gt;!)</span> : <code class="type">Pervasives.out_channel -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on an <code class="code">out_channel</code>, clobbering.<br>
+</div>
+
+<pre><span id="VAL(/>?)"><span class="keyword">val</span> (/&gt;?)</span> : <code class="type">Pervasives.out_channel -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on an <code class="code">out_channel</code>, without clobbering.<br>
+</div>
+
+<pre><span id="VAL(/>>)"><span class="keyword">val</span> (/&gt;&gt;)</span> : <code class="type">Pervasives.out_channel -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on an <code class="code">out_channel</code>, appending.<br>
+</div>
+
+<pre><span id="VAL(/>>!)"><span class="keyword">val</span> (/&gt;&gt;!)</span> : <code class="type">Pervasives.out_channel -> string -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Open a file on an <code class="code">out_channel</code>, appending, without
+ creating.<br>
+</div>
+
+<pre><span id="VAL( *>% )"><span class="keyword">val</span> ( *&gt;% )</span> : <code class="type"><a href="Channel.html#TYPEgen_out_channel">Channel.gen_out_channel</a> -> int -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a> from a file descriptor.<br>
+</div>
+
+<pre><span id="VAL( *>/ )"><span class="keyword">val</span> ( *&gt;/ )</span> : <code class="type"><a href="Channel.html#TYPEgen_out_channel">Channel.gen_out_channel</a> -> Pervasives.out_channel -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a> from an <code class="code">out_channel</code>.<br>
+</div>
+
+<pre><span id="VAL( %>* )"><span class="keyword">val</span> ( %&gt;* )</span> : <code class="type">int -> <a href="Channel.html#TYPEdup_out_source">Channel.dup_out_source</a> -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a file descriptor from a <a href="Channel.html#TYPEdup_out_source"><code class="code"><span class="constructor">Channel</span>.dup_out_source</code></a>.<br>
+</div>
+
+<pre><span id="VAL(%>/)"><span class="keyword">val</span> (%&gt;/)</span> : <code class="type">int -> Pervasives.out_channel -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a file descriptor from an <code class="code">out_channel</code>.<br>
+</div>
+
+<pre><span id="VAL( />* )"><span class="keyword">val</span> ( /&gt;* )</span> : <code class="type">Pervasives.out_channel -> <a href="Channel.html#TYPEdup_out_source">Channel.dup_out_source</a> -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup an <code class="code">out_channel</code> from a <a href="Channel.html#TYPEdup_out_source"><code class="code"><span class="constructor">Channel</span>.dup_out_source</code></a>.<br>
+</div>
+
+<pre><span id="VAL(/>%)"><span class="keyword">val</span> (/&gt;%)</span> : <code class="type">Pervasives.out_channel -> int -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup an <code class="code">out_channel</code> from a file descriptor.<br>
+</div>
+
+<pre><span id="VAL( *<% )"><span class="keyword">val</span> ( *&lt;% )</span> : <code class="type"><a href="Channel.html#TYPEgen_in_channel">Channel.gen_in_channel</a> -> int -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a <a href="Channel.html#TYPEgen_in_channel"><code class="code"><span class="constructor">Channel</span>.gen_in_channel</code></a> from a file descriptor.<br>
+</div>
+
+<pre><span id="VAL( *</ )"><span class="keyword">val</span> ( *&lt;/ )</span> : <code class="type"><a href="Channel.html#TYPEgen_in_channel">Channel.gen_in_channel</a> -> Pervasives.in_channel -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a <a href="Channel.html#TYPEgen_in_channel"><code class="code"><span class="constructor">Channel</span>.gen_in_channel</code></a> from an <code class="code">in_channel</code>.<br>
+</div>
+
+<pre><span id="VAL( %<* )"><span class="keyword">val</span> ( %&lt;* )</span> : <code class="type">int -> <a href="Channel.html#TYPEdup_in_source">Channel.dup_in_source</a> -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a file descriptor from a <a href="Channel.html#TYPEdup_in_source"><code class="code"><span class="constructor">Channel</span>.dup_in_source</code></a>.<br>
+</div>
+
+<pre><span id="VAL(%</)"><span class="keyword">val</span> (%&lt;/)</span> : <code class="type">int -> Pervasives.in_channel -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup a file descriptor from an <code class="code">in_channel</code>.<br>
+</div>
+
+<pre><span id="VAL( /<* )"><span class="keyword">val</span> ( /&lt;* )</span> : <code class="type">Pervasives.in_channel -> <a href="Channel.html#TYPEdup_in_source">Channel.dup_in_source</a> -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup an <code class="code">in_channel</code> from a <a href="Channel.html#TYPEdup_in_source"><code class="code"><span class="constructor">Channel</span>.dup_in_source</code></a>.<br>
+</div>
+
+<pre><span id="VAL(/<%)"><span class="keyword">val</span> (/&lt;%)</span> : <code class="type">Pervasives.in_channel -> int -> <a href="Channel.Dup.html#TYPEdup_arg">dup_arg</a></code></pre><div class="info ">
+Dup an <code class="code">in_channel</code> from a file descriptor.<br>
+</div>
+</body></html>

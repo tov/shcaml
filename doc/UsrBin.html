@@ -1,0 +1,170 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Util.html">
+<link rel="next" href="Version.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><link title="Fitting Commands" rel="Section" href="#1_FittingCommands">
+<link title="File Commands" rel="Section" href="#1_FileCommands">
+<link title="Other Commands" rel="Section" href="#1_OtherCommands">
+<title>Shcaml : UsrBin</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Util.html" title="Util">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Version.html" title="Version">Next</a>
+</div>
+<h1>Module <a href="type_UsrBin.html">UsrBin</a></h1>
+
+<pre><span class="keyword">module</span> UsrBin: <code class="code"><span class="keyword">sig</span></code> <a href="UsrBin.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+ High-level user utilities.<br>
+</div>
+<hr width="100%">
+<br>
+<h1 id="1_FittingCommands">Fitting Commands</h1><br>
+
+<pre><span id="VALls"><span class="keyword">val</span> ls</span> : <code class="type">string -> ('a -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code></pre><div class="info ">
+List a directory, with file metadata.  Given the name of a
+ directory, produces a fitting which outputs filenames with
+ <a href="Line.Stat.html"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span></code></a> present.<br>
+</div>
+
+<pre><span id="VALfrom_directory"><span class="keyword">val</span> from_directory</span> : <code class="type">string -> ('a -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code></pre><div class="info ">
+Get the filenames in a directory.  Doesn't provide metadata.<br>
+</div>
+
+<pre><span id="VALps"><span class="keyword">val</span> ps</span> : <code class="type">unit -> ('a -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code></pre><div class="info ">
+Get a information about currently running processes.
+ Returns a fitting which outputs <b>ps</b>(1) output with process metadata
+ in the <a href="Line.Ps.html"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Ps</span></code></a> structure.<br>
+</div>
+
+<pre><span id="VALcut"><span class="keyword">val</span> cut</span> : <code class="type">(<a href="Line.html#TYPEt">Line.t</a> -> string) -> (<a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code></pre><div class="info ">
+Select a particular field for each line passing through the fitting.
+  Given a function to show lines, sets <a href="Line.html#VALshow"><code class="code"><span class="constructor">Line</span>.show</code></a> for each line in the
+  input.<br>
+</div>
+
+<pre><span id="VALhead"><span class="keyword">val</span> head</span> : <code class="type">int -> ('a -> 'a) Fitting.t</code></pre><div class="info ">
+<code class="code"><span class="constructor">UsrBin</span>.head&nbsp;n</code> is a fitting that only produces the first <code class="code">n</code> 
+  elements of its input. It leaves the rest for subsequent readers.<br>
+</div>
+
+<pre><span id="VALhead_while"><span class="keyword">val</span> head_while</span> : <code class="type">('a -> bool) -> ('a -> 'a) Fitting.t</code></pre><div class="info ">
+A fitting that passes through elements satisfying a
+ predicate until encountering one that doesn't.
+ Leaves the remaining elements behind.<br>
+</div>
+
+<pre><span id="VALbehead"><span class="keyword">val</span> behead</span> : <code class="type">int -> ('a -> 'a) Fitting.t</code></pre><div class="info ">
+<code class="code"><span class="constructor">UsrBin</span>.behead&nbsp;n</code> is a fitting that drops the first <code class="code">n</code> lines of
+ its input.<br>
+</div>
+
+<pre><span id="VALbehead_while"><span class="keyword">val</span> behead_while</span> : <code class="type">('a -> bool) -> ('a -> 'a) Fitting.t</code></pre><div class="info ">
+A fitting that deletes lines satisfying a predicate until reaching
+ one that doesn't.<br>
+</div>
+
+<pre><span id="VALecho"><span class="keyword">val</span> echo</span> : <code class="type">string -> ('a -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code></pre><div class="info ">
+A fitting to print a string.<br>
+</div>
+
+<pre><span id="VALrenumber"><span class="keyword">val</span> renumber</span> : <code class="type">int -> (<a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code></pre><div class="info ">
+Update the sequence numbers in the lines passing through the pipeline
+  to reflect the current sequence.  The optional argument <code class="code">?from</code> 
+  (default <code class="code">0</code>) specifies the number for the first element.<br>
+</div>
+
+<pre><span id="VALsort"><span class="keyword">val</span> sort</span> : <code class="type">?compare:(<a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a> -> int) -> unit -> (<a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code></pre><div class="info ">
+Sort the lines coming into the fitting.  Since <a href="UsrBin.html#VALsort"><code class="code"><span class="constructor">UsrBin</span>.sort</code></a> must eagerly
+ consume its in order to sort it, attempts to sort infinite shtreams
+ will require patience.<br>
+</div>
+
+<pre><span id="VALuniq"><span class="keyword">val</span> uniq</span> : <code class="type">?equal:(<a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a> -> bool) -> unit -> (<a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code></pre><div class="info ">
+Remove (adjacent) duplicate lines from the fitting's input.  When
+ several lines are equal according the the predicate <code class="code">?equal</code>
+ (default compares <a href="Line.html#VALshow"><code class="code"><span class="constructor">Line</span>.show</code></a>), discards all but the first.<br>
+</div>
+<br>
+<h1 id="1_FileCommands">File Commands</h1><br>
+
+<pre><span id="VALisatty"><span class="keyword">val</span> isatty</span> : <code class="type"><a href="Channel.html#TYPEdescr">Channel.descr</a> -> bool</code></pre><div class="info ">
+Is the given file descriptor a tty?<br>
+</div>
+
+<pre><span id="VALset_stat"><span class="keyword">val</span> set_stat</span> : <code class="type">?dir:string -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Add file metadata to a <code class="code">line</code>.  Uses the filename
+  in <a href="Line.html#VALraw"><code class="code"><span class="constructor">Line</span>.raw</code></a><br>
+</div>
+
+<pre><span id="VALstat"><span class="keyword">val</span> stat</span> : <code class="type">string -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Get file metadata for one file.
+ Creates a <code class="code">line</code> with <a href="Line.Stat.html"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span></code></a> present.<br>
+</div>
+
+<pre><span class="keyword">module</span> <a href="UsrBin.Test.html">Test</a>: <code class="code"><span class="keyword">sig</span></code> <a href="UsrBin.Test.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Functions similar to the UNIX <b>test</b>(1) command.
+</div>
+<br>
+<h1 id="1_OtherCommands">Other Commands</h1><br>
+
+<pre><span id="VALbackquote"><span class="keyword">val</span> backquote</span> : <code class="type">string -> string</code></pre><div class="info ">
+Run a command and return its output.<br>
+</div>
+
+<pre><span id="VALcd"><span class="keyword">val</span> cd</span> : <code class="type">string -> unit</code></pre><div class="info ">
+Change the current working directory.<br>
+</div>
+
+<pre><span id="VALmkdir"><span class="keyword">val</span> mkdir</span> : <code class="type">string -> unit</code></pre><div class="info ">
+Create a directory.<br>
+</div>
+
+<pre><span id="VALmkpath"><span class="keyword">val</span> mkpath</span> : <code class="type">string -> unit</code></pre><div class="info ">
+Create a directory path, succeeding even if some components
+  exist.  This is like <b>mkdir</b>(1) with the <i>-p</i> option.<br>
+</div>
+
+<pre><span id="VALpwd"><span class="keyword">val</span> pwd</span> : <code class="type">unit -> string</code></pre><div class="info ">
+Find out the current working directory.<br>
+</div>
+
+<pre><span id="VALsleep"><span class="keyword">val</span> sleep</span> : <code class="type">int -> unit</code></pre><div class="info ">
+Sleep for the given number of seconds.<br>
+</div>
+</body></html>

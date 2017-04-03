@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Adaptor.Etc_hosts.html">
+<link rel="Up" href="Adaptor.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><title>Shcaml : Adaptor.Ini_file</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Adaptor.Etc_hosts.html" title="Adaptor.Etc_hosts">Previous</a>
+&nbsp;<a class="up" href="Adaptor.html" title="Adaptor">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Adaptor.Ini_file.html">Adaptor.Ini_file</a></h1>
+
+<pre><span class="keyword">module</span> Ini_file: <code class="type"><a href="Adaptor.Key_value_section.S.html">Key_value_section.S</a></code><code class="type"> </code></pre><div class="info module top">
+Adaptor module for configuration files in the style of <i>php.ini</i>
+ or configuration files on some proprietary operating systems.
+ These files use = between keys and values, square brackets around
+ section headings, and semicolon to start comment lines.<br>
+</div>
+<hr width="100%">
+
+<pre><span class="keyword">include</span> <a href="Adaptor.Key_value_section.SPEC.html">Adaptor.Key_value_section.SPEC</a></pre>
+
+<pre><span id="VALadaptor"><span class="keyword">val</span> adaptor</span> : <code class="type"><a href="Adaptor.html#TYPEadaptor">Adaptor.adaptor</a></code></pre><div class="info ">
+Adaptor for a custom key-value-section.<br>
+</div>
+
+<pre><span id="VALfitting"><span class="keyword">val</span> fitting</span> : <code class="type"><a href="Adaptor.html#TYPEfitting_adaptor">Adaptor.fitting_adaptor</a></code></pre><div class="info ">
+Fitting for a custom key-value-section.<br>
+</div>
+
+<pre><span id="VALreader"><span class="keyword">val</span> reader</span> : <code class="type"><a href="Reader.html#TYPEt">Reader.t</a></code></pre><div class="info ">
+Reader for a custom key-value-section.<br>
+</div>
+
+<pre><span id="VALnew_splitter"><span class="keyword">val</span> new_splitter</span> : <code class="type">unit -> <a href="Adaptor.html#TYPEsplitter">Adaptor.splitter</a></code></pre><div class="info ">
+Splitter constructor for a custom key-value-section.  This
+ function takes <code class="code">()</code> as its first argument in order to initialize
+ internal state that keeps track of the current section.  That is,
+ reapplying <a href="Adaptor.Key_value_section.S.html#VALnew_splitter"><code class="code"><span class="constructor">Adaptor</span>.<span class="constructor">Key_value_section</span>.<span class="constructor">S</span>.new_splitter</code></a> to <code class="code">()</code> will yield a splitter that
+ initially is in section <code class="code"><span class="string">""</span></code>, and doesn't share its section state
+ with any other splitter.<br>
+</div>
+</body></html>

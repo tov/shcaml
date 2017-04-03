@@ -1,0 +1,779 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><title>Shcaml</title>
+</head>
+<body>
+<h1>Shcaml</h1>
+ 
+<p>
+
+OCaml excels at "programming in the large", but for small or
+write-once tasks, even the veteran functional programmer often prefers
+a language that feels lighter. Throwaway scripts, however, often live
+longer than expected, and what started as 14 lines of AWK may
+metastasize into a 14-Kloc maintenance nightmare.
+<p>
+
+UNIX shells provide easy access to UNIX functionality such as pipes,
+signals, file descriptor manipulation, and the file system. Shcaml
+hopes to excel at these same tasks.
+<p>
+
+<h3 id="3_MostUsefulModules">Most Useful Modules</h3>
+<p>
+
+Shcaml has a bunch of modules; these are the ones we think it's likely
+you'll need.  All modules in the system are submodules of the <code class="code"><span class="constructor">Shcaml</span></code>
+module.
+<p>
+
+<br>
+<table class="indextable">
+<tr><td class="module"><a href="UsrBin.html">UsrBin</a></td><td><div class="info">
+ High-level user utilities.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Adaptor.html">Adaptor</a></td><td><div class="info">
+Line readers and splitters for a variety of file formats.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Fitting.html">Fitting</a></td><td><div class="info">
+ Fittings represent processes, internal or external, that produce,
+ consume, or transform data.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Flags.html">Flags</a></td><td><div class="info">
+Quick and dirty argument processing.
+</div>
+</td></tr>
+<tr><td class="module"><a href="LineShtream.html">LineShtream</a></td><td><div class="info">
+Shtreams of <a href="Line.html#TYPEt"><code class="code"><span class="constructor">Line</span>.t</code></a>s.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Line.html">Line</a></td><td><div class="info">
+Structured records for line-oriented data.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Reader.html">Reader</a></td><td><div class="info">
+Readers are responsible for breaking input data into pieces, or
+ "raw lines".
+</div>
+</td></tr>
+<tr><td class="module"><a href="Channel.html">Channel</a></td><td><div class="info">
+ Generalized channels and file descriptor manipulation.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Proc.html">Proc</a></td><td><div class="info">
+An OCaml abstraction for UNIX processes.
+</div>
+</td></tr>
+</table>
+
+<p>
+
+A <a href="#2_Glossary"> glossary</a>, and a <a href="#1_Toplevelmodules"> complete index of the
+library</a> can be found at the bottom of this page.
+<p>
+
+<h3 id="3_GettingStarted">Getting Started</h3>
+<p>
+
+Shcaml is available in opam. To install it, simply run:
+<p>
+
+<pre class="verbatim">% opam install shcaml</pre>
+<p>
+
+Shcaml should now be installed.  Try the following:
+<pre class="verbatim">% ocaml
+# #use "topfind";;
+...
+# #require "shcaml.top";;
+        Caml-Shcaml version 0.2.0 (Shmaltz)</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> processes = <span class="constructor">LineShtream</span>.string_list_of @@
+    run_source (ps () -| cut <span class="constructor">Line</span>.<span class="constructor">Ps</span>.command);; </code></pre>
+<pre class="verbatim">val processes : string list ...</pre>
+<p>
+
+If all has gone well, you should have a list of all the process
+invocations (whatever's in the "COMMAND" field when you call <i>ps auxww</i>)
+currently running on your system.
+<p>
+
+<h1 id="1_UserManual">User Manual</h1>
+<p>
+
+This manual is more tutorial style than straight ahead instruction
+manual.  The API is (hopefully!) completely documented, so for
+specific information on any particular bit of the library, check
+there.  This document is here to demonstrate some of the concepts and
+features of Shcaml.
+<p>
+
+<h2 id="2_Components">Components</h2>
+<p>
+
+Shcaml is composed of several major components that are the building
+blocks of the library.  Let's start out by examining a few of them.
+<p>
+
+Follow the instructions above in the "Getting Started" section to get
+Shcaml installed and running.  We'll work in the toploop, with Shcaml
+loaded.  So, run <code class="code">ocaml</code>, then:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keywordsign">#</span>use <span class="string">"topfind"</span>;;</code></pre>
+<pre class="verbatim">...</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keywordsign">#</span>require <span class="string">"shcaml.top"</span>;;</code></pre>
+<pre class="verbatim">...</pre>
+<p>
+
+<em>N.B. when using Shcaml with <code class="code">utop</code>, we advise you pass the
+<code class="code">-no-short-paths</code> option when launching <code class="code">utop</code>.</em>
+<p>
+
+<h3 id="3_Lines">Lines</h3>
+<p>
+
+<em>For Shcaml versions 0.2.0 and greater, the implementation and interface of
+<a href="Line.html"><code class="code"><span class="constructor">Line</span></code></a> differs from what is described in the
+<a href="http://users.eecs.northwestern.edu/~jesse/pubs/caml-shcaml/"> Shcaml paper</a>.
+The <code class="code"><span class="constructor">Line</span>.t</code> having a phantom parameter with row polymorphism has been replaced
+by a simpler heterogeneous map. This provides less static guarantees (which
+fields are present or not is not statically known anymore), but improves the
+maintenability of the library.</em>
+<p>
+
+A <a href="Line.html#TYPEt"><code class="code"><span class="constructor">Line</span>.t</code></a> represents structured data that might be found in a file
+or in the output of a command.  A line might represent a record from
+the passwd file, or the output of <i>ps</i>.  Let's make one:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> hello = <span class="constructor">Line</span>.line <span class="string">"hello world, I'm a line!"</span>;;</code></pre>
+<pre class="verbatim">val hello : Shcaml.Line.t = &lt;line:"hello world, I'm a line!"|&gt;</pre>
+I know it looks like <code class="code">hello</code> has our greeting in it, but at the moment
+it doesn't contain any structured information. What gives?  Well, all
+lines are constructed from a raw string, in this case <code class="code"><span class="string">"hello&nbsp;world,&nbsp;I'm&nbsp;a&nbsp;line!"</span></code>.
+But that doesn't actually tell us any useful information about what
+kind of data is in that string.  Let's suppose that <code class="code">hello</code> were a
+line that came from a comma-delimited file.  Then we would want to
+think of it as delimited input, rather than simply a string.  Lines
+represent delimited input simply as a list of strings.  Let's turn our
+empty line into a more structured piece of data.  We'll use
+<code class="code"><span class="constructor">Pcre</span>.asplit</code> to parse the string into an array.
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> hello_delim =
+    <span class="constructor">Line</span>.<span class="constructor">Delim</span>.create
+      (<span class="constructor">Pcre</span>.asplit ~pat:<span class="string">", "</span> (<span class="constructor">Line</span>.show hello))
+      hello;;</code></pre>
+<pre class="verbatim">val hello_delim : Shcaml.Line.t = &lt;line:"hello world, I'm a line!"|delim&gt;</pre>
+Let's check to make sure you got what I promised.  Try this:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Line</span>.<span class="constructor">Delim</span>.fields hello_delim;;</code></pre>
+<pre class="verbatim">- : string array = [|"hello world"; "I'm a line!"|]</pre>
+We just added some structured information to the previously "empty"
+line. This is indicated by the "<code class="code"><span class="keywordsign">|</span>delim&gt;</code>" bit printed after the line
+contents: it indicates the presence of a "<code class="code">delim</code>" structured field.
+Now consider, <code class="code">hello</code> does not have a <code class="code">delim</code> field.  What would
+happen if we try to get the <code class="code"><span class="constructor">Delim</span>.fields</code> list from <code class="code">hello</code>?
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Line</span>.<span class="constructor">Delim</span>.fields hello;;</code></pre>
+<pre class="verbatim">Exception: Line.Field_not_found delim.</pre>
+So we get an exception, because <code class="code">hello</code> does not contain a <code class="code">delim</code>
+field; while we added one to <code class="code">hello_delim</code> using <a href="Line.Delim.html#VALcreate"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Delim</span>.create</code></a>.
+<p>
+
+<em>Caveat: as of now (OCaml 4.04), when using the toplevel, the name
+of the field is not shown when <code class="code"><span class="constructor">Field_not_found</span></code> is raised, and
+<code class="code">&lt;extension&gt;</code> is printed instead. This is due to the
+<a href=" https://caml.inria.fr/mantis/view.php?id=7156"> following bug</a>, that
+hasn't been fixed yet.</em>
+<p>
+
+Now, suppose we wanted to uppercase the strings in the <code class="code"><span class="constructor">Delim</span>.fields</code>
+list:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> hello_DELIM =
+    <span class="constructor">Line</span>.<span class="constructor">Delim</span>.set_fields
+      (<span class="constructor">Array</span>.map <span class="constructor">String</span>.uppercase_ascii (<span class="constructor">Line</span>.<span class="constructor">Delim</span>.fields hello_delim))
+      hello_delim;;</code></pre>
+<pre class="verbatim">val hello_DELIM : Shcaml.Line.t = &lt;line:"hello world, I'm a line!"|delim&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Line</span>.<span class="constructor">Delim</span>.fields hello_DELIM;;</code></pre>
+<pre class="verbatim">- : string array = [|"HELLO WORLD"; "I'M A LINE!"|]</pre>
+To wrap it up, we can define a function that does just that:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> uppercase_delims ln =
+        <span class="constructor">Line</span>.<span class="constructor">Delim</span>.set_fields
+          (<span class="constructor">Array</span>.map <span class="constructor">String</span>.uppercase_ascii (<span class="constructor">Line</span>.<span class="constructor">Delim</span>.fields ln))
+   	ln;;</code></pre>
+<pre class="verbatim">val uppercase_delims : Shcaml.Line.t -&gt; Shcaml.Line.t = &lt;fun&gt;</pre>
+We've seen how lines can have generic delimited data attached.  Lines
+can also have passwd data, data from <i>ps</i>, data representing
+key-value pairs, a record of its provenance (<code class="code">source</code>), and several
+others.  Functions for manipulating this data will often appear in
+submodules of <a href="Line.html"><code class="code"><span class="constructor">Line</span></code></a>, for instance, <a href="Line.Passwd.html"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Passwd</span></code></a>.  Let's try
+another example, creating a line with data from the password file in
+it.  (Don't worry, this is all built in, but we want to walk you through it.
+It builds character.)  We'll start by making a delimited list of the fields:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> root = <span class="constructor">Line</span>.line <span class="string">"root:x:0:0:Enoch Root:/root:/bin/shcaml"</span>;;</code></pre>
+<pre class="verbatim">val root : Shcaml.Line.t =
+  &lt;line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> root_delim = <span class="constructor">Line</span>.<span class="constructor">Delim</span>.create
+    (<span class="constructor">Pcre</span>.asplit ~pat:<span class="string">":"</span> (<span class="constructor">Line</span>.show root)) root;;</code></pre>
+<pre class="verbatim">val root_delim : Shcaml.Line.t =
+  &lt;line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|delim&gt;</pre>
+Then, we'll make a function that takes lines with delimited data to
+lines with passwd data as well.
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> passwd_of_delim ln =
+    <span class="keyword">match</span> <span class="constructor">Line</span>.<span class="constructor">Delim</span>.fields ln <span class="keyword">with</span>
+      <span class="keywordsign">|</span> [|name;passwd;uid;gid;gecos;home;shell|] <span class="keywordsign">-&gt;</span>
+          <span class="constructor">Line</span>.<span class="constructor">Passwd</span>.create
+            ~name ~passwd ~gecos ~home ~shell
+            ~uid:(int_of_string uid) ~gid:(int_of_string gid)
+            ln
+      <span class="keywordsign">|</span> _ <span class="keywordsign">-&gt;</span> <span class="constructor">Shtream</span>.warn <span class="string">"Line didn't have 7 fields"</span>;;</code></pre>
+<pre class="verbatim">val passwd_of_delim : Shcaml.Line.t -&gt; Shcaml.Line.t = &lt;fun&gt;</pre>
+Our function takes a line with a <code class="code">delim</code> field, and returns one with
+not just a <code class="code">delim</code> field, but also a <code class="code">passwd</code> field.  (<code class="code"><span class="constructor">Shtream</span>.warn</code>
+will be discussed below).  Let's try it out:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> root_pw = passwd_of_delim root_delim;;</code></pre>
+<pre class="verbatim">val root_pw : Shcaml.Line.t =
+  &lt;line:"root:x:0:0:Enoch Root:/root:/bin/shcaml"|passwd delim&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Line</span>.<span class="constructor">Passwd</span>.uid root_pw;;</code></pre>
+<pre class="verbatim">- : int = 0</pre>
+You may have noticed that when we get the string a line was made
+out of, we use <a href="Line.html#VALshow"><code class="code"><span class="constructor">Line</span>.show</code></a>.  You can call <code class="code">show</code> on any line, and
+it will return a string representation of that line.  That does not
+necessarily mean it will print out the exact value with which the line
+was created.  In fact, you can change what <code class="code">show</code> returns using
+<a href="Line.html#VALselect"><code class="code"><span class="constructor">Line</span>.select</code></a>.  Suppose that we wanted people to only see a username
+when they tried to <code class="code">show</code> <code class="code">root_pw</code>:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> root_un = <span class="constructor">Line</span>.select <span class="constructor">Line</span>.<span class="constructor">Passwd</span>.name root_pw;;</code></pre>
+<pre class="verbatim">val root_un : Shcaml.Line.t = &lt;line:"root"|passwd delim&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Line</span>.show root_un;;</code></pre>
+<pre class="verbatim">- : string = "root"</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Line</span>.show root_pw;;</code></pre>
+<pre class="verbatim">- : string = "root:x:0:0:Enoch Root:/root:/bin/shcaml"</pre>
+Using <a href="Line.html#VALshow"><code class="code"><span class="constructor">Line</span>.show</code></a> and <a href="Line.html#VALselect"><code class="code"><span class="constructor">Line</span>.select</code></a> becomes extremely important when
+we start working with external processes (that is, running UNIX programs
+from OCaml).  When a line is to be piped into some external process, Shcaml
+calls <code class="code">show</code> on it and sends the string that results along.  Thus,
+when it's important, you can change how your data is rendered for output.
+<h3 id="3_Shtreams">Shtreams</h3>
+<p>
+
+<a href="Shtream.html"><code class="code"><span class="constructor">Shtream</span></code></a>s are similar in intent and operation to OCaml <code class="code"><span class="constructor">Stream</span></code>s,
+but unlike a <code class="code"><span class="constructor">Stream</span></code>, <a href="Shtream.html"><code class="code"><span class="constructor">Shtream</span></code></a>s have an <code class="code"><span class="string">'h'</span></code>.  Additionally, shtreams
+know about OCaml channels; any shtream may be turned into an OCaml
+<code class="code">in_channel</code>, and vice-versa.  Shtreams have a richer interface than
+streams, which may be explored in the API.  Let's try to make a
+shtream:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> stdin_shtream = <span class="constructor">Shtream</span>.of_channel input_line stdin;;</code></pre>
+<pre class="verbatim">val stdin_shtream : string Shcaml.Shtream.t = &lt;abstr&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next stdin_shtream;;</code></pre>
+<pre class="verbatim">hello, there. (you type this)
+ 
+- : string = "hello, there."</pre>
+Here, we create a shtream from the <code class="code">stdin</code> using
+<a href="Shtream.html#VALof_channel"><code class="code"><span class="constructor">Shtream</span>.of_channel</code></a>.  The first argument is a reader function, that
+is, a function that tells the shtream how to produce a value from the
+channel.  In this example, <code class="code">stdin_shtream</code>
+reads data a line at a time.  When we call <code class="code"><span class="constructor">Shtream</span>.next</code> on
+<code class="code">stdin_shtream</code>, it tries to produce another value, causing
+<code class="code">input_line</code> to be called on the <code class="code">in_channel</code> with which the shtream
+was created.
+<p>
+
+We can turn our shtream into an <code class="code">in_channel</code> again with
+<a href="Shtream.html#VALchannel_of"><code class="code"><span class="constructor">Shtream</span>.channel_of</code></a>:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> newstdin = <span class="constructor">Shtream</span>.channel_of print_endline stdin_shtream;;</code></pre>
+<pre class="verbatim">val newstdin : in_channel = &lt;in_channel:4&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> input_line newstdin;;</code></pre>
+<pre class="verbatim">Hi again!
+ 
+- : string = "  Hi again!"</pre>
+To turn the shtream back into an <code class="code">in_channel</code>, we needed to give it a
+writer function, here <code class="code">print_endline</code>.  The writer function should take
+values in the shtream and print them to stdout.  (Bear in mind, shtreams
+need not contain strings, so a writer function for an <code class="code"><span class="keywordsign">'</span>a&nbsp;<span class="constructor">Shtream</span>.t</code> has
+type <code class="code"><span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit</code>.
+<p>
+
+Shtreams can be generated programmatically using <code class="code"><span class="constructor">Shtream</span>.from</code>.  For
+instance, we could write a shtream that acted like the UNIX program
+<b>yes</b>(1), which prints a string to stdout until it's killed.  Our
+version will be a function that takes a string and creates a shtream
+that generates that string over and over again.
+As with standard library streams, <code class="code">from</code>
+takes a function of type <code class="code">int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;option</code>.
+That function is called
+with successive integers starting from 0, and is expected to return
+either <code class="code"><span class="constructor">Some</span>&nbsp;value</code>, meaning the next value in the shtream, or <code class="code"><span class="constructor">None</span></code>,
+indicating that there is no more data to read from the shtream.
+To demonstrate that the generating function is called for each element,
+we'll include the argument to the function in each element.
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> yes s =
+    <span class="keyword">let</span> builder n = <span class="constructor">Some</span> (<span class="constructor">Printf</span>.sprintf <span class="string">"%d: %s"</span> n s) <span class="keyword">in</span>
+      <span class="constructor">Shtream</span>.from builder;;</code></pre>
+<pre class="verbatim">val yes : string -&gt; string Shcaml.Shtream.t = &lt;fun&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> yes_shtr = yes <span class="string">"yes"</span>;;</code></pre>
+<pre class="verbatim">val yes_shtr : string Shcaml.Shtream.t = &lt;abstr&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next yes_shtr;;</code></pre>
+<pre class="verbatim">- : string = "0: yes"</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next yes_shtr;;</code></pre>
+<pre class="verbatim">- : string = "1: yes"</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next yes_shtr;;</code></pre>
+<pre class="verbatim">- : string = "2: yes"</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next yes_shtr;;</code></pre>
+<pre class="verbatim">- : string = "3: yes"</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next yes_shtr;;</code></pre>
+<pre class="verbatim">- : string = "4: yes"</pre>
+We can, of course, create a channel from this shtream, as well.
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> yes_chan = <span class="constructor">Shtream</span>.channel_of print_endline yes_shtr;;</code></pre>
+<pre class="verbatim">val yes_chan : in_channel = &lt;in_channel:3&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> input_line yes_chan;;</code></pre>
+<pre class="verbatim">- : string = "5: yes"</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> input_line yes_chan;;</code></pre>
+<pre class="verbatim">- : string = "6: yes"</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Channel</span>.close_in yes_chan;;</code></pre>
+<pre class="verbatim">- : unit = ()</pre>
+What we've demonstrated here is a small portion of the functionality
+of shtreams, but it's enough to give you an idea of how they work.  Many
+more facilities for creating, observing, and manipulating shtreams
+are described in the <a href="Shtream.html"><code class="code"><span class="constructor">Shtream</span></code></a> API documentation.  However, from the
+perspective of Shcaml, shtreams are relatively low-level constructs.
+In addition to extending <code class="code"><span class="constructor">Stream</span></code>s, Shcaml provides extensions to
+standard OCaml channels in a module called <a href="Channel.html"><code class="code"><span class="constructor">Channel</span></code></a>, and an
+abstraction of processes (UNIX programs you run from Shcaml) in
+<a href="Proc.html"><code class="code"><span class="constructor">Proc</span></code></a>.  Lines and shtreams combine their powers in <a href="Fitting.html"><code class="code"><span class="constructor">Fitting</span></code></a>s,
+which we discuss next.
+<h2 id="2_Fittings">Fittings</h2>
+<p>
+
+Fittings provide an embedded process control notation.  That's fancy
+way of saying that we did our best to create some functions that make
+it look (kinda, sorta) like you're writing snippets of shell scripts
+in your OCaml.  Let's try a simple one:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (command <span class="string">"echo a fitting!"</span>);;</code></pre>
+<pre class="verbatim">a fitting!
+- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+We've run the command <code class="code"><span class="string">"echo&nbsp;a&nbsp;fitting!"</span></code>.  We can see "a fitting!"
+printed, and that it finished successfully (<code class="code"><span class="constructor">Unix</span>.<span class="constructor">WEXITED</span>&nbsp;0</code>).  When a
+command doesn't exit successfully, we see that too:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (command <span class="string">"false"</span>);;</code></pre>
+<pre class="verbatim">- : Shcaml.Proc.status = Unix.WEXITED 1</pre>
+Let's take a closer look.  There are two things
+happening.  We construct a fitting with <code class="code">command&nbsp;<span class="string">"false"</span></code>.  There are
+several different ways to create fittings: <code class="code"><span class="constructor">Fitting</span>.command</code> takes a
+string that will be run in the shell (e.g., <code class="code">command&nbsp;<span class="string">"foo&nbsp;bar&nbsp;baz"</span></code> is like
+<i>sh -c "foo bar baz"</i>).  However, the fitting is not actually executed
+until we call <code class="code"><span class="constructor">Fitting</span>.run</code> on it.  For example,
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> goodbye = command <span class="string">"echo goodbye from unix"</span> <span class="keyword">in</span>
+    print_endline <span class="string">"hello from caml"</span>;
+    run goodbye;;</code></pre>
+<pre class="verbatim">hello from caml
+goodbye from unix
+- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+Notice that the "hello from caml" appeared before the "goodbye from
+unix".  There are several kinds of "runners".  The one we've seen,
+<code class="code">run</code>, executes a fitting with stdin as its input and stdout as its
+output.  The type of <code class="code">run</code> is <code class="code">(<span class="constructor">Shcaml</span>.<span class="constructor">Fitting</span>.text&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a<br>
+<span class="constructor">Shcaml</span>.<span class="constructor">Fitting</span>.elem)&nbsp;<span class="constructor">Shcaml</span>.<span class="constructor">Fitting</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Shcaml</span>.<span class="constructor">Proc</span>.status</code>.  In
+general, <code class="code">(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>b)&nbsp;<span class="constructor">Shcaml</span>.<span class="constructor">Fitting</span>.t</code> is a thing that consumes a
+sequence of <code class="code"><span class="keywordsign">'</span>a</code>s and produces a sequence of <code class="code"><span class="keywordsign">'</span>b</code>s.  The type
+<code class="code"><span class="constructor">Fitting</span>.text</code> indicates data coming in over a channel; the type <code class="code"><span class="keywordsign">'</span>a<br>
+<span class="constructor">Shcaml</span>.<span class="constructor">Fitting</span>.elem</code> indicates generic data that can be sent over a
+channel.  There are several kinds of fitting constructors provided in
+the <a href="Fitting.html"><code class="code"><span class="constructor">Fitting</span></code></a> module.  Let's look at a few of them.  All of the
+following print the <i>/etc/passwd</i> file to the standard out (we'll
+elide the output here to save space):
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (command <span class="string">"cat /etc/passwd"</span>);;</code></pre>
+<pre class="verbatim">...</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (from_file <span class="string">"/etc/passwd"</span>);;</code></pre>
+<pre class="verbatim">...</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (from_gen (<span class="keywordsign">`</span><span class="constructor">Filename</span> <span class="string">"/etc/passwd"</span>));;</code></pre>
+<pre class="verbatim">...</pre>
+Rather than send the output from a fitting to stdout, we can
+get it as a shtream:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> passwd = run_source (from_file <span class="string">"/etc/passwd"</span>);;</code></pre>
+<pre class="verbatim">val passwd : Shcaml.Fitting.text Shcaml.Fitting.shtream = &lt;abstr&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next passwd;;</code></pre>
+<pre class="verbatim">- : Shcaml.Fitting.text = &lt;line:"root:x:0:0:root:/root:/bin/bash"&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next passwd;;</code></pre>
+<pre class="verbatim">- : Shcaml.Fitting.text = &lt;line:"daemon:x:1:1:daemon:/usr/sbin:/bin/sh"&gt;</pre>
+What good is that, you may ask?  Well, now that we have a shtream of
+lines, we can start applying some of our line functions to them.
+Here's one that we provide for parsing passwd files (these sorts of
+functions are provided by the <a href="Adaptor.html"><code class="code"><span class="constructor">Adaptor</span></code></a> module).
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> pw_shtream = run_source
+    (from_file <span class="string">"/etc/passwd"</span> -| <span class="constructor">Adaptor</span>.<span class="constructor">Passwd</span>.fitting ());;</code></pre>
+<pre class="verbatim">val pw_shtream : Shcaml.Line.t Shcaml.Fitting.shtream = &lt;abstr&gt;</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="constructor">Shtream</span>.next pw_shtream;;</code></pre>
+<pre class="verbatim">- : Shcaml.Line.t = &lt;line:"root:x:0:0:root:/root:/bin/bash"|passwd&gt;</pre>
+Now we have a shtream that has lines with passwd data in them.  (They
+also have <code class="code">source</code>, which tells you where data came from, and <code class="code">seq</code>,
+which tells you its line number in the source.)
+<p>
+
+Can you guess what the <code class="code">(-|)</code> operator does?  That's
+right, it's a pipe!  (The <code class="code"><span class="keywordsign">|</span></code> character is pretty meaningful in OCaml
+programs, as are most other shell operators, so we have decorated them
+a little bit to give them the right precedence and to keep them from
+clashing with other OCaml syntax.)
+<p>
+
+The type of <code class="code">(-|)</code> will help us understand fittings a whole lot
+better
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> (-|);;</code></pre>
+<pre class="verbatim">- : ('a -&gt; 'b) Shcaml.Fitting.t -&gt;
+    ('b -&gt; 'c) Shcaml.Fitting.t -&gt; ('a -&gt; 'c) Shcaml.Fitting.t
+= &lt;fun&gt;</pre>
+Typically, in the shell, when we want to pipe two processes together
+(<i>foo | bar</i>), we think of <code class="code">bar</code> as a program that takes whatever
+kind of output <code class="code">foo</code> produces and then generates its own output.  In
+Shcaml, we think the same way.  The type of a fitting tells us what
+kind of data it accepts as input and generates as output.  An <code class="code">(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span><br>
+<span class="keywordsign">'</span>b)&nbsp;<span class="constructor">Shcaml</span>.<span class="constructor">Fitting</span>.t</code> takes values of type <code class="code"><span class="keywordsign">'</span>a</code> as input and outputs
+values of type <code class="code"><span class="keywordsign">'</span>b</code>.  So of course, you can only pipe together two
+fittings if the first one produces data the second one consumes.  So
+if the first fitting given to <code class="code">(-|)</code> reads <code class="code"><span class="keywordsign">'</span>a</code>s and outputs <code class="code"><span class="keywordsign">'</span>b</code>s,
+then the second must consume <code class="code"><span class="keywordsign">'</span>b</code>s, and output <code class="code"><span class="keywordsign">'</span>c</code>s.  When you put
+them together, then, you'll get a new fitting that reads <code class="code"><span class="keywordsign">'</span>a</code>s, runs
+them through the first fitting and back into the second, and then
+produces the output of the second, <code class="code"><span class="keywordsign">'</span>c</code>s.  That is, we get an
+<code class="code">(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>c)&nbsp;<span class="constructor">Shcaml</span>.<span class="constructor">Fitting</span>.t</code>.
+<p>
+
+Fittings provide a general mechanism to pipe together data like this.
+But they also know a whole lot about UNIX, and make it very easy to
+intermix calls to the shell with OCaml code.  Let's use the system's
+<code class="code">sort</code> command and our built-in <code class="code">uniq</code> functions (we provide a Fitting
+version of <code class="code">sort</code> in <a href="UsrBin.html"><code class="code"><span class="constructor">UsrBin</span></code></a>) to get a list of the different shells
+that are in use on the system.
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> <span class="keyword">let</span> shells = <span class="constructor">LineShtream</span>.string_list_of
+    (run_source
+       (from_file <span class="string">"/etc/passwd"</span>
+        -| <span class="constructor">Adaptor</span>.<span class="constructor">Passwd</span>.fitting ()
+        -| cut <span class="constructor">Line</span>.<span class="constructor">Passwd</span>.shell
+        -| command <span class="string">"sort"</span>
+        -| uniq ()));;</code></pre>
+<pre class="verbatim">val shells : string list =
+  ["/bin/bash"; "/bin/false"; "/bin/sh"; "/bin/sync"; "/bin/zsh";
+   "/usr/lib/nx/nxserver"; "/usr/sbin/nologin"]</pre>
+Your results may differ, of course; on the box this manual is currently
+being written on, it appears that nobody uses C Shell.  That pipeline is
+longer than the one we've seen, but the only new material is
+<a href="UsrBin.html#VALcut"><code class="code"><span class="constructor">UsrBin</span>.cut</code></a>, which takes a function from <code class="code">(<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Shcaml</span>.<span class="constructor">Line</span>.t&nbsp;<span class="keywordsign">-&gt;</span><br>
+string)</code> and produces an <code class="code">(<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Shcaml</span>.<span class="constructor">Line</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="constructor">Shcaml</span>.<span class="constructor">Line</span>.t)<br>
+<span class="constructor">Shcaml</span>.<span class="constructor">Fitting</span>.t</code>.  It's like <a href="Line.html#VALselect"><code class="code"><span class="constructor">Line</span>.select</code></a> for fittings.  We start
+the pipeline off with <code class="code">from_file&nbsp;<span class="string">"/etc/passwd"</span></code>, which will generate a
+shtream of the lines out of the passwd file.  Then we adapt the
+shtream into a shtream with passwd data attached
+(<code class="code"><span class="constructor">Adaptor</span>.<span class="constructor">Passwd</span>.fitting&nbsp;()</code>).  Next, we want to make our lines appear
+to the outside world not as the full string read out of the passwd
+file, but rather just the shell field.  So we call <a href="UsrBin.html#VALcut"><code class="code"><span class="constructor">UsrBin</span>.cut</code></a> to
+select the <a href="Line.Passwd.html#VALshell"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Passwd</span>.shell</code></a> field as the <code class="code">show</code> text for each
+line.  That way, when the lines get passed to the external <code class="code">sort</code>
+command, it just sees the shell field, and not the whole passwd
+record.  Then we use our internal <a href="UsrBin.html#VALuniq"><code class="code"><span class="constructor">UsrBin</span>.uniq</code></a> to remove duplicates.
+Because we pass our fitting to <code class="code">run_source</code>, it generates a shtream,
+upon which we may finally call <code class="code"><span class="constructor">LineShtream</span>.string_list_of</code>.  But the
+code is much easier to understand than the prose, isn't it?
+<p>
+
+In addition to pipes, Shcaml provides analogues to the shell's <code class="code"><span class="keywordsign">&amp;&amp;</span></code>,
+<code class="code"><span class="keywordsign">||</span></code>, and <code class="code">;</code> sequencing operators.  Take a bit of structured playtime
+and poke around with them.  They're in the fine
+<a href="FittingSig.S.html#2_FittingCombinators"> manual</a>.
+<p>
+
+<h3 id="3_IORedirection">I/O Redirection</h3>
+<p>
+
+A difference between fittings and UNIX pipelines is that fittings only
+have one input and one output, while UNIX processes may read or write
+on many different file descriptors (for instance, <code class="code">stdout</code> and
+<code class="code">stderr</code>).  Shcaml provides facilities for sophisticated I/O
+redirection.  Let's start by taking a look at how redirection is
+specified.
+<p>
+
+A <a href="Channel.html#TYPEdup_spec"><code class="code"><span class="constructor">Channel</span>.dup_spec</code></a> is a list of instructions for how I/O redirection
+should be done for a given fitting.  There are a great many operators
+provided in <a href="Channel.Dup.html"><code class="code"><span class="constructor">Channel</span>.<span class="constructor">Dup</span></code></a> for specifying different sorts of
+interconnections.  Here's a bunch of different examples, each of which
+redirects the standard output to <i>/dev/null</i>:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (command <span class="string">"echo hello"</span> /&gt;/ [ stdout /&gt;* <span class="keywordsign">`</span><span class="constructor">Null</span> ]);;</code></pre>
+<pre class="verbatim">- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (command <span class="string">"echo hello"</span> /&gt;/ [ 1 %&gt;* <span class="keywordsign">`</span><span class="constructor">Filename</span> <span class="string">"/dev/null"</span> ]);;</code></pre>
+<pre class="verbatim">- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (command <span class="string">"echo hello"</span> /&gt;/ [ <span class="keywordsign">`</span><span class="constructor">OutFd</span> 1 *&gt;&amp; <span class="keywordsign">`</span><span class="constructor">Null</span> ]);;</code></pre>
+<pre class="verbatim">- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (command <span class="string">"echo hello"</span> /&gt;/ [ <span class="keywordsign">`</span><span class="constructor">OutChannel</span> stdout *&gt;&amp; <span class="keywordsign">`</span><span class="constructor">Null</span> ]);;</code></pre>
+<pre class="verbatim">- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+Why so many ways to say nothing at all?  Well, there are a few different
+kinds of places you can send data (not all of them <i>/dev/null</i>), and
+several different names for the same places.  For instance, writing to
+<code class="code">stdout</code>, file descriptor 1, or <code class="code">gen_out_channel</code>s <code class="code"><span class="keywordsign">`</span><span class="constructor">OutFd</span>&nbsp;1</code> or
+<code class="code"><span class="keywordsign">`</span><span class="constructor">OutChannel</span>&nbsp;stdout</code>.  Shcaml provides operators for dealing with each
+of these cases.  (<a href="Channel.html#TYPEgen_channel"><code class="code"><span class="constructor">Channel</span>.gen_channel</code></a>s are Shcaml's lower-level
+generalized channels.)  In order to make it easier to remember which
+operator is which, they're named systematically.  See <a href="Channel.Dup.html"><code class="code"><span class="constructor">Channel</span>.<span class="constructor">Dup</span></code></a> for
+an explanation of the myriad redirection operators.
+<p>
+
+The operators <code class="code">(/&gt;/)</code> and <code class="code">(/&lt;/)</code> take a fitting on the left and a
+list of redirections on the right, and apply the redirections in the
+latter to the former.  For example,
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (command <span class="string">"echo hello; echo world 1&gt;&amp;2"</span>
+         /&gt;/ [ 1 %&gt; <span class="string">"file1"</span>; 2 %&gt; <span class="string">"file2"</span> ]);;</code></pre>
+<pre class="verbatim">- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+Let's check that it worked:
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (from_file <span class="string">"file1"</span>);;</code></pre>
+<pre class="verbatim">hello
+- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+<pre class="codepre"><code class="code"><span class="keywordsign">#</span> run (from_file <span class="string">"file2"</span>);;</code></pre>
+<pre class="verbatim">world
+- : Shcaml.Proc.status = Unix.WEXITED 0</pre>
+<p>
+
+<h3 id="3_Adaptors">Adaptors</h3>
+<p>
+
+The <a href="Adaptor.html"><code class="code"><span class="constructor">Adaptor</span></code></a> module provides record readers and splitters for a
+variety of file formats.  The readers and splitters for each format
+are contained in a submodule named for the format (for instance, the
+functions for <i>/etc/mailcap</i> are in <a href="Adaptor.Mailcap.html"><code class="code"><span class="constructor">Adaptor</span>.<span class="constructor">Mailcap</span></code></a>.  Readers
+read "raw data off the wire".  That is, a reader is a function from an
+<code class="code">in_channel</code> to a <a href="Reader.html#TYPEraw_line"><code class="code"><span class="constructor">Reader</span>.raw_line</code></a>, which is a record of string data,
+possibly including some delimiter junk.
+Splitters do field-splitting.  Given a line, they will use the <a href="Line.html#VALraw"><code class="code"><span class="constructor">Line</span>.raw</code></a>
+data in the line to produce a new line with the relevant fields.  In
+addition to readers and splitters, each module exports an <code class="code">adaptor</code>
+function that is used to transform shtreams of lines by using the
+<code class="code">reader</code> and <code class="code">splitter</code> functions (they all have these names by
+convention) in the module; a function <code class="code">fitting</code> is
+provided as well, which (as one might expect) provides a version
+of the adaptor as a fitting, so it might be used directly in a
+pipeline.
+<p>
+
+There are adaptor submodules for delimited text, simple flat files,
+comma-separated text, key-value and sectioned key-value (ie, ssh
+config files or .ini-style files), /etc/
+files, and more.
+<p>
+
+<h3 id="3_UsrBin">UsrBin</h3>
+<p>
+
+<a href="UsrBin.html"><code class="code"><span class="constructor">UsrBin</span></code></a> contains a collection of miscellaneous useful functions.
+Among these are fittings like <code class="code">ls</code>, <code class="code">ps</code>, <code class="code">cut</code>, <code class="code">head</code>, <code class="code">sort</code> and
+<code class="code">uniq</code>.  In addition, it provides some lower-level but still quite
+useful functions, such as <code class="code">cd</code>, <code class="code">mkdir</code>, <code class="code">mkpath</code> (<i>mkdir -p</i>, as well
+as a submodule <a href="UsrBin.Test.html"><code class="code"><span class="constructor">UsrBin</span>.<span class="constructor">Test</span></code></a> that contains functions
+analogous to <b>test</b>(1).
+<p>
+
+<h2 id="2_Glossary">Glossary</h2>
+<p>
+
+It is an unfortunate necessity of the scope and intent of Shcaml that
+many of the names of things in the library sound generic (for
+instance: runner, reader, stash, line etc.).  In fact, in the API
+documentation and the manual, we have striven to use such terms in a
+more formalized sense.  This glossary documents Shcaml (and related)
+"terms of art", hopefully eliminating ambiguity and confusion.
+<p>
+<ul>
+<li><b>adaptor</b>: A module that knows how to parse a particular file
+  format, storing the results in line fields.  See <a href="Adaptor.html"><code class="code"><span class="constructor">Adaptor</span></code></a>.</li>
+<li><b>clobber</b>: When redirecting output to a file that already exists,
+  <i>clobber</i>ing is to truncate and overwrite the file.
+  <a href="Channel.html#VALclobber"><code class="code"><span class="constructor">Channel</span>.clobber</code></a> controls whether to clobber files by default.</li>
+<li><b>command</b>: A string that is passed to the UNIX command interpreter
+  (shell) for processing.  For example, <code class="code"><span class="string">"ls&nbsp;&gt;&nbsp;/dev/null"</span></code>.  This
+  differs from a <i>program</i>, which is one executable to launch.</li>
+<li><b>dup</b>: I/O redirection. To copy a file descriptor, or cause one
+  file descriptor to behave as another.  In Shcaml, we also use <i>dup</i>
+  to refer to the specification of a redirection (e.g., <code class="code">2&nbsp;%&gt;&amp;&nbsp;1</code>).</li>
+<li><b>line</b>: A structured record of type <a href="Line.html#TYPEt"><code class="code"><span class="constructor">Line</span>.t</code></a>, containing
+  both raw text and, usually, metadata.</li>
+<li><b>program</b>: A single UNIX executable; contrast with <i>command</i>.
+  Usually in Shcaml, when we run a program, we specify both the name
+  of the executable and a <code class="code">string&nbsp;list</code> of already-parsed arguments.</li>
+<li><b>raw</b>: The unprocessed text from which a <a href="Line.html#TYPEt"><code class="code"><span class="constructor">Line</span>.t</code></a> was created.
+  Accessed with <a href="Line.html#VALraw"><code class="code"><span class="constructor">Line</span>.raw</code></a>.  Use <a href="Line.html#VALshow"><code class="code"><span class="constructor">Line</span>.show</code></a> to get the current
+  (possibly processed) text of a line.</li>
+<li><b>reader</b>: A function for splitting channel input into raw lines,
+  before analysing the contents of each raw line.  See <a href="Reader.html"><code class="code"><span class="constructor">Reader</span></code></a> for how
+  <i>readers</i> are defined.  Most <a href="Adaptor.html"><code class="code"><span class="constructor">Adaptor</span></code></a>s also come with a reader
+  for their format.</li>
+<li><b>runner</b>: A function in <a href="Fitting.html"><code class="code"><span class="constructor">Fitting</span></code></a> for executing a fitting, which
+  may be previously constructed.  See <code class="code"><span class="constructor">Fitting</span>.run</code>,
+  <code class="code"><span class="constructor">Fitting</span>.run_source</code>, <code class="code"><span class="constructor">Fitting</span>.run_shtream</code>, etc.</li>
+<li><b>show</b>: The textual value of a <i>line</i>, accessed with
+  <a href="Line.html#VALshow"><code class="code"><span class="constructor">Line</span>.show</code></a>.  This is used, for example, to send the contents
+  of a line to external processes.  If you want the <code class="code">string</code> of a line,
+  this is usually it.</li>
+<li><b>splitter</b>:  A function to analyze the <i>raw</i> text of a <i>line</i>
+  and fill in more line fields.  Most <a href="Adaptor.html"><code class="code"><span class="constructor">Adaptor</span></code></a>s come with a splitter
+  for their format.</li>
+<li><b>stash</b>:  To store the <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> in an optional parameter, so
+  that the caller of a function that may fork can find out the identity
+  of the resulting child process.  Functions such as
+  <a href="Channel.html#VALopen_command_in"><code class="code"><span class="constructor">Channel</span>.open_command_in</code></a> take an optional <code class="code"><span class="constructor">Proc</span>.t&nbsp;option&nbsp;ref</code>
+  parameter in which they stash <code class="code"><span class="constructor">Proc</span>.t</code> of the process that they
+  start.</li>
+<li><b>thunk</b>: A function with one argument of type <code class="code">unit</code>, used to
+  specify an action to be performed later, or in another context.  Often
+  in Shcaml, that other context is a child process.  For example,
+  <code class="code"><span class="constructor">Fitting</span>.thunk</code> takes a thunk, which it runs in a subprocess and
+  splices into the pipeline.</li>
+</ul>
+
+<h1 id="1_Toplevelmodules">Toplevel modules</h1>
+<p>
+
+List of all the direct submodules of the <code class="code"><span class="constructor">Shcaml</span></code> module:
+<p>
+
+<br>
+<table class="indextable">
+<tr><td class="module"><a href="Abort.html">Abort</a></td><td><div class="info">
+Protocol to discard the current continuation and replace it
+  with a thunk.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Adaptor.html">Adaptor</a></td><td><div class="info">
+Line readers and splitters for a variety of file formats.
+</div>
+</td></tr>
+<tr><td class="module"><a href="AnyShtream.html">AnyShtream</a></td><td><div class="info">
+ Functor to create type-aware shtream modules.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Channel.html">Channel</a></td><td><div class="info">
+ Generalized channels and file descriptor manipulation.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Delimited.html">Delimited</a></td><td><div class="info">
+Parsers for delimited text formats, especially CSV.
+</div>
+</td></tr>
+<tr><td class="module"><a href="DepDAG.html">DepDAG</a></td><td><div class="info">
+Evaluates dependency DAGs of processes in parallel.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Disposal.html">Disposal</a></td><td><div class="info">
+ Registries for semi-automatic object disposal.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Fitting.html">Fitting</a></td><td><div class="info">
+ Fittings represent processes, internal or external, that produce,
+ consume, or transform data.
+</div>
+</td></tr>
+<tr><td class="module"><a href="FittingSig.html">FittingSig</a></td><td><div class="info">
+Generic signature for Fittings.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Flags.html">Flags</a></td><td><div class="info">
+Quick and dirty argument processing.
+</div>
+</td></tr>
+<tr><td class="module"><a href="IVar.html">IVar</a></td><td><div class="info">
+One-shot interprocess exceptions and variables.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Line.html">Line</a></td><td><div class="info">
+Structured records for line-oriented data.
+</div>
+</td></tr>
+<tr><td class="module"><a href="LineShtream.html">LineShtream</a></td><td><div class="info">
+Shtreams of <a href="Line.html#TYPEt"><code class="code"><span class="constructor">Line</span>.t</code></a>s.
+</div>
+</td></tr>
+<tr><td class="module"><a href="PriorityQueue.html">PriorityQueue</a></td><td><div class="info">
+ Purely-functional priority queues.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Proc.html">Proc</a></td><td><div class="info">
+An OCaml abstraction for UNIX processes.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Reader.html">Reader</a></td><td><div class="info">
+Readers are responsible for breaking input data into pieces, or
+ "raw lines".
+</div>
+</td></tr>
+<tr><td class="module"><a href="Shtream.html">Shtream</a></td><td><div class="info">
+Base module for shtreams, an abstraction of producers of typed data.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Signal.html">Signal</a></td><td><div class="info">
+ Treat UNIX signals as OCaml exceptions.
+</div>
+</td></tr>
+<tr><td class="module"><a href="StringShtream.html">StringShtream</a></td><td><div class="info">
+Shtreams of strings.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Util.html">Util</a></td><td><div class="info">
+Miscellaneous utility types and values.
+</div>
+</td></tr>
+<tr><td class="module"><a href="UsrBin.html">UsrBin</a></td><td><div class="info">
+ High-level user utilities.
+</div>
+</td></tr>
+<tr><td class="module"><a href="Version.html">Version</a></td><td><div class="info">
+Information about this version of Shcaml.
+</div>
+</td></tr>
+<tr><td class="module"><a href="WeakPlus.html">WeakPlus</a></td><td><div class="info">
+Hash tables with weak keys and strong values.
+</div>
+</td></tr>
+</table>
+
+<h1 id="1_Indices">Indices</h1>
+<p>
+
+<ul class="indexlist">
+<li><a href="index_types.html">Index of types</a></li>
+<li><a href="index_exceptions.html">Index of exceptions</a></li>
+<li><a href="index_values.html">Index of values</a></li>
+<li><a href="index_methods.html">Index of class methods</a></li>
+<li><a href="index_class_types.html">Index of class types</a></li>
+<li><a href="index_modules.html">Index of modules</a></li>
+<li><a href="index_module_types.html">Index of module types</a></li>
+</ul>
+<br>
+</body>
+</html>

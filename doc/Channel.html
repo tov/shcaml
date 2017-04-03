@@ -1,0 +1,399 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="AnyShtream.html">
+<link rel="next" href="Delimited.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><link title="Types" rel="Section" href="#1_Types">
+<link title="Values" rel="Section" href="#1_Values">
+<link title="Channel Types" rel="Subsection" href="#2_ChannelTypes">
+<link title="Dup Source Types" rel="Subsection" href="#2_DupSourceTypes">
+<link title="Common Argument Types" rel="Subsection" href="#2_CommonArgumentTypes">
+<link title="Opening and Closing" rel="Subsection" href="#2_OpeningandClosing">
+<link title="Dup and Friends" rel="Subsection" href="#2_DupandFriends">
+<link title="Connecting to Other Processes" rel="Subsection" href="#2_ConnectingtoOtherProcesses">
+<link title="Doing Things with Strings" rel="Subsection" href="#2_DoingThingswithStrings">
+<link title="Directories" rel="Subsection" href="#2_Directories">
+<link title="Pretty-printing" rel="Subsection" href="#2_Prettyprinting">
+<title>Shcaml : Channel</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="AnyShtream.html" title="AnyShtream">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Delimited.html" title="Delimited">Next</a>
+</div>
+<h1>Module <a href="type_Channel.html">Channel</a></h1>
+
+<pre><span class="keyword">module</span> Channel: <code class="code"><span class="keyword">sig</span></code> <a href="Channel.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+ Generalized channels and file descriptor manipulation.<br>
+</div>
+<hr width="100%">
+<br>
+ <h1 id="1_Types">Types</h1>
+<p>
+
+ <h2 id="2_ChannelTypes">Channel Types</h2><br>
+
+<pre><span id="TYPEdescr"><span class="keyword">type</span> <code class="type"></code>descr</span> = <code class="type">Unix.file_descr</code> </pre>
+<div class="info ">
+The abstract type for UNIX file descriptors.<br>
+</div>
+
+
+<pre><span id="TYPEany_channel"><span class="keyword">type</span> <code class="type"></code>any_channel</span> = <code class="type">[ `InChannel of Pervasives.in_channel | `OutChannel of Pervasives.out_channel ]</code> </pre>
+<div class="info ">
+Union of <code class="code">in_channel</code> and <code class="code">out_channel</code>.  Returned by <a href="Channel.html#VALopen_thunk"><code class="code"><span class="constructor">Channel</span>.open_thunk</code></a>,
+ <a href="Channel.html#VALopen_command"><code class="code"><span class="constructor">Channel</span>.open_command</code></a>, and <a href="Channel.html#VALopen_program"><code class="code"><span class="constructor">Channel</span>.open_program</code></a>.<br>
+</div>
+
+
+<pre><span id="TYPEgen_in_channel"><span class="keyword">type</span> <code class="type"></code>gen_in_channel</span> = <code class="type">[ `InChannel of Pervasives.in_channel<br>       | `InDescr of <a href="Channel.html#TYPEdescr">descr</a><br>       | `InFd of int ]</code> </pre>
+<div class="info ">
+Generalized input channels.  Union of buffered <code class="code">in_channel</code> and
+ UNIX file descriptors, both abstract and as <code class="code">int</code>s.<br>
+</div>
+
+
+<pre><span id="TYPEgen_out_channel"><span class="keyword">type</span> <code class="type"></code>gen_out_channel</span> = <code class="type">[ `OutChannel of Pervasives.out_channel<br>       | `OutDescr of <a href="Channel.html#TYPEdescr">descr</a><br>       | `OutFd of int ]</code> </pre>
+<div class="info ">
+Generalized output channels.  Union of buffered <code class="code">out_channel</code> and
+ UNIX file descriptors, both abstract and as <code class="code">int</code>s.<br>
+</div>
+
+
+<pre><span id="TYPEgen_channel"><span class="keyword">type</span> <code class="type"></code>gen_channel</span> = <code class="type">[ `InChannel of Pervasives.in_channel<br>       | `InDescr of <a href="Channel.html#TYPEdescr">descr</a><br>       | `InFd of int<br>       | `OutChannel of Pervasives.out_channel<br>       | `OutDescr of <a href="Channel.html#TYPEdescr">descr</a><br>       | `OutFd of int ]</code> </pre>
+<div class="info ">
+Generalized channels. Union of <a href="Channel.html#TYPEgen_in_channel"><code class="code"><span class="constructor">Channel</span>.gen_in_channel</code></a> and
+ <a href="Channel.html#TYPEgen_out_channel"><code class="code"><span class="constructor">Channel</span>.gen_out_channel</code></a>.<br>
+</div>
+
+<br>
+ <h2 id="2_DupSourceTypes">Dup Source Types</h2><br>
+
+<pre><span id="TYPEdup_in_source"><span class="keyword">type</span> <code class="type"></code>dup_in_source</span> = <code class="type">[ `Close<br>       | `Filename of string<br>       | `InChannel of Pervasives.in_channel<br>       | `InDescr of <a href="Channel.html#TYPEdescr">descr</a><br>       | `InFd of int<br>       | `Null ]</code> </pre>
+<div class="info ">
+Sources for input dup operations.<ul>
+<li><code class="code"><span class="constructor">Channel</span>.dup2&nbsp;(<span class="keywordsign">`</span><span class="constructor">Filename</span>&nbsp;s,&nbsp;gen)</code> opens the file <code class="code">s</code> on
+   generalized channel <code class="code">gen</code>.</li>
+<li><code class="code"><span class="constructor">Channel</span>.dup2&nbsp;(<span class="keywordsign">`</span><span class="constructor">Close</span>,&nbsp;gen)</code> closes <code class="code">gen</code>.</li>
+<li><code class="code"><span class="constructor">Channel</span>.dup2&nbsp;(<span class="keywordsign">`</span><span class="constructor">Null</span>,&nbsp;gen)</code> opens <code class="code">/dev/null</code> for input
+   on <code class="code">gen</code>.</li>
+</ul>
+<br>
+</div>
+
+
+<pre><span id="TYPEdup_out_source"><span class="keyword">type</span> <code class="type"></code>dup_out_source</span> = <code class="type">[ `Close<br>       | `Filename of string<br>       | `Filespec of string * <a href="Channel.html#TYPEclobber_spec">clobber_spec</a><br>       | `Null<br>       | `OutChannel of Pervasives.out_channel<br>       | `OutDescr of <a href="Channel.html#TYPEdescr">descr</a><br>       | `OutFd of int ]</code> </pre>
+<div class="info ">
+Sources for output dup operations.<ul>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Filespec</span></code> allows specifying how an output file is to be
+ opened according to <a href="Channel.html#TYPEclobber_spec"><code class="code"><span class="constructor">Channel</span>.clobber_spec</code></a>.</li>
+<li>The other constructors are as for
+ <a href="Channel.html#TYPEdup_in_source"><code class="code"><span class="constructor">Channel</span>.dup_in_source</code></a>, except that <code class="code"><span class="keywordsign">`</span><span class="constructor">Filename</span></code> uses <a href="Channel.html#VALclobber"><code class="code"><span class="constructor">Channel</span>.clobber</code></a>
+ as its open mode.</li>
+</ul>
+<br>
+</div>
+
+
+<pre><span id="TYPEclobber_spec"><span class="keyword">type</span> <code class="type"></code>clobber_spec</span> = <code class="type">[ `Append | `AppendOnly | `Clobber | `NoClobber ]</code> </pre>
+<div class="info ">
+File open modes for <a href="Channel.html#TYPEdup_out_source"><code class="code"><span class="constructor">Channel</span>.dup_out_source</code></a>.<ul>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Clobber</span></code> opens the file and truncates it if it exists.</li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">NoClobber</span></code> fails if the file exists.</li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Append</span></code> opens the file for appending and creates it if it doesn't
+ exist.</li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">AppendOnly</span></code> opens the file for appending if it exists and fails
+ otherwise.</li>
+</ul>
+<br>
+</div>
+
+
+<pre><span id="TYPEdup_source"><span class="keyword">type</span> <code class="type"></code>dup_source</span> = <code class="type">[ `Close<br>       | `Filename of string<br>       | `Filespec of string * <a href="Channel.html#TYPEclobber_spec">clobber_spec</a><br>       | `InChannel of Pervasives.in_channel<br>       | `InDescr of <a href="Channel.html#TYPEdescr">descr</a><br>       | `InFd of int<br>       | `Null<br>       | `OutChannel of Pervasives.out_channel<br>       | `OutDescr of <a href="Channel.html#TYPEdescr">descr</a><br>       | `OutFd of int ]</code> </pre>
+<div class="info ">
+Union of input and output dup sources.<br>
+</div>
+
+<br>
+ <h2 id="2_CommonArgumentTypes">Common Argument Types</h2><br>
+
+<pre><span id="TYPEdup_spec"><span class="keyword">type</span> <code class="type"></code>dup_spec</span> = <code class="type">(<a href="Channel.html#TYPEdup_source">dup_source</a> * <a href="Channel.html#TYPEgen_channel">gen_channel</a>) list</code> </pre>
+<div class="info ">
+A list of dups (either direction).<br>
+</div>
+
+
+<pre><span id="TYPEpipe_spec"><span class="keyword">type</span> <code class="type"></code>pipe_spec</span> = <code class="type"><a href="Channel.html#TYPEgen_channel">gen_channel</a> list</code> </pre>
+<div class="info ">
+A list of channels to connect to pipes.<br>
+</div>
+
+
+<pre><span id="TYPEprocref"><span class="keyword">type</span> <code class="type"></code>procref</span> = <code class="type"><a href="Proc.html#TYPEt">Proc.t</a> option Pervasives.ref</code> </pre>
+<div class="info ">
+A cell in which to stash a <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a>. Used as an out-parameter
+  by functions that fork.<br>
+</div>
+
+<br>
+ <h1 id="1_Values">Values</h1>
+<p>
+
+ <h2 id="2_OpeningandClosing">Opening and Closing</h2><br>
+
+<pre><span id="VALclobber"><span class="keyword">val</span> clobber</span> : <code class="type"><a href="Channel.html#TYPEclobber_spec">clobber_spec</a> Pervasives.ref</code></pre><div class="info ">
+ The default <a href="Channel.html#TYPEclobber_spec"><code class="code"><span class="constructor">Channel</span>.clobber_spec</code></a> for when <a href="Channel.html#VALdup2"><code class="code"><span class="constructor">Channel</span>.dup2</code></a> opens a file for output.<br>
+</div>
+
+<pre><span id="VALdescr_of_gen"><span class="keyword">val</span> descr_of_gen</span> : <code class="type"><a href="Channel.html#TYPEgen_channel">gen_channel</a> -> <a href="Channel.html#TYPEdescr">descr</a></code></pre><div class="info ">
+ Get the <a href="Channel.html#TYPEdescr"><code class="code"><span class="constructor">Channel</span>.descr</code></a> underlying a generalized channel.  Note that if the
+ channel is a managed <code class="code">in_channel</code> or <code class="code">out_channel</code>, the descriptor
+ may be closed when the channel is collected.<br>
+</div>
+
+<pre><span id="VALdescr_of_fd"><span class="keyword">val</span> descr_of_fd</span> : <code class="type">int -> <a href="Channel.html#TYPEdescr">descr</a></code></pre><div class="info ">
+The abstract file descriptor of a concrete integer.<br>
+</div>
+
+<pre><span id="VALfd_of_descr"><span class="keyword">val</span> fd_of_descr</span> : <code class="type"><a href="Channel.html#TYPEdescr">descr</a> -> int</code></pre><div class="info ">
+The concrete integer of an abstract file descriptor.<br>
+</div>
+
+<pre><span id="VALopen_file_in"><span class="keyword">val</span> open_file_in</span> : <code class="type">string -> Pervasives.in_channel</code></pre><div class="info ">
+Open a file for input.  Attaches a finalizer to close the channel.<br>
+</div>
+
+<pre><span id="VALopen_file_out"><span class="keyword">val</span> open_file_out</span> : <code class="type">string -> Pervasives.out_channel</code></pre><div class="info ">
+Open a file for output.  Attaches a finalizer to close the channel.<br>
+</div>
+
+<pre><span id="VALnull_in"><span class="keyword">val</span> null_in</span> : <code class="type">unit -> Pervasives.in_channel</code></pre><div class="info ">
+Open a <code class="code">/dev/null</code> for input.  Attaches a finalizer.<br>
+</div>
+
+<pre><span id="VALnull_out"><span class="keyword">val</span> null_out</span> : <code class="type">unit -> Pervasives.out_channel</code></pre><div class="info ">
+Open a <code class="code">/dev/null</code> for output.  Attaches a finalizer.<br>
+</div>
+
+<pre><span id="VALclose_in"><span class="keyword">val</span> close_in</span> : <code class="type">Pervasives.in_channel -> unit</code></pre><div class="info ">
+Close an input channel.<br>
+</div>
+
+<pre><span id="VALclose_out"><span class="keyword">val</span> close_out</span> : <code class="type">Pervasives.out_channel -> unit</code></pre><div class="info ">
+Close an output channel.<br>
+</div>
+
+<pre><span id="VALclose_gen"><span class="keyword">val</span> close_gen</span> : <code class="type"><a href="Channel.html#TYPEgen_channel">gen_channel</a> -> unit</code></pre><div class="info ">
+Close a generalized channel.<br>
+</div>
+<br>
+ <h2 id="2_DupandFriends">Dup and Friends</h2><br>
+
+<pre><span id="VALdup2"><span class="keyword">val</span> dup2</span> : <code class="type"><a href="Channel.html#TYPEdup_source">dup_source</a> * <a href="Channel.html#TYPEgen_channel">gen_channel</a> -> unit</code></pre><div class="info ">
+Copy an underlying file descriptor.  <code class="code"><span class="constructor">Channel</span>.dup2&nbsp;(src,&nbsp;dest)</code>
+ copies <code class="code">src</code> to <code class="code">dest</code> so that future operations on <code class="code">dest</code> use <code class="code">src</code>.
+ If <code class="code">dest</code> is an <code class="code">out_channel</code>, it is flushed first; if <code class="code">dest</code> in an
+ <code class="code">in_channel</code>, its buffer is <b>discarded</b>.
+<p>
+
+ Some sources have special behaviors; see <a href="Channel.html#TYPEdup_in_source"><code class="code"><span class="constructor">Channel</span>.dup_in_source</code></a> and
+ <a href="Channel.html#TYPEdup_out_source"><code class="code"><span class="constructor">Channel</span>.dup_out_source</code></a>.
+<br>
+</div>
+
+<pre><span id="VALmov2"><span class="keyword">val</span> mov2</span> : <code class="type"><a href="Channel.html#TYPEdup_source">dup_source</a> * <a href="Channel.html#TYPEgen_channel">gen_channel</a> -> unit</code></pre><div class="info ">
+Move an underlying file descriptor.  This is like <a href="Channel.html#VALdup2"><code class="code"><span class="constructor">Channel</span>.dup2</code></a>, but the
+ source channel is closed after the operation (unless the source and
+ the destination are the same).<br>
+</div>
+
+<pre><span id="VALwith_dups"><span class="keyword">val</span> with_dups</span> : <code class="type"><a href="Channel.html#TYPEdup_spec">dup_spec</a> -> (unit -> 'a) -> 'a</code></pre><div class="info ">
+ Perform redirections before a thunk and reverse them afterward.<br>
+</div>
+
+<pre><span id="VALdup_in"><span class="keyword">val</span> dup_in</span> : <code class="type"><a href="Channel.html#TYPEdup_in_source">dup_in_source</a> -> Pervasives.in_channel</code></pre><div class="info ">
+ Duplicate an <code class="code">in_channel</code> from an input dup source.<br>
+</div>
+
+<pre><span id="VALdup_out"><span class="keyword">val</span> dup_out</span> : <code class="type"><a href="Channel.html#TYPEdup_out_source">dup_out_source</a> -> Pervasives.out_channel</code></pre><div class="info ">
+ Duplicate an <code class="code">out_channel</code> from an input dup source.<br>
+</div>
+
+<pre><span class="keyword">module</span> <a href="Channel.Dup.html">Dup</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Channel.Dup.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Convenience operators for specifying shell-style dups.
+</div>
+<br>
+ <h2 id="2_ConnectingtoOtherProcesses">Connecting to Other Processes</h2><br>
+
+<pre><span id="VALopen_thunk"><span class="keyword">val</span> open_thunk</span> : <code class="type">?pipes:<a href="Channel.html#TYPEpipe_spec">pipe_spec</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -> (unit -> unit) -> <a href="Proc.html#TYPEt">Proc.t</a> * <a href="Channel.html#TYPEany_channel">any_channel</a> list</code></pre><div class="info ">
+ Spawn a thunk, opening pipes.  <code class="code"><span class="constructor">Channel</span>.open_thunk&nbsp;~pipes&nbsp;~dups<br>
+&nbsp;thunk</code> forks and calls <code class="code">thunk</code> in the child process.  Any given
+ dups are performed in the child before calling the thunk.  Channels
+ specified in <code class="code">pipes</code> are connected to pipes, and the other ends are
+ returned in a list, along with the <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> of the child process.
+<p>
+
+ The functions <a href="Channel.html#VALopen_thunk_in"><code class="code"><span class="constructor">Channel</span>.open_thunk_in</code></a>, <a href="Channel.html#VALopen_thunk_out"><code class="code"><span class="constructor">Channel</span>.open_thunk_out</code></a>, <a href="Channel.html#VALopen_thunk2"><code class="code"><span class="constructor">Channel</span>.open_thunk2</code></a>,
+ and <a href="Channel.html#VALopen_thunk3"><code class="code"><span class="constructor">Channel</span>.open_thunk3</code></a> are special cases.  Rather than return the
+ <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a>, they stash it in the optional argument <code class="code">?procref</code>.<br>
+</div>
+
+<pre><span id="VALopen_thunk_in"><span class="keyword">val</span> open_thunk_in</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -> (unit -> unit) -> Pervasives.in_channel</code></pre><div class="info ">
+Spawn a thunk and pipe from its <code class="code">stdout</code>.<br>
+</div>
+
+<pre><span id="VALopen_thunk_out"><span class="keyword">val</span> open_thunk_out</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -> (unit -> unit) -> Pervasives.out_channel</code></pre><div class="info ">
+Spawn a thunk and pipe to its <code class="code">stdin</code>.<br>
+</div>
+
+<pre><span id="VALopen_thunk2"><span class="keyword">val</span> open_thunk2</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       (unit -> unit) -> Pervasives.in_channel * Pervasives.in_channel</code></pre><div class="info ">
+Spawn a thunk and pipe from its <code class="code">stdout</code> and <code class="code">stderr</code>.<br>
+</div>
+
+<pre><span id="VALopen_thunk3"><span class="keyword">val</span> open_thunk3</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       (unit -> unit) -><br>       Pervasives.out_channel * Pervasives.in_channel * Pervasives.in_channel</code></pre><div class="info ">
+Spawn a thunk and pipe its <code class="code">stdin</code>, <code class="code">stdout</code>, and <code class="code">stderr</code>.<br>
+</div>
+
+<pre><span id="VALopen_command"><span class="keyword">val</span> open_command</span> : <code class="type">?pipes:<a href="Channel.html#TYPEpipe_spec">pipe_spec</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -> string -> <a href="Proc.html#TYPEt">Proc.t</a> * <a href="Channel.html#TYPEany_channel">any_channel</a> list</code></pre><div class="info ">
+ Spawn a command, opening pipes.  Like <a href="Channel.html#VALopen_thunk"><code class="code"><span class="constructor">Channel</span>.open_thunk</code></a>, but takes a
+ command to run in the shell.<br>
+</div>
+
+<pre><span id="VALopen_command_in"><span class="keyword">val</span> open_command_in</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -> string -> Pervasives.in_channel</code></pre><div class="info ">
+Spawn a command and pipe from its <code class="code">stdout</code>.<br>
+</div>
+
+<pre><span id="VALopen_command_out"><span class="keyword">val</span> open_command_out</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -> string -> Pervasives.out_channel</code></pre><div class="info ">
+Spawn a command and pipe to its <code class="code">stdin</code>.<br>
+</div>
+
+<pre><span id="VALopen_command2"><span class="keyword">val</span> open_command2</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       string -> Pervasives.in_channel * Pervasives.in_channel</code></pre><div class="info ">
+Spawn a command and pipe from its <code class="code">stdout</code> and <code class="code">stderr</code>.<br>
+</div>
+
+<pre><span id="VALopen_command3"><span class="keyword">val</span> open_command3</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       string -><br>       Pervasives.out_channel * Pervasives.in_channel * Pervasives.in_channel</code></pre><div class="info ">
+Spawn a command and pipe its <code class="code">stdin</code>, <code class="code">stdout</code>, and <code class="code">stderr</code>.<br>
+</div>
+
+<pre><span id="VALopen_program"><span class="keyword">val</span> open_program</span> : <code class="type">?pipes:<a href="Channel.html#TYPEpipe_spec">pipe_spec</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       ?path:bool -><br>       string -> ?argv0:string -> string list -> <a href="Proc.html#TYPEt">Proc.t</a> * <a href="Channel.html#TYPEany_channel">any_channel</a> list</code></pre><div class="info ">
+ Spawn a program with arguments, opening pipes.
+ Like <a href="Channel.html#VALopen_thunk"><code class="code"><span class="constructor">Channel</span>.open_thunk</code></a>, but takes a program and arguments.<br>
+</div>
+
+<pre><span id="VALopen_program_in"><span class="keyword">val</span> open_program_in</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       ?path:bool -> string -> ?argv0:string -> string list -> Pervasives.in_channel</code></pre><div class="info ">
+Spawn a program and pipe from its <code class="code">stdout</code>.<br>
+</div>
+
+<pre><span id="VALopen_program_out"><span class="keyword">val</span> open_program_out</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       ?path:bool -><br>       string -> ?argv0:string -> string list -> Pervasives.out_channel</code></pre><div class="info ">
+Spawn a program and pipe to its <code class="code">stdin</code>.<br>
+</div>
+
+<pre><span id="VALopen_program2"><span class="keyword">val</span> open_program2</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       ?path:bool -><br>       string -><br>       ?argv0:string -> string list -> Pervasives.in_channel * Pervasives.in_channel</code></pre><div class="info ">
+Spawn a program and pipe from its <code class="code">stdout</code> and <code class="code">stderr</code>.<br>
+</div>
+
+<pre><span id="VALopen_program3"><span class="keyword">val</span> open_program3</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?dups:<a href="Channel.html#TYPEdup_spec">dup_spec</a> -><br>       ?path:bool -><br>       string -><br>       ?argv0:string -><br>       string list -><br>       Pervasives.out_channel * Pervasives.in_channel * Pervasives.in_channel</code></pre><div class="info ">
+Spawn a program and pipe its <code class="code">stdin</code>, <code class="code">stdout</code>, and <code class="code">stderr</code>.<br>
+</div>
+<br>
+ <h2 id="2_DoingThingswithStrings">Doing Things with Strings</h2><br>
+
+<pre><span id="VALstring_of_channel"><span class="keyword">val</span> string_of_channel</span> : <code class="type">Pervasives.in_channel -> string</code></pre><div class="info ">
+Read the entire contents a channel into a string.<br>
+</div>
+
+<pre><span id="VALstring_of_command"><span class="keyword">val</span> string_of_command</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -> string -> string</code></pre><div class="info ">
+Collect the output of a command as a string.<br>
+</div>
+
+<pre><span id="VALstring_of_program"><span class="keyword">val</span> string_of_program</span> : <code class="type">?procref:<a href="Channel.html#TYPEprocref">procref</a> -><br>       ?path:bool -> string -> ?argv0:string -> string list -> string</code></pre><div class="info ">
+Collect the output of a program as a string.<br>
+</div>
+
+<pre><span id="VALopen_string_in"><span class="keyword">val</span> open_string_in</span> : <code class="type">string -> Pervasives.in_channel</code></pre><div class="info ">
+Open an <code class="code">in_channel</code> whose contents is a given string.<br>
+</div>
+
+<pre><span id="VALwith_out_string"><span class="keyword">val</span> with_out_string</span> : <code class="type">(Pervasives.out_channel -> 'a) -> 'a * string</code></pre><div class="info ">
+Collect the output of a thunk in a string.  Given a thunk, collects
+ everything it prints to <code class="code">stdout</code> and returns the return value of the
+ thunk and the collected output.<br>
+</div>
+<br>
+ <h2 id="2_Directories">Directories</h2>
+<p>
+
+ These functions correspond directly to those of the same name in the
+ <code class="code"><span class="constructor">Unix</span></code> structure.  However, these directory handles are managed by
+ the garbage collected and thus closed if they become unreachable.<br>
+
+<pre><span id="TYPEdirectory"><span class="keyword">type</span> <code class="type"></code>directory</span> </pre>
+<div class="info ">
+A managed dir handle.<br>
+</div>
+
+
+<pre><span id="VALopendir"><span class="keyword">val</span> opendir</span> : <code class="type">string -> <a href="Channel.html#TYPEdirectory">directory</a></code></pre><div class="info ">
+Open a managed dir handle.  See <code class="code"><span class="constructor">Unix</span>.opendir</code>.<br>
+</div>
+
+<pre><span id="VALclosedir"><span class="keyword">val</span> closedir</span> : <code class="type"><a href="Channel.html#TYPEdirectory">directory</a> -> unit</code></pre><div class="info ">
+Manually close a managed dir handle.  See <code class="code"><span class="constructor">Unix</span>.closedir</code>.<br>
+</div>
+
+<pre><span id="VALreaddir"><span class="keyword">val</span> readdir</span> : <code class="type"><a href="Channel.html#TYPEdirectory">directory</a> -> string</code></pre><div class="info ">
+Read an entry from a managed dir handle.  See <code class="code"><span class="constructor">Unix</span>.readdir</code>.<br>
+</div>
+
+<pre><span id="VALrewinddir"><span class="keyword">val</span> rewinddir</span> : <code class="type"><a href="Channel.html#TYPEdirectory">directory</a> -> unit</code></pre><div class="info ">
+Rewind a managed dir handle. See <code class="code"><span class="constructor">Unix</span>.rewinddir</code>.<br>
+</div>
+<br>
+ <h2 id="2_Prettyprinting">Pretty-printing</h2><br>
+
+<pre><span id="VALpp_descr"><span class="keyword">val</span> pp_descr</span> : <code class="type">Format.formatter -> <a href="Channel.html#TYPEdescr">descr</a> -> unit</code></pre><div class="info ">
+Pretty-printer for <a href="Channel.html#TYPEdescr"><code class="code"><span class="constructor">Channel</span>.descr</code></a>.<br>
+</div>
+
+<pre><span id="VALpp_in_channel"><span class="keyword">val</span> pp_in_channel</span> : <code class="type">Format.formatter -> Pervasives.in_channel -> unit</code></pre><div class="info ">
+Pretty-printer for <code class="code">in_channel</code>.<br>
+</div>
+
+<pre><span id="VALpp_out_channel"><span class="keyword">val</span> pp_out_channel</span> : <code class="type">Format.formatter -> Pervasives.out_channel -> unit</code></pre><div class="info ">
+Pretty-printer for <code class="code">out_channel</code>.<br>
+</div>
+</body></html>

@@ -1,0 +1,341 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="PriorityQueue.html">
+<link rel="next" href="Reader.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><link title="Types" rel="Section" href="#1_Types">
+<link title="Process Management" rel="Section" href="#1_ProcessManagement">
+<link title="Running Programs" rel="Section" href="#1_RunningPrograms">
+<link title="Pretty-printing" rel="Section" href="#1_Prettyprinting">
+<link title="Autoreaping" rel="Subsection" href="#2_Autoreaping">
+<link title="The execspec Record. " rel="Subsection" href="#2_TheexecspecRecord">
+<title>Shcaml : Proc</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="PriorityQueue.html" title="PriorityQueue">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Reader.html" title="Reader">Next</a>
+</div>
+<h1>Module <a href="type_Proc.html">Proc</a></h1>
+
+<pre><span class="keyword">module</span> Proc: <code class="code"><span class="keyword">sig</span></code> <a href="Proc.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+An OCaml abstraction for UNIX processes.
+    The <a href="Proc.html"><code class="code"><span class="constructor">Proc</span></code></a> module takes responsiblity for reaping
+    children and provides access to exit codes through abstract
+    <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> objects.  (If you need to reap yourself,
+    <a href="Proc.html#VALdon't_autoreap"><code class="code"><span class="constructor">Proc</span>.don't_autoreap</code></a> will turn off the <code class="code"><span class="constructor">Sys</span>.sigchld</code> handler, and
+    <a href="Proc.html#VALautoreap"><code class="code"><span class="constructor">Proc</span>.autoreap</code></a> will turn it back on.)
+<p>
+
+    Because the <a href="Proc.html"><code class="code"><span class="constructor">Proc</span></code></a> module is responsible for reaping, it makes
+    exit status available as many times as necessary, though
+    <a href="Proc.html#VALwait"><code class="code"><span class="constructor">Proc</span>.wait</code></a> and <a href="Proc.html#VALstatus_of_proc"><code class="code"><span class="constructor">Proc</span>.status_of_proc</code></a>.
+<p>
+
+    It's also possible to construct a <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> object from a pid
+    (<code class="code">int</code>) even if the process wasn't created using this library.  In
+    this case, the library detects whether the process is a child or
+    not.  We don't allow waiting
+    on or getting the status of non-child processes, because UNIX
+    doesn't.
+<p>
+
+    Much of this design is due to Cash/Scsh.<br>
+</div>
+<hr width="100%">
+<br>
+<h1 id="1_Types">Types</h1><br>
+
+<pre><span id="EXCEPTIONNot_child"><span class="keyword">exception</span> Not_child</span></pre>
+<div class="info ">
+Raised on attempts to get the exit status of a process that
+    isn't a child of the current process<br>
+</div>
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> </pre>
+<div class="info ">
+The abstract type of a process representation<br>
+</div>
+
+
+<pre><span id="TYPEstatus"><span class="keyword">type</span> <code class="type"></code>status</span> = <code class="type">Unix.process_status</code> = </pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTstatus.WEXITED"><span class="constructor">WEXITED</span></span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+The process terminated normally by exit; the argument is the
+      return code.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTstatus.WSIGNALED"><span class="constructor">WSIGNALED</span></span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+The process was killed by a signal; the argument is the
+      signal number.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTstatus.WSTOPPED"><span class="constructor">WSTOPPED</span></span> <span class="keyword">of</span> <code class="type">int</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+The process was stopped by a signal; the argument is the
+      signal number.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+<div class="info ">
+Alias for <code class="code"><span class="constructor">Unix</span>.process_status</code><br>
+</div>
+
+<br>
+<h1 id="1_ProcessManagement">Process Management</h1><br>
+
+<pre><span id="VALfork"><span class="keyword">val</span> fork</span> : <code class="type">unit -> <a href="Proc.html#TYPEt">t</a> option</code></pre><div class="info ">
+Return <code class="code"><span class="constructor">Some</span>&nbsp;t</code> in the parent and <code class="code"><span class="constructor">None</span></code> in the child<br>
+</div>
+
+<pre><span id="VALspawn"><span class="keyword">val</span> spawn</span> : <code class="type">?quiet:bool -> (unit -> unit) -> <a href="Proc.html#TYPEt">t</a></code></pre><div class="info ">
+Run a thunk in a subprocess, returning its <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a>.  <a href="Proc.html#VALspawn"><code class="code"><span class="constructor">Proc</span>.spawn</code></a>
+    will not allow control in the subprocess to return to its caller; to
+    this end, it catches all exceptions, printing a message and then
+    exiting with status 2.  The optional argument <code class="code">?quiet</code> (default
+    false) suppresses the message.<br>
+</div>
+
+<pre><span id="VALkill"><span class="keyword">val</span> kill</span> : <code class="type">?raise:bool -> int -> <a href="Proc.html#TYPEt">t</a> -> unit</code></pre><div class="info ">
+Send a signal to a process.  <code class="code"><span class="constructor">Proc</span>.kill&nbsp;n&nbsp;p</code> sends signal <code class="code">n</code>
+    to process <code class="code">p</code>.  The optional argument <code class="code">?raise</code> (default <code class="code"><span class="keyword">true</span></code>)
+    specifies whether to raise an exception if the process doesn't
+    exist or we aren't allowed to kill it.
+<p>
+
+    Raises <code class="code"><span class="constructor">Unix</span>.<span class="constructor">Unix_error</span></code> (see <code class="code"><span class="constructor">Unix</span>.kill</code>)<br>
+</div>
+
+<pre><span id="VALwait"><span class="keyword">val</span> wait</span> : <code class="type"><a href="Proc.html#TYPEt">t</a> -> <a href="Proc.html#TYPEstatus">status</a></code></pre><div class="info ">
+<code class="code"><span class="constructor">Proc</span>.wait&nbsp;proc</code> performs a blocking wait on <code class="code">proc</code>;
+    if the child has already exited, it returns immediately.
+    Unlike <code class="code"><span class="constructor">Unix</span>.waitpid</code>, <code class="code"><span class="constructor">Proc</span>.wait</code> may
+    be called multiple times for the same process.  If <code class="code">proc</code> is not a child
+    of the calling process, raises <a href="Proc.html#EXCEPTIONNot_child"><code class="code"><span class="constructor">Proc</span>.<span class="constructor">Not_child</span></code></a>.<br>
+</div>
+
+<pre><span id="VALwait_any"><span class="keyword">val</span> wait_any</span> : <code class="type"><a href="Proc.html#TYPEt">t</a> list -> <a href="Proc.html#TYPEt">t</a></code></pre><div class="info ">
+Given a list of <code class="code"><span class="constructor">Proc</span>.t</code>s, return any one of them that has exited.
+    If one has exited already, it return immediately, but if all are still
+    running, it blocks.  Calling <a href="Proc.html#VALwait_any"><code class="code"><span class="constructor">Proc</span>.wait_any</code></a> may reap children
+    other than those in the list.
+<p>
+
+    Raises <code class="code"><span class="constructor">Not_child</span></code> if given the empty list or any non-children.<br>
+</div>
+
+<pre><span id="VALstatus_of_proc"><span class="keyword">val</span> status_of_proc</span> : <code class="type"><a href="Proc.html#TYPEt">t</a> -> <a href="Proc.html#TYPEstatus">status</a> option</code></pre><div class="info ">
+Retrieve the status of a process if it has exited; non-blocking.
+    Raises <a href="Proc.html#EXCEPTIONNot_child"><code class="code"><span class="constructor">Proc</span>.<span class="constructor">Not_child</span></code></a> if <code class="code">proc</code> is not a child of the calling
+    process.<br>
+</div>
+
+<pre><span id="VALis_child"><span class="keyword">val</span> is_child</span> : <code class="type"><a href="Proc.html#TYPEt">t</a> -> bool</code></pre><div class="info ">
+Is a process a child of the calling process?<br>
+</div>
+
+<pre><span id="VALpid_of_proc"><span class="keyword">val</span> pid_of_proc</span> : <code class="type"><a href="Proc.html#TYPEt">t</a> -> int</code></pre><div class="info ">
+The UNIX process ID associated with <code class="code">proc</code><br>
+</div>
+
+<pre><span id="VALproc_of_pid"><span class="keyword">val</span> proc_of_pid</span> : <code class="type">int -> <a href="Proc.html#TYPEt">t</a></code></pre><div class="info ">
+Find or create a <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> associated with a UNIX
+process.  If there is no <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> but the process exists, it constructs
+    one.  Raises <code class="code"><span class="constructor">Not_found</span></code> if there is no process with the given process id,
+    or <code class="code"><span class="constructor">Invalid_argument</span>&nbsp;<span class="string">"procs_of_pid"</span></code> if the pid is non-positive.<br>
+</div>
+
+<pre><span id="VALprocs_of_pid"><span class="keyword">val</span> procs_of_pid</span> : <code class="type">int -> <a href="Proc.html#TYPEt">t</a> list</code></pre><div class="info ">
+Returns a list of all <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a>s with the given process id.
+    There may be more than one if the same process id has been used
+    multiple times (rarely).<br>
+</div>
+
+<pre><span id="VALexit_with_status"><span class="keyword">val</span> exit_with_status</span> : <code class="type"><a href="Proc.html#TYPEstatus">status</a> -> 'a</code></pre><div class="info ">
+Exit with the given exit status.  If the status indicates a
+    signal, this function sets the default signal handler and signals
+    the current process.<br>
+</div>
+<br>
+<h2 id="2_Autoreaping">Autoreaping</h2><br>
+
+<pre><span id="VALautoreap"><span class="keyword">val</span> autoreap</span> : <code class="type">unit -> unit</code></pre><div class="info ">
+Turn on autoreaping of processes.  When set, Shcaml will
+    automatically wait on processes and store their exit status
+    for retrieval by <a href="Proc.html#VALwait"><code class="code"><span class="constructor">Proc</span>.wait</code></a> or <a href="Proc.html#VALstatus_of_proc"><code class="code"><span class="constructor">Proc</span>.status_of_proc</code></a>.<br>
+</div>
+
+<pre><span id="VALdon't_autoreap"><span class="keyword">val</span> don't_autoreap</span> : <code class="type">unit -> unit</code></pre><div class="info ">
+Turn off autoreaping of processes.  If autoreaping is disabled,
+    <a href="Proc.html#VALwait"><code class="code"><span class="constructor">Proc</span>.wait</code></a> and <a href="Proc.html#VALstatus_of_proc"><code class="code"><span class="constructor">Proc</span>.status_of_proc</code></a> will still work, but the user is
+    responsible to reap all processes.<br>
+</div>
+<br>
+<h1 id="1_RunningPrograms">Running Programs</h1><br>
+
+<pre><span id="VALsystem"><span class="keyword">val</span> system</span> : <code class="type">string -> <a href="Proc.html#TYPEstatus">status</a></code></pre><div class="info ">
+Run a command and wait for it to exit.
+    Passes the command to the shell for parsing.
+    If the shell cannot be found or run, raises
+    the same exceptions as <code class="code"><span class="constructor">Unix</span>.execv</code>.
+<p>
+
+    This function delegates to the shell for argument parsing; if you
+    already have a list, use <a href="Proc.html#VALsystem_program"><code class="code"><span class="constructor">Proc</span>.system_program</code></a>.<br>
+</div>
+
+<pre><span id="VALsystem_program"><span class="keyword">val</span> system_program</span> : <code class="type">?path:bool -> string -> ?argv0:string -> string list -> <a href="Proc.html#TYPEstatus">status</a></code></pre><div class="info ">
+Run a program with arguments and wait for it to exit.
+    Optional argument <code class="code">?path</code> (default <code class="code"><span class="keyword">true</span></code>) specifies whether
+    to search the path, and <code class="code">?argv0</code> (default <code class="code">prog</code>) specifies
+    an alternate value for the new process's <code class="code">argv.(0)</code>.
+<p>
+
+    If <code class="code"><span class="constructor">Unix</span>.execv</code> raises an exception in the child process,
+    <code class="code"><span class="constructor">Proc</span>.system_program</code> re-raises the exception on the parent process.
+<p>
+
+    This function takes an already-parsed argument list.  To have the
+    shell do it, use <a href="Proc.html#VALsystem"><code class="code"><span class="constructor">Proc</span>.system</code></a>.<br>
+</div>
+
+<pre><span id="VALvfork"><span class="keyword">val</span> vfork</span> : <code class="type">string -> <a href="Proc.html#TYPEt">t</a></code></pre><div class="info ">
+Run a command asynchonously.  Like <a href="Proc.html#VALsystem"><code class="code"><span class="constructor">Proc</span>.system</code></a>, but doesn't wait.<br>
+</div>
+
+<pre><span id="VALvfork_program"><span class="keyword">val</span> vfork_program</span> : <code class="type">?path:bool -> string -> ?argv0:string -> string list -> <a href="Proc.html#TYPEt">t</a></code></pre><div class="info ">
+Run a program asynchonously.  Like <a href="Proc.html#VALsystem_program"><code class="code"><span class="constructor">Proc</span>.system_program</code></a>, but doesn't wait.<br>
+</div>
+
+<pre><span id="VALexec"><span class="keyword">val</span> exec</span> : <code class="type">string -> 'a</code></pre><div class="info ">
+Replace the current process image with a command.
+    Like <a href="Proc.html#VALvfork"><code class="code"><span class="constructor">Proc</span>.vfork</code></a>, but doesn't fork.<br>
+</div>
+
+<pre><span id="VALexec_program"><span class="keyword">val</span> exec_program</span> : <code class="type">?path:bool -> string -> ?argv0:string -> string list -> 'a</code></pre><div class="info ">
+Replace the current process image with another.
+    Like <a href="Proc.html#VALvfork_program"><code class="code"><span class="constructor">Proc</span>.vfork_program</code></a>, but doesn't fork.<br>
+</div>
+<br>
+ <h2 id="2_TheexecspecRecord">The <code class="code">execspec</code> Record. </h2><br>
+
+<pre><code><span id="TYPEexecspec"><span class="keyword">type</span> <code class="type"></code>execspec</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecspec.path">path</span>&nbsp;: <code class="type">bool option</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+Search the path (default <code class="code"><span class="keyword">true</span></code>)<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecspec.program">program</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+Executable to run<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecspec.argv0">argv0</span>&nbsp;: <code class="type">string option</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+Zeroth argument (default <code class="code">program</code>)<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTexecspec.args">args</span>&nbsp;: <code class="type">string list</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+Additional arguments<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+<div class="info ">
+Several Shcaml functions (such as <a href="Proc.html#VALexec_program"><code class="code"><span class="constructor">Proc</span>.exec_program</code></a> and
+   <a href="Proc.html#VALsystem_program"><code class="code"><span class="constructor">Proc</span>.system_program</code></a>) take the same arguments to specify a
+   program to execute.  It's sometimes
+   helpful to package these arguments in a record and pass them to such
+   a function later.<br>
+</div>
+
+
+<pre><span id="VALexecspec"><span class="keyword">val</span> execspec</span> : <code class="type">?path:bool -> string -> ?argv0:string -> string list -> <a href="Proc.html#TYPEexecspec">execspec</a></code></pre><div class="info ">
+Constructs an <a href="Proc.html#VALexecspec"><code class="code"><span class="constructor">Proc</span>.execspec</code></a>, given the same arguments as
+ <a href="Proc.html#VALexec_program"><code class="code"><span class="constructor">Proc</span>.exec_program</code></a>.<br>
+</div>
+
+<pre><span id="VALwith_execspec"><span class="keyword">val</span> with_execspec</span> : <code class="type"><a href="Proc.html#TYPEexecspec">execspec</a> -><br>       (?path:bool -> string -> ?argv0:string -> string list -> 'a) -> 'a</code></pre><div class="info ">
+Call a function with a given <a href="Proc.html#VALexecspec"><code class="code"><span class="constructor">Proc</span>.execspec</code></a>.
+    For example,
+    <code class="code"><span class="constructor">Proc</span>.with_execspec&nbsp;(<span class="constructor">Proc</span>.execspec&nbsp;~path&nbsp;program&nbsp;~argv0&nbsp;args)&nbsp;f</code> calls
+    <code class="code">f&nbsp;~path&nbsp;program&nbsp;~argv0&nbsp;args</code>.<br>
+</div>
+<br>
+<h1 id="1_Prettyprinting">Pretty-printing</h1><br>
+
+<pre><span id="VALpp"><span class="keyword">val</span> pp</span> : <code class="type">Format.formatter -> <a href="Proc.html#TYPEt">t</a> -> unit</code></pre><div class="info ">
+Pretty-printer for <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a>.<br>
+</div>
+</body></html>

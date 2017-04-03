@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="StringShtream.html">
+<link rel="next" href="UsrBin.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><title>Shcaml : Util</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="StringShtream.html" title="StringShtream">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="UsrBin.html" title="UsrBin">Next</a>
+</div>
+<h1>Module <a href="type_Util.html">Util</a></h1>
+
+<pre><span class="keyword">module</span> Util: <code class="code"><span class="keyword">sig</span></code> <a href="Util.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Miscellaneous utility types and values.<br>
+</div>
+<hr width="100%">
+
+<pre><span id="EXCEPTIONBug"><span class="keyword">exception</span> Bug</span></pre>
+<div class="info ">
+Indicates a bug in the library.  This exception is raised in
+    cases that violate library or language invariants.<br>
+</div>
+
+<pre><span id="VALid"><span class="keyword">val</span> id</span> : <code class="type">'a -> 'a</code></pre><div class="info ">
+The identity function<br>
+</div>
+
+<pre><span id="VALconst"><span class="keyword">val</span> const</span> : <code class="type">'a -> 'b -> 'a</code></pre><div class="info ">
+The <i>K</i> combinator<br>
+</div>
+
+<pre><span id="VAL(%)"><span class="keyword">val</span> (%)</span> : <code class="type">('a -> 'b) -> ('c -> 'a) -> 'c -> 'b</code></pre><div class="info ">
+Function composition<br>
+</div>
+
+<pre><span id="VALflip"><span class="keyword">val</span> flip</span> : <code class="type">('a -> 'b -> 'c) -> 'b -> 'a -> 'c</code></pre><div class="info ">
+Flip the arguments of a function<br>
+</div>
+
+<pre><code><span id="TYPEeither"><span class="keyword">type</span> <code class="type">('a, 'b)</code> either</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTeither.Left"><span class="constructor">Left</span></span> <span class="keyword">of</span> <code class="type">'a</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTeither.Right"><span class="constructor">Right</span></span> <span class="keyword">of</span> <code class="type">'b</code></code></td>
+
+</tr></table>
+
+<div class="info ">
+Anonymous sum types<br>
+</div>
+
+
+<pre><span id="VALeither"><span class="keyword">val</span> either</span> : <code class="type">('a, 'b) <a href="Util.html#TYPEeither">either</a> -> ('a -> 'c) -> ('b -> 'c) -> 'c</code></pre><div class="info ">
+Projection from the anonymous sum type <a href="Util.html#VALeither"><code class="code"><span class="constructor">Util</span>.either</code></a><br>
+</div>
+
+<pre><span id="VALmaybe"><span class="keyword">val</span> maybe</span> : <code class="type">'a option -> (unit -> 'b) -> ('a -> 'b) -> 'b</code></pre><div class="info ">
+Projection from <code class="code">option</code><br>
+</div>
+
+<pre><span id="VALoapply"><span class="keyword">val</span> oapply</span> : <code class="type">('a -> 'b) -> 'a option -> 'b option</code></pre><div class="info ">
+Application inside <code class="code">option</code><br>
+</div>
+
+<pre><span id="VALoption_of_exn"><span class="keyword">val</span> option_of_exn</span> : <code class="type">(unit -> 'a) -> 'a option</code></pre><div class="info ">
+Map exceptions to <code class="code"><span class="constructor">None</span></code><br>
+</div>
+
+<pre><span id="VALunwind_protect"><span class="keyword">val</span> unwind_protect</span> : <code class="type">(unit -> 'a) -> (unit -> 'b) -> 'a</code></pre><div class="info ">
+Call a thunk and then run cleanup code.  <code class="code"><span class="constructor">Util</span>.unwind_protect&nbsp;thunk<br>
+&nbsp;&nbsp;&nbsp;&nbsp;after</code> calls <code class="code">thunk</code>.  If <code class="code">thunk</code> returns a value, it calls <code class="code">after</code> and
+    then returns the value.  If <code class="code">thunk</code> raises, it calls <code class="code">after</code> and then
+    re-raises.<br>
+</div>
+
+<pre><span id="VALwhile_none"><span class="keyword">val</span> while_none</span> : <code class="type">(unit -> 'a option) -> (unit -> 'b) -> 'a</code></pre><div class="info ">
+Loop until a thunk returns <code class="code"><span class="constructor">Some</span>&nbsp;v</code>.  <code class="code"><span class="constructor">Util</span>.while_none&nbsp;cond&nbsp;body</code>
+    calls <code class="code">cond</code>.  If <code class="code">cond</code> returns <code class="code"><span class="constructor">Some</span>&nbsp;v</code> then it returns <code class="code">v</code>; if
+    <code class="code">cond</code> returns <code class="code"><span class="constructor">None</span></code>, it calls <code class="code">body</code> and then tries iterates.<br>
+</div>
+
+<pre><span id="VALfind'"><span class="keyword">val</span> find'</span> : <code class="type">('a -> bool) -> 'a list -> 'a option</code></pre><div class="info ">
+Find an element in a list.  Like <code class="code"><span class="constructor">List</span>.find'</code>, but returns an
+ <code class="code">option</code> rather than raising.<br>
+</div>
+
+<pre><code><span id="TYPEprotector"><span class="keyword">type</span> <code class="type"></code>protector</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTprotector.protector">protector</span>&nbsp;: <code class="type">'a. (unit -> 'a) -> 'a</code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info ">
+Record type for universally quantified <i>around</i> advice.<br>
+</div>
+
+</body></html>

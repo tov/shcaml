@@ -1,0 +1,182 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Proc.html">
+<link rel="next" href="Shtream.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><link title="Reader Transformers" rel="Section" href="#2_ReaderTransformers">
+<title>Shcaml : Reader</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Proc.html" title="Proc">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Shtream.html" title="Shtream">Next</a>
+</div>
+<h1>Module <a href="type_Reader.html">Reader</a></h1>
+
+<pre><span class="keyword">module</span> Reader: <code class="code"><span class="keyword">sig</span></code> <a href="Reader.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Readers are responsible for breaking input data into pieces, or
+ "raw lines". A <code class="code"><span class="constructor">Reader</span>.t</code> need not be concerned with the meaning of
+ data <i>in</i> a line. Its goal is merely to determine boundaires. Given
+ an <code class="code">in_channel</code> from which to read, a reader reads some data, and
+ produces a <code class="code"><span class="constructor">Reader</span>.raw_line</code> record. It should keep track of any
+ non-data (formatting or record separators) that it encounters, using
+ the <code class="code">before</code> and <code class="code">after</code> fields, making its operation somewhat
+ invertible.<br>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEraw_line"><span class="keyword">type</span> <code class="type"></code>raw_line</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTraw_line.content">content</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+The data of the line<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTraw_line.before">before</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+Delimiting text from before the data<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTraw_line.after">after</span>&nbsp;: <code class="type">string</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+Delimiting text from after the data<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+<div class="info ">
+An raw line as returned by a reader<br>
+</div>
+
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">Pervasives.in_channel -> <a href="Reader.html#TYPEraw_line">raw_line</a></code> </pre>
+<div class="info ">
+The type of a reader.  A reader extracts <a href="Reader.html#TYPEraw_line"><code class="code"><span class="constructor">Reader</span>.raw_line</code></a>s from an input
+ channel.<br>
+</div>
+
+
+<pre><span id="VALraw_of_string"><span class="keyword">val</span> raw_of_string</span> : <code class="type">?before:string -> ?after:string -> string -> <a href="Reader.html#TYPEraw_line">raw_line</a></code></pre><div class="info ">
+Construct an raw line from its contents.  The optional
+ parameter <code class="code">?before</code> defaults to <code class="code"><span class="string">""</span></code> and <code class="code">?after</code> defaults to
+ <code class="code"><span class="string">"\n"</span></code>.<br>
+</div>
+
+<pre><span id="VALmake"><span class="keyword">val</span> make</span> : <code class="type">[ `Buf of eof:bool -> Buffer.t -> <a href="Reader.html#TYPEraw_line">raw_line</a> option<br>       | `Char of char<br>       | `Fixed of int * int<br>       | `Set of string ] -> <a href="Reader.html#TYPEt">t</a></code></pre><div class="info ">
+Construct a reader with a predefined behavior.<ul>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Char</span>&nbsp;c</code> means that raw lines are terminated by the character <code class="code">c</code>.</li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Set</span>&nbsp;s</code> means that raw lines are separated by a sequence of one or
+ more characters from the string <code class="code">s</code>.  Line separator characters may
+ be returned in either the preceding or following <a href="Reader.html#TYPEraw_line"><code class="code"><span class="constructor">Reader</span>.raw_line</code></a>.</li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Fixed</span>&nbsp;(n,&nbsp;m)</code> means that raw lines comprise <code class="code">n</code> characters of data
+ followed by <code class="code">m</code> characters of garbage.</li>
+<li><code class="code"><span class="keywordsign">`</span><span class="constructor">Buf</span>&nbsp;f</code> uses the function <code class="code">f</code> to determine whether the input
+ buffer contains a complete raw line.  If <code class="code">f</code> returns <code class="code"><span class="constructor">Some</span>&nbsp;r</code>, then <code class="code">r</code>
+ is returns the buffer is flushed; otherwise, one more character is
+ read and then <code class="code">f</code> is tried again.  At end-of-file, <code class="code">f</code> is passed
+ <code class="code">~eof:<span class="keyword">true</span></code>.</li>
+</ul>
+
+ Readers constructed by <a href="Reader.html#VALmake"><code class="code"><span class="constructor">Reader</span>.make</code></a> are stateless between calls.
+<br>
+</div>
+
+<pre><span id="VALlines"><span class="keyword">val</span> lines</span> : <code class="type"><a href="Reader.html#TYPEt">t</a></code></pre><div class="info ">
+Read newline-terminated raw lines.  If the last line is not
+ newline-terminated, a newline is stored in the trailing delimiter
+ nonetheless.<br>
+</div>
+<br>
+<h2 id="2_ReaderTransformers">Reader Transformers</h2>
+<p>
+
+    Reader transformers add behavior to a reader.<br>
+
+<pre><span id="VALignore_if"><span class="keyword">val</span> ignore_if</span> : <code class="type">(string -> bool) -> <a href="Reader.html#TYPEt">t</a> -> <a href="Reader.html#TYPEt">t</a></code></pre><div class="info ">
+Ignore raw lines satisfying a string predicate.  Given a predicate and
+ a reader, returns a new reader that skips lines whose content
+ satisfies the predicate.<br>
+</div>
+
+<pre><span id="VALjoin_on"><span class="keyword">val</span> join_on</span> : <code class="type">char -> <a href="Reader.html#TYPEt">t</a> -> <a href="Reader.html#TYPEt">t</a></code></pre><div class="info ">
+Read raw lines with a line continuation character.  If a line
+ ends with the given character, the character will be removed and the
+ next line will be concatenated.<br>
+</div>
+
+<pre><span id="VALempty"><span class="keyword">val</span> empty</span> : <code class="type">string -> bool</code></pre><div class="info ">
+Predicate for empty strings.<br>
+</div>
+
+<pre><span id="VALblank"><span class="keyword">val</span> blank</span> : <code class="type">string -> bool</code></pre><div class="info ">
+Predicate for empty or white space strings.<br>
+</div>
+
+<pre><span id="VALstarts_with"><span class="keyword">val</span> starts_with</span> : <code class="type">string -> string -> bool</code></pre><div class="info ">
+Predicate for strings starting with a given string.
+ <code class="code">starts_with&nbsp;patt&nbsp;s</code> returns whether <code class="code">s</code> starts with the string <code class="code">patt</code>.
+ Allows additional leading white space in the subject string.<br>
+</div>
+
+<pre><span id="VALends_with"><span class="keyword">val</span> ends_with</span> : <code class="type">string -> string -> bool</code></pre><div class="info ">
+Predicate for strings ending with a given string.
+ <code class="code">ends_with&nbsp;patt&nbsp;s</code> returns whether <code class="code">s</code> ends with the string <code class="code">patt</code>.
+ Allows additional trailing white space in the subject string.<br>
+</div>
+
+<pre><span id="VALcontains"><span class="keyword">val</span> contains</span> : <code class="type">?regexp:bool -> string -> string -> bool</code></pre><div class="info ">
+Predicate for strings containing a given pattern.
+ <code class="code">contains&nbsp;patt&nbsp;s</code> returns whether the string <code class="code">s</code> contains the
+ <i>string</i> <code class="code">patt</code>.  Calling <code class="code">contains&nbsp;~regexp:<span class="keyword">true</span>&nbsp;patt&nbsp;s</code>
+ returns whether the string <code class="code">s</code> matches the Perl-compatible regular
+ expression <code class="code">patt</code>.<br>
+</div>
+</body></html>

@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Abort.html">
+<link rel="next" href="AnyShtream.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><title>Shcaml : Adaptor</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Abort.html" title="Abort">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="AnyShtream.html" title="AnyShtream">Next</a>
+</div>
+<h1>Module <a href="type_Adaptor.html">Adaptor</a></h1>
+
+<pre><span class="keyword">module</span> Adaptor: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Line readers and splitters for a variety of file formats.
+ Splitters get raw data from <a href="Line.html#VALraw"><code class="code"><span class="constructor">Line</span>.raw</code></a> and use it to set
+ other line fields.
+<p>
+
+ Each adaptor module typically contains three functions:<ul>
+<li><code class="code">adaptor</code> maps a <code class="code"><span class="constructor">Line</span>.t&nbsp;<span class="constructor">Shtream</span>.t</code> to a <code class="code"><span class="constructor">Line</span>.t&nbsp;<span class="constructor">Shtream</span>.t</code>
+   where the <code class="code"><span class="constructor">Line</span>.t</code>s have been enriched with additionnal fields,
+   containing the specified data parsed from the input line.
+   If the shtream is being read from a channel, then it hints to
+   the source shtream the proper line reader to use.</li>
+<li><code class="code">reader</code> is the line reader for the given kind of file.</li>
+<li><code class="code">splitter</code> is the field splitter that can be used on a single
+   line or mapped over a shtream.</li>
+</ul>
+<br>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEsplitter"><span class="keyword">type</span> <code class="type"></code>splitter</span> = <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code> </pre>
+<div class="info ">
+A function on lines, which typically parses the line and add
+     fields corresponding to the structured information extracted.<br>
+</div>
+
+
+<pre><span id="TYPEadaptor"><span class="keyword">type</span> <code class="type"></code>adaptor</span> = <code class="type"><a href="Line.html#TYPEt">Line.t</a> <a href="Shtream.html#TYPEt">Shtream.t</a> -> <a href="Line.html#TYPEt">Line.t</a> <a href="Shtream.html#TYPEt">Shtream.t</a></code> </pre>
+<div class="info ">
+A function on line shtreams.  In particular, an
+ <code class="code">adaptor</code> maps an <code class="code"><span class="constructor">Line</span>.t&nbsp;<span class="constructor">Shtream</span>.t</code> to a
+ <code class="code"><span class="constructor">Line</span>.t&nbsp;<span class="constructor">Shtream</span>.t</code>.  It also provides reader hints; that is,
+ if the input shtream's reader was selected
+ as a default (rather than by the user), then it may adjust the input
+ shtream's reader.<br>
+</div>
+
+
+<pre><span id="TYPEfitting_adaptor"><span class="keyword">type</span> <code class="type"></code>fitting_adaptor</span> = <code class="type">unit -> (<a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a>) Fitting.t</code> </pre>
+<div class="info ">
+An adaptor lifted to be used as a fitting.<br>
+</div>
+
+
+<pre><span id="VALmake_adaptor"><span class="keyword">val</span> make_adaptor</span> : <code class="type">?reader:<a href="Reader.html#TYPEt">Reader.t</a> -> <a href="Adaptor.html#TYPEsplitter">splitter</a> -> <a href="Adaptor.html#TYPEadaptor">adaptor</a></code></pre><div class="info ">
+Make a shtream adaptor from a reader and a field splitter.  The
+ resulting adaptor can provide reader hints to a shtream from which it
+ reads.<br>
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Convert.html">Convert</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Convert.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Conversions for shtream adaptors.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Delim.html">Delim</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Delim.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor modules for flexible handling of delimited text files.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.SimpleFlatFile.html">SimpleFlatFile</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.SimpleFlatFile.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for simple flat file tables.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Key_value.html">Key_value</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Key_value.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for key-value property lists.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Key_value_section.html">Key_value_section</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Key_value_section.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for key-value property lists with section headings.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Csv.html">Csv</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Csv.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for comma-separated values files.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Passwd.html">Passwd</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Passwd.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for <b>passwd</b>(5) files.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Group.html">Group</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Group.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for <b>group</b>(5) files.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Fstab.html">Fstab</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Fstab.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for <b>fstab</b>(5) and <b>mtab</b>(5).
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Stat.html">Stat</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Stat.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for retrieving file status and mode information.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Ps.html">Ps</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Ps.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for the output of <i>ps auxww</i>.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Mailcap.html">Mailcap</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Adaptor.Mailcap.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
+Adaptor module for mailcap files (RFC 1524)
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Ssh_config.html">Ssh_config</a>: <code class="type"><a href="Adaptor.Key_value_section.S.html">Key_value_section.S</a></code><code class="type"> </code></pre><div class="info">
+Adaptor module for <i>/etc/ssh/ssh_config</i>, etc.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Etc_aliases.html">Etc_aliases</a>: <code class="type"><a href="Adaptor.Key_value.S.html">Key_value.S</a></code><code class="type"> </code></pre><div class="info">
+Adaptor module for <i>/etc/aliases</i>, etc.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Etc_hosts.html">Etc_hosts</a>: <code class="type"><a href="Adaptor.Key_value.S.html">Key_value.S</a></code><code class="type"> </code></pre><div class="info">
+Adaptor module for <i>/etc/hosts</i>, etc.
+</div>
+
+<pre><span class="keyword">module</span> <a href="Adaptor.Ini_file.html">Ini_file</a>: <code class="type"><a href="Adaptor.Key_value_section.S.html">Key_value_section.S</a></code><code class="type"> </code></pre><div class="info">
+Adaptor module for configuration files in the style of <i>php.ini</i>
+ or configuration files on some proprietary operating systems.
+</div>
+</body></html>

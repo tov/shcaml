@@ -1,0 +1,425 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="Up" href="FittingSig.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><link title="Types" rel="Section" href="#1_Types">
+<link title="Values" rel="Section" href="#1_Values">
+<link title="Basic Fitting Constructors" rel="Subsection" href="#2_BasicFittingConstructors">
+<link title="Fitting Combinators" rel="Subsection" href="#2_FittingCombinators">
+<link title="Fitting Runners" rel="Subsection" href="#2_FittingRunners">
+<link title="Convenient Conversions" rel="Subsection" href="#2_ConvenientConversions">
+<title>Shcaml : FittingSig.S</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="FittingSig.html" title="FittingSig">Up</a>
+&nbsp;</div>
+<h1>Module type <a href="type_FittingSig.S.html">FittingSig.S</a></h1>
+
+<pre><span class="keyword">module type</span> S = <code class="code"><span class="keyword">sig</span></code> <a href="FittingSig.S.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<br>
+<h1 id="1_Types">Types</h1><br>
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type">('b -> 'c)</code> t</span> </pre>
+<div class="info ">
+A fitting that consumes values of type <code class="code"><span class="keywordsign">'</span>a</code> and produces
+ values of type <code class="code"><span class="keywordsign">'</span>b</code>.<br>
+</div>
+
+
+<pre><span id="TYPEelem"><span class="keyword">type</span> <code class="type">'a</code> elem</span> </pre>
+<div class="info ">
+This is the type of elements that fittings know how to write to external
+      processes.<br>
+</div>
+
+
+<pre><span id="TYPEinitial"><span class="keyword">type</span> <code class="type"></code>initial</span> </pre>
+<div class="info ">
+This is the parameter to the type <a href="FittingSig.S.html#TYPEelem"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.elem</code></a> for specifying
+ the type of elements that fittings know how to read from
+ external processes.  That is, fittings constructed from external
+ processes produce values of type <code class="code">initial&nbsp;elem</code>.<br>
+</div>
+
+
+<pre><span id="TYPEshtream"><span class="keyword">type</span> <code class="type">'a</code> shtream</span> </pre>
+
+
+<pre><span id="TYPEcoshtream"><span class="keyword">type</span> <code class="type">'a</code> coshtream</span> </pre>
+
+
+<pre><span id="TYPEprocref"><span class="keyword">type</span> <code class="type"></code>procref</span> = <code class="type"><a href="Channel.html#TYPEprocref">Channel.procref</a></code> </pre>
+<div class="info ">
+Alias for <a href="Channel.html#TYPEprocref"><code class="code"><span class="constructor">Channel</span>.procref</code></a><br>
+</div>
+
+
+<pre><span id="TYPEtext"><span class="keyword">type</span> <code class="type"></code>text</span> = <code class="type"><a href="FittingSig.S.html#TYPEinitial">initial</a> <a href="FittingSig.S.html#TYPEelem">elem</a></code> </pre>
+<div class="info ">
+Alias for <a href="FittingSig.S.html#TYPEinitial"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.initial</code></a> <a href="FittingSig.S.html#TYPEelem"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.elem</code></a><br>
+</div>
+
+<br>
+<h1 id="1_Values">Values</h1><br>
+
+<pre><span id="VAL(-|)"><span class="keyword">val</span> (-|)</span> : <code class="type">('a -> 'b) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       ('b -> 'c) <a href="FittingSig.S.html#TYPEt">t</a> -> ('a -> 'c) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Connect the output of one fitting to the input of another.
+ This is the most basic fitting combinator, and bears introduction
+ before the full variety of fitting components.<br>
+</div>
+
+<pre><span id="VALpipe"><span class="keyword">val</span> pipe</span> : <code class="type">('i -> 'm) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       ('m -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Alias for <a href="FittingSig.S.html#VAL(-|)"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.(-|)</code></a><br>
+</div>
+<br>
+<h2 id="2_BasicFittingConstructors">Basic Fitting Constructors</h2>
+<p>
+
+  <h3 id="3_Producers">Producers</h3>
+<p>
+
+ Producers are useful for starting off pipelines.<br>
+
+<pre><span id="VALfrom_file"><span class="keyword">val</span> from_file</span> : <code class="type">string -> ('i -> <a href="FittingSig.S.html#TYPEtext">text</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Produce the contents of a file.
+ <code class="code">from_file&nbsp;file&nbsp;-|&nbsp;fitting</code> is like <pre class="verbatim">    % fitting &lt; file</pre><br>
+</div>
+
+<pre><span id="VALfrom_null"><span class="keyword">val</span> from_null</span> : <code class="type">('i -> <a href="FittingSig.S.html#TYPEtext">text</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Produce nothing.
+ <code class="code">from_null&nbsp;-|&nbsp;fitting</code> is like <pre class="verbatim">    % fitting &lt; /dev/null</pre><br>
+</div>
+
+<pre><span id="VALfrom_gen"><span class="keyword">val</span> from_gen</span> : <code class="type"><a href="Channel.html#TYPEdup_in_source">Channel.dup_in_source</a> -> ('i -> <a href="FittingSig.S.html#TYPEtext">text</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Produce the contents of a <a href="Channel.html#TYPEdup_in_source"><code class="code"><span class="constructor">Channel</span>.dup_in_source</code></a>.<br>
+</div>
+
+<pre><span id="VALfrom_shtream"><span class="keyword">val</span> from_shtream</span> : <code class="type">'o <a href="FittingSig.S.html#TYPEshtream">shtream</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Produce the contents of a shtream.<br>
+</div>
+<br>
+<h3 id="3_Consumers">Consumers</h3>
+<p>
+
+ Consumers are useful for ending pipelines.
+<br>
+
+<pre><span id="VALto_file"><span class="keyword">val</span> to_file</span> : <code class="type">?clobber:<a href="Channel.html#TYPEclobber_spec">Channel.clobber_spec</a> -><br>       string -> ('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Redirect standard output to a file.
+ See <a href="Channel.html#TYPEclobber_spec"><code class="code"><span class="constructor">Channel</span>.clobber_spec</code></a> for open modes.
+ <code class="code">fitting&nbsp;-|&nbsp;to_file&nbsp;file</code> is like <pre class="verbatim">    % fitting &gt; file</pre><br>
+</div>
+
+<pre><span id="VALto_null"><span class="keyword">val</span> to_null</span> : <code class="type">('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Redirect standard output nowhere.
+ <code class="code">fitting&nbsp;-|&nbsp;to_null</code> is like <pre class="verbatim">    % fitting &gt; /dev/null</pre><br>
+</div>
+
+<pre><span id="VALto_stderr"><span class="keyword">val</span> to_stderr</span> : <code class="type">('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Redirect standard output to standard error.
+      <code class="code">fitting&nbsp;-|&nbsp;to_stderr</code> is like <pre class="verbatim">    % fitting &gt;&amp;2</pre><br>
+</div>
+
+<pre><span id="VALto_gen"><span class="keyword">val</span> to_gen</span> : <code class="type"><a href="Channel.html#TYPEdup_out_source">Channel.dup_out_source</a> -> ('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Redirect standard output to <a href="Channel.html#TYPEdup_out_source"><code class="code"><span class="constructor">Channel</span>.dup_out_source</code></a>.<br>
+</div>
+
+<pre><span id="VALto_coshtream"><span class="keyword">val</span> to_coshtream</span> : <code class="type">'i <a href="FittingSig.S.html#TYPEcoshtream">coshtream</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Redirect output to a coshtream.  (A coshtream is a consumer
+ in another process.)<br>
+</div>
+<br>
+<h3 id="3_Transformers">Transformers</h3><br>
+
+<pre><span id="VALcommand"><span class="keyword">val</span> command</span> : <code class="type">string -> ('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> <a href="FittingSig.S.html#TYPEtext">text</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run an external command as a fitting.  The fitting's input is
+ connected to the command's standard input and the fitting's output
+ to the command's standard output.  This runs the command in the
+ shell, in the style of <a href="Channel.html#VALopen_command"><code class="code"><span class="constructor">Channel</span>.open_command</code></a>.<br>
+</div>
+
+<pre><span id="VALprogram"><span class="keyword">val</span> program</span> : <code class="type">?path:bool -><br>       string -><br>       ?argv0:string -><br>       string list -> ('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> <a href="FittingSig.S.html#TYPEtext">text</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run an external program as a fitting.  The fitting's input is
+ connected to the program's standard input and the fitting's output
+ to the program's standard output.  This runs the program in the
+ shell, in the style of <a href="Channel.html#VALopen_program"><code class="code"><span class="constructor">Channel</span>.open_program</code></a>.<br>
+</div>
+
+<pre><span id="VALthunk"><span class="keyword">val</span> thunk</span> : <code class="type">(unit -> unit) -> ('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> <a href="FittingSig.S.html#TYPEtext">text</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run a thunk as a fitting.  The thunk is run in a child
+ process whose standard input and output are connected to the
+ fitting's input and output.<br>
+</div>
+
+<pre><span id="VALsed"><span class="keyword">val</span> sed</span> : <code class="type">('i -> 'o) -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Map each element according to a function.
+ This lifts a function on elements into a fitting component.<br>
+</div>
+
+<pre><span id="VALgrep"><span class="keyword">val</span> grep</span> : <code class="type">('i -> bool) -> ('i -> 'i) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Filter the input according to a predicate.<br>
+</div>
+
+<pre><span id="VALtrans"><span class="keyword">val</span> trans</span> : <code class="type">('i <a href="FittingSig.S.html#TYPEshtream">shtream</a> -> 'o <a href="FittingSig.S.html#TYPEshtream">shtream</a>) -><br>       ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Transform the input according to a function on shtreams.<br>
+</div>
+
+<pre><span id="VALsed_string"><span class="keyword">val</span> sed_string</span> : <code class="type">(string -> 'o) -> ('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Like <a href="FittingSig.S.html#VALsed"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.sed</code></a> with a lift from strings.<br>
+</div>
+
+<pre><span id="VALgrep_string"><span class="keyword">val</span> grep_string</span> : <code class="type">(string -> bool) -><br>       ('i <a href="FittingSig.S.html#TYPEelem">elem</a> -> 'i <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Filter the input according to a string predicate.<br>
+</div>
+<br>
+<h2 id="2_FittingCombinators">Fitting Combinators</h2><br>
+
+<pre><span id="VAL(/</)"><span class="keyword">val</span> (/&lt;/)</span> : <code class="type">(<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       <a href="Channel.html#TYPEdup_spec">Channel.dup_spec</a> -> (<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Redirect some inputs to a fitting.  <code class="code">fitting&nbsp;/&lt;/&nbsp;dups</code>
+ performs the redirections specifed by <code class="code">dups</code> for the extent
+ of <code class="code">fitting</code>.  For example,
+ <code class="code">fitting&nbsp;/&lt;/&nbsp;[&nbsp;4&nbsp;%&lt;&amp;&nbsp;0;&nbsp;0&nbsp;%&lt;&nbsp;<span class="string">"file"</span>&nbsp;]</code> is like
+ <pre class="verbatim">    % fitting 4&lt;&amp;0 &lt;file</pre><br>
+</div>
+
+<pre><span id="VALredirect_in"><span class="keyword">val</span> redirect_in</span> : <code class="type"><a href="Channel.html#TYPEdup_spec">Channel.dup_spec</a> -><br>       (<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       (<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Alias for <a href="FittingSig.S.html#VAL(/</)"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.(/&lt;/)</code></a><br>
+</div>
+
+<pre><span id="VAL(/>/)"><span class="keyword">val</span> (/&gt;/)</span> : <code class="type">('i -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       <a href="Channel.html#TYPEdup_spec">Channel.dup_spec</a> -> ('i -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Redirect some outputs from a fitting.  <code class="code">fitting&nbsp;/&gt;/&nbsp;dups</code>
+ performs the redirections specifed by <code class="code">dups</code> for the extent
+ of <code class="code">fitting</code>.  For example,
+ <code class="code">fitting&nbsp;/&gt;/&nbsp;[&nbsp;2&nbsp;%&gt;&amp;&nbsp;1&nbsp;]</code> is like
+ <pre class="verbatim">    % fitting 2&gt;&amp;1</pre><br>
+</div>
+
+<pre><span id="VALredirect_out"><span class="keyword">val</span> redirect_out</span> : <code class="type"><a href="Channel.html#TYPEdup_spec">Channel.dup_spec</a> -><br>       ('i -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       ('i -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Alias for <a href="FittingSig.S.html#VAL(/>/)"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.(/&gt;/)</code></a><br>
+</div>
+
+<pre><span id="VAL(^>>=)"><span class="keyword">val</span> (^&gt;&gt;=)</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       (<a href="Proc.html#TYPEstatus">Proc.status</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a>) -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Sequence two fittings, with control.
+ Runs its first argument, passes
+ it's exit code to the second argument, and runs the resulting
+ fitting.  The second argument can therefore choose what to do
+ based on the result of the first.
+<p>
+
+ The exit code of external processes is the actual exit code as
+ reported by <a href="Proc.html#VALwait"><code class="code"><span class="constructor">Proc</span>.wait</code></a>.  The exit code of a shtream is 0 unless
+ the shtream terminates by calling <code class="code"><span class="constructor">Shtream</span>.fail_with&nbsp;n</code>, in which
+ case the code in <code class="code">n</code>.  Or, <a href="FittingSig.S.html#VALyield"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.yield</code></a> can return an exit code
+ directly.<br>
+</div>
+
+<pre><span id="VALseq"><span class="keyword">val</span> seq</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       (<a href="Proc.html#TYPEstatus">Proc.status</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a>) -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Alias for <a href="FittingSig.S.html#VAL(^>>=)"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.(^&gt;&gt;=)</code></a><br>
+</div>
+
+<pre><span id="VAL(^>>)"><span class="keyword">val</span> (^&gt;&gt;)</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Sequence two fittings, ignoring the exit code of the first.
+ <code class="code">&nbsp;a&nbsp;^&gt;&gt;&nbsp;b&nbsp;</code> is exactly <code class="code">&nbsp;a&nbsp;^&gt;&gt;=&nbsp;<span class="keyword">fun</span>&nbsp;_&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;b&nbsp;</code>.
+ This is like <code class="code">;</code> in the shell.<br>
+</div>
+
+<pre><span id="VAL(&&^)"><span class="keyword">val</span> (&amp;&amp;^)</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Sequence two fittings, running the second if the first succeeds.
+ If the first fails, skips the second and propagates the exit
+ code from the first.
+ This is like <code class="code"><span class="keywordsign">&amp;&amp;</span></code> in the shell.<br>
+</div>
+
+<pre><span id="VAL(||^)"><span class="keyword">val</span> (||^)</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Sequence two fittings, running the second if the first fails.
+ If the first succeeds, skips the second and returns an exit code
+ of 0.
+ This is like <code class="code"><span class="keywordsign">||</span></code> in the shell.<br>
+</div>
+
+<pre><span id="VAL(~>>)"><span class="keyword">val</span> (~&gt;&gt;)</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> list -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run a list of fittings in sequence with <a href="FittingSig.S.html#VAL(^>>)"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.(^&gt;&gt;)</code></a>.<br>
+</div>
+
+<pre><span id="VAL(~&&)"><span class="keyword">val</span> (~&amp;&amp;)</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> list -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run a list of fittings in sequence with <a href="FittingSig.S.html#VAL(&&^)"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.(&amp;&amp;^)</code></a>.
+ Terminates the sequence when any component fails.<br>
+</div>
+
+<pre><span id="VAL(~||)"><span class="keyword">val</span> (~||)</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> list -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run a list of fittings in sequence with <a href="FittingSig.S.html#VAL(||^)"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.(||^)</code></a>.
+ Terminates the sequence when any component succeeds.<br>
+</div>
+
+<pre><span id="VALcommands"><span class="keyword">val</span> commands</span> : <code class="type">string list -> (<a href="FittingSig.S.html#TYPEtext">text</a> -> <a href="FittingSig.S.html#TYPEtext">text</a>) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run a list of commands, piping the output of each
+ into the next.<br>
+</div>
+
+<pre><span id="VALyield"><span class="keyword">val</span> yield</span> : <code class="type"><a href="Proc.html#TYPEstatus">Proc.status</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Produces a fitting that returns the given exit code.
+ Has no effect on input and output, but can be used to pass a
+ particular code along in a sequence.<br>
+</div>
+
+<pre><span id="VALcaml"><span class="keyword">val</span> caml</span> : <code class="type">(unit -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a>) -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Delay an OCaml thunk until a fitting is run.  Given a thunk
+ that produces a fitting, <a href="FittingSig.S.html#VALcaml"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.caml</code></a> constructs a new fitting that,
+ when run, forces the thunk and runs the resulting fitting.
+ This allows for OCaml side-effects at arbitrary points during a
+ fitting.<br>
+</div>
+
+<pre><span id="VAL(^&=)"><span class="keyword">val</span> (^&amp;=)</span> : <code class="type">(<a href="FittingSig.S.html#TYPEtext">text</a> -> 'b <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       (<a href="Proc.html#TYPEt">Proc.t</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a>) -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run a fitting in the background.  <code class="code">&nbsp;bg&nbsp;^&amp;=&nbsp;fg&nbsp;</code> runs <code class="code">bg</code>
+ in the background, passed its <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> to <code class="code">fg</code>, and runs
+ the fitting returned by <code class="code">fg</code> (in the foreground).
+<p>
+
+ Notice that the <code class="code">bg</code> must have input type <a href="FittingSig.S.html#TYPEtext"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.text</code></a>; it will
+ construct its own input shtream from the standard input.<br>
+</div>
+
+<pre><span id="VALpar"><span class="keyword">val</span> par</span> : <code class="type">(<a href="FittingSig.S.html#TYPEtext">text</a> -> 'b <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       (<a href="Proc.html#TYPEt">Proc.t</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a>) -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Alias for <a href="FittingSig.S.html#VAL(^&=)"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.(^&amp;=)</code></a><br>
+</div>
+
+<pre><span id="VAL(^&)"><span class="keyword">val</span> (^&amp;)</span> : <code class="type">(<a href="FittingSig.S.html#TYPEtext">text</a> -> 'b <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -> ('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a></code></pre><div class="info ">
+Run a fitting in the background, ignore its <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a>.  This
+ backgrounds its first argument and then continues with its second
+ argument in the foreground.<br>
+</div>
+<br>
+<h2 id="2_FittingRunners">Fitting Runners</h2><br>
+
+<pre><span id="VALrun_source"><span class="keyword">val</span> run_source</span> : <code class="type">(<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -> 'o <a href="FittingSig.S.html#TYPEshtream">shtream</a></code></pre><div class="info ">
+Run a fitting, returning its output as a shtream.  The fitting
+ will take its input from the standard input.<br>
+</div>
+
+<pre><span id="VALrun_sink"><span class="keyword">val</span> run_sink</span> : <code class="type">('i -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -> 'i <a href="FittingSig.S.html#TYPEcoshtream">coshtream</a></code></pre><div class="info ">
+Run a fitting, returning a costhream connected to its input.
+ The fitting will send its output from the standard output.<br>
+</div>
+
+<pre><span id="VALrun_list"><span class="keyword">val</span> run_list</span> : <code class="type">(<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -> 'o list</code></pre><div class="info ">
+Run a fitting, returning its output as a list.  The fitting
+ will take its input from the standard input.<br>
+</div>
+
+<pre><span id="VALrun_shtream"><span class="keyword">val</span> run_shtream</span> : <code class="type">('i -> 'o) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       'i <a href="FittingSig.S.html#TYPEshtream">shtream</a> -> 'o <a href="FittingSig.S.html#TYPEshtream">shtream</a></code></pre><div class="info ">
+ Transform a fitting into a shtream transformer.<br>
+</div>
+
+<pre><span id="VALrun_in"><span class="keyword">val</span> run_in</span> : <code class="type">?procref:<a href="FittingSig.S.html#TYPEprocref">procref</a> -><br>       (<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       Pervasives.in_channel</code></pre><div class="info ">
+Run a fitting, returning its output as an <code class="code">in_channel</code>.  The fitting
+ will take its input from the standard input.  If <code class="code">?procref</code> is
+ provided, the <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> of the child process will be stashed.<br>
+</div>
+
+<pre><span id="VALrun_out"><span class="keyword">val</span> run_out</span> : <code class="type">?procref:<a href="FittingSig.S.html#TYPEprocref">procref</a> -><br>       (<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -><br>       Pervasives.out_channel</code></pre><div class="info ">
+Run a fitting, returning its input as an <code class="code">out_channel</code>.  The fitting
+ will send its output from the standard output.  If <code class="code">?procref</code> is
+ provided, the <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a> of the child process will be stashed.<br>
+</div>
+
+<pre><span id="VALrun_backquote"><span class="keyword">val</span> run_backquote</span> : <code class="type">?procref:<a href="FittingSig.S.html#TYPEprocref">procref</a> -><br>       (<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -> string</code></pre><div class="info ">
+Run a fitting, returning its output collected as a string.
+ The exit code of the child process can be retrieved by providing
+ <code class="code">?procref</code>.<br>
+</div>
+
+<pre><span id="VALrun_bg"><span class="keyword">val</span> run_bg</span> : <code class="type">(<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -> <a href="Proc.html#TYPEt">Proc.t</a></code></pre><div class="info ">
+Run a fitting in the background, returning its <a href="Proc.html#TYPEt"><code class="code"><span class="constructor">Proc</span>.t</code></a>.
+ The fitting will take its input from the standard input and send
+ its output to the standard output.<br>
+</div>
+
+<pre><span id="VALrun"><span class="keyword">val</span> run</span> : <code class="type">(<a href="FittingSig.S.html#TYPEtext">text</a> -> 'o <a href="FittingSig.S.html#TYPEelem">elem</a>) <a href="FittingSig.S.html#TYPEt">t</a> -> <a href="Proc.html#TYPEstatus">Proc.status</a></code></pre><div class="info ">
+Run a fitting in the foreground, returning its exit status.
+ The fitting will take its input from the standard input and send
+ its output to the standard output.<br>
+</div>
+<br>
+<h2 id="2_ConvenientConversions">Convenient Conversions</h2>
+<p>
+
+ These conversions use the <a href="FittingSig.S.html#TYPEelem"><code class="code"><span class="constructor">FittingSig</span>.<span class="constructor">S</span>.elem</code></a> conversions provided to the
+ <a href="Fitting.Make.html"><code class="code"><span class="constructor">Fitting</span>.<span class="constructor">Make</span></code></a> functor by <a href="AnyShtream.ELEM.html"><code class="code"><span class="constructor">AnyShtream</span>.<span class="constructor">ELEM</span></code></a>.  The conversion
+ <a href="AnyShtream.ELEM.html#VALstring_of"><code class="code"><span class="constructor">AnyShtream</span>.<span class="constructor">ELEM</span>.string_of</code></a> or <a href="AnyShtream.ELEM.html#VALof_string"><code class="code"><span class="constructor">AnyShtream</span>.<span class="constructor">ELEM</span>.of_string</code></a>
+ is completely applied for each of these conversions, so no state
+ (should there be any) is retained in between calls.<br>
+
+<pre><span id="VALstring_of_elem"><span class="keyword">val</span> string_of_elem</span> : <code class="type">'a <a href="FittingSig.S.html#TYPEelem">elem</a> -> string</code></pre><div class="info ">
+Convert a shtream element to a string.<br>
+</div>
+
+<pre><span id="VALelem_of_string"><span class="keyword">val</span> elem_of_string</span> : <code class="type">string -> <a href="FittingSig.S.html#TYPEtext">text</a></code></pre><div class="info ">
+Convert a string to a shtream element.<br>
+</div>
+
+<pre><span id="VALint_of_elem"><span class="keyword">val</span> int_of_elem</span> : <code class="type">'a <a href="FittingSig.S.html#TYPEelem">elem</a> -> int</code></pre><div class="info ">
+Convert a shtream element to an integer.<br>
+</div>
+
+<pre><span id="VALelem_of_int"><span class="keyword">val</span> elem_of_int</span> : <code class="type">int -> <a href="FittingSig.S.html#TYPEtext">text</a></code></pre><div class="info ">
+Convert a integer to a shtream element.<br>
+</div>
+
+<pre><span id="VALchar_of_elem"><span class="keyword">val</span> char_of_elem</span> : <code class="type">'a <a href="FittingSig.S.html#TYPEelem">elem</a> -> char</code></pre><div class="info ">
+Convert a shtream element to a character.<br>
+</div>
+
+<pre><span id="VALelem_of_char"><span class="keyword">val</span> elem_of_char</span> : <code class="type">char -> <a href="FittingSig.S.html#TYPEtext">text</a></code></pre><div class="info ">
+Convert a character to a shtream element.<br>
+</div>
+
+<pre><span id="VALfloat_of_elem"><span class="keyword">val</span> float_of_elem</span> : <code class="type">'a <a href="FittingSig.S.html#TYPEelem">elem</a> -> float</code></pre><div class="info ">
+Convert a shtream element to a float.<br>
+</div>
+
+<pre><span id="VALelem_of_float"><span class="keyword">val</span> elem_of_float</span> : <code class="type">float -> <a href="FittingSig.S.html#TYPEtext">text</a></code></pre><div class="info ">
+Convert a float to a shtream element.<br>
+</div>
+
+<pre><span id="VALbool_of_elem"><span class="keyword">val</span> bool_of_elem</span> : <code class="type">'a <a href="FittingSig.S.html#TYPEelem">elem</a> -> bool</code></pre><div class="info ">
+Convert a shtream element to a boolean.<br>
+</div>
+
+<pre><span id="VALelem_of_bool"><span class="keyword">val</span> elem_of_bool</span> : <code class="type">bool -> <a href="FittingSig.S.html#TYPEtext">text</a></code></pre><div class="info ">
+Convert a boolean to a shtream element.<br>
+</div>
+</body></html>

@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="Start" href="index.html">
+<link rel="Up" href="Line.Stat.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Abort" rel="Chapter" href="Abort.html">
+<link title="Adaptor" rel="Chapter" href="Adaptor.html">
+<link title="AnyShtream" rel="Chapter" href="AnyShtream.html">
+<link title="Channel" rel="Chapter" href="Channel.html">
+<link title="Delimited" rel="Chapter" href="Delimited.html">
+<link title="DepDAG" rel="Chapter" href="DepDAG.html">
+<link title="Disposal" rel="Chapter" href="Disposal.html">
+<link title="Fitting" rel="Chapter" href="Fitting.html">
+<link title="FittingSig" rel="Chapter" href="FittingSig.html">
+<link title="Flags" rel="Chapter" href="Flags.html">
+<link title="IVar" rel="Chapter" href="IVar.html">
+<link title="Line" rel="Chapter" href="Line.html">
+<link title="LineShtream" rel="Chapter" href="LineShtream.html">
+<link title="PriorityQueue" rel="Chapter" href="PriorityQueue.html">
+<link title="Proc" rel="Chapter" href="Proc.html">
+<link title="Reader" rel="Chapter" href="Reader.html">
+<link title="Shtream" rel="Chapter" href="Shtream.html">
+<link title="Signal" rel="Chapter" href="Signal.html">
+<link title="StringShtream" rel="Chapter" href="StringShtream.html">
+<link title="Util" rel="Chapter" href="Util.html">
+<link title="UsrBin" rel="Chapter" href="UsrBin.html">
+<link title="Version" rel="Chapter" href="Version.html">
+<link title="WeakPlus" rel="Chapter" href="WeakPlus.html"><title>Shcaml : Line.Stat.Mode</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="Line.Stat.html" title="Line.Stat">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Line.Stat.Mode.html">Line.Stat.Mode</a></h1>
+
+<pre><span class="keyword">module</span> Mode: <code class="code"><span class="keyword">sig</span></code> <a href="Line.Stat.Mode.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Various bits in a file's mode (permissions).  See <b>chmod</b>(2).<br>
+</div>
+<hr width="100%">
+
+<pre><span id="VALxusr"><span class="keyword">val</span> xusr</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is executable by owner. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_xusr"><span class="keyword">val</span> set_xusr</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALxusr"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.xusr</code></a><br>
+</div>
+
+<pre><span id="VALwusr"><span class="keyword">val</span> wusr</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is writeable by owner. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_wusr"><span class="keyword">val</span> set_wusr</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALwusr"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.wusr</code></a><br>
+</div>
+
+<pre><span id="VALrusr"><span class="keyword">val</span> rusr</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is readable by owner. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_rusr"><span class="keyword">val</span> set_rusr</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALrusr"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.rusr</code></a><br>
+</div>
+
+<pre><span id="VALxgrp"><span class="keyword">val</span> xgrp</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is executable by group. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_xgrp"><span class="keyword">val</span> set_xgrp</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALxgrp"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.xgrp</code></a><br>
+</div>
+
+<pre><span id="VALwgrp"><span class="keyword">val</span> wgrp</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is writeable by group. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_wgrp"><span class="keyword">val</span> set_wgrp</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALwgrp"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.wgrp</code></a><br>
+</div>
+
+<pre><span id="VALrgrp"><span class="keyword">val</span> rgrp</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is readable by group. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_rgrp"><span class="keyword">val</span> set_rgrp</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALrgrp"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.rgrp</code></a><br>
+</div>
+
+<pre><span id="VALxoth"><span class="keyword">val</span> xoth</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is executable by everyone. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_xoth"><span class="keyword">val</span> set_xoth</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALxoth"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.xoth</code></a><br>
+</div>
+
+<pre><span id="VALwoth"><span class="keyword">val</span> woth</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is writeable by everyone. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_woth"><span class="keyword">val</span> set_woth</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALwoth"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.woth</code></a><br>
+</div>
+
+<pre><span id="VALroth"><span class="keyword">val</span> roth</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File is readable by everyone. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_roth"><span class="keyword">val</span> set_roth</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALroth"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.roth</code></a><br>
+</div>
+
+<pre><span id="VALsuid"><span class="keyword">val</span> suid</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File has set-user-id bit set. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_suid"><span class="keyword">val</span> set_suid</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALsuid"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.suid</code></a><br>
+</div>
+
+<pre><span id="VALsgid"><span class="keyword">val</span> sgid</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File has set-group-id bit set. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_sgid"><span class="keyword">val</span> set_sgid</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALsgid"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.sgid</code></a><br>
+</div>
+
+<pre><span id="VALsticky"><span class="keyword">val</span> sticky</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> bool</code></pre><div class="info ">
+File has sticky bit set. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_sticky"><span class="keyword">val</span> set_sticky</span> : <code class="type">bool -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALsticky"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.sticky</code></a><br>
+</div>
+
+<pre><span id="VALbits"><span class="keyword">val</span> bits</span> : <code class="type"><a href="Line.html#TYPEt">Line.t</a> -> int</code></pre><div class="info ">
+The entire mode word, as used by <i>chmod</i>. (accessor, required)<br>
+</div>
+
+<pre><span id="VALset_bits"><span class="keyword">val</span> set_bits</span> : <code class="type">int -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Updater for <a href="Line.Stat.Mode.html#VALbits"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span>.bits</code></a><br>
+</div>
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">xusr:bool -><br>       wusr:bool -><br>       rusr:bool -><br>       xgrp:bool -><br>       wgrp:bool -><br>       rgrp:bool -><br>       xoth:bool -><br>       woth:bool -><br>       roth:bool -><br>       suid:bool -> sgid:bool -> sticky:bool -> bits:int -> <a href="Line.html#TYPEt">Line.t</a> -> <a href="Line.html#TYPEt">Line.t</a></code></pre><div class="info ">
+Add the <a href="Line.Stat.Mode.html"><code class="code"><span class="constructor">Line</span>.<span class="constructor">Stat</span>.<span class="constructor">Mode</span></code></a> substructure to a line.<br>
+</div>
+</body></html>
