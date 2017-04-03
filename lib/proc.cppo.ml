@@ -94,7 +94,7 @@ let fork () =
   Pervasives.flush_all ();
   let old_mask   = Unix.sigprocmask Unix.SIG_BLOCK [Sys.sigchld] in
   let restore () = ignore (Unix.sigprocmask Unix.SIG_SETMASK old_mask) in
-  let thunk ()   = match Lwt_unix.fork () with
+  let thunk ()   = match system_fork () with
     (* We should just clear the table, but we need wait and friends to know how
      * to handle a proc that's not in the table. *)
     | 0    -> Table.iter (fun proc -> proc.child <- false) table;

@@ -25,11 +25,12 @@ let build_cmd c os files =
     Pkg.build_cmd c os %%
     v "-plugin-tag" %% v "package(cppo_ocamlbuild)" %%
     Pkg.ocb_bool_tag c lwt "cppo_D(WITH_LWT)" %%
+    Pkg.ocb_bool_tag c lwt "package(lwt.unix)" %%
     of_list files
   )
 
 let build = Pkg.build ~cmd:build_cmd ()
-let opams = [Pkg.opam_file ~lint_deps_excluding:(Some ["cppo"; "lambdasoup"]) "opam"]
+let opams = [Pkg.opam_file ~lint_deps_excluding:(Some ["cppo"; "lambdasoup"; "lwt"]) "opam"]
 let distrib =
   let watermarks = ("CODENAME", `String codename) :: Pkg.watermarks in
   Pkg.distrib ~watermarks ()

@@ -14,11 +14,11 @@ depends: [ "ocamlfind" {build}
            "pcre"
            "hmap"
          ]
-depopts: [ "lwt" ]
+depopts: [ "lwt" "base-unix" ]
 build:
 [
   [ "ocaml" "pkg/pkg.ml" "build"
       "--dev-pkg" "%{pinned}%"
-      "--with-lwt" "%{lwt:installed}%"
+      "--with-lwt" "%{lwt+base-unix:installed}%"
   ]
 ]
