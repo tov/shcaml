@@ -6,5 +6,5 @@ lib:
 doc:
 	topkg doc
 
-clean: cleandoc
+clean:
 	topkg clean
