@@ -97,7 +97,7 @@ module Key_value = struct
     try Some (float_of_string (value line)) with Failure _ -> None
 
   let as_bool line =
-    match String.lowercase (value line) with
+    match String.lowercase_ascii (value line) with
     | "yes" | "y" | "1" | "true" | "on" | "enabled" | "enable" -> Some true
     | "no" | "n" | "0" | "false" | "off" | "disabled" | "disable" ->
       Some false
