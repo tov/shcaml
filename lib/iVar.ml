@@ -33,7 +33,7 @@ let write rep v =
   kill rep;
   Unix.close rep.read_end;
   let buf = Marshal.to_string v [Marshal.Closures] in
-  ignore @@ Unix.write rep.write_end buf 0 (String.length buf);
+  ignore @@ Unix.write rep.write_end Bytes.(of_string buf) 0 (String.length buf);
   Unix.close rep.write_end
 
 let read rep =
