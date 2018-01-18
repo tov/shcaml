@@ -66,8 +66,8 @@ let rec make =
       let result = { content  = String.make n '\000';
                      before   = "";
                      after    = String.make m '\000'; } in
-      Pervasives.really_input c result.content 0 n;
-      ignore @@ Pervasives.input c result.after 0 n;
+      Pervasives.really_input c Bytes.(of_string result.content) 0 n;
+      ignore @@ Pervasives.input c Bytes.(of_string result.after) 0 n;
       result
   | `Buf f -> fun c ->
       let buf = Buffer.create 80 in
