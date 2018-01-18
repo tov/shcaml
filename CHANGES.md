@@ -1,3 +1,12 @@
+Caml-Shcaml 0.2.1
+-----------------
+
+- Add compatibility with -safe-string and therefore OCaml 4.06.0 onwards.
+
+- Remove uses of the deprecated String.lowercase. Backwards compatibility is
+  implemented thanks to the Stdcompat library, which is now a dependency of
+  Shcaml.
+
 Caml-Shcaml 0.2.0
 -----------------
 
