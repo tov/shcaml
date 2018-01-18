@@ -13,6 +13,7 @@ depends: [ "ocamlfind" {build}
            "cppo" {build}
            "pcre"
            "hmap"
+	   "stdcompat"
          ]
 depopts: [ "lwt" "base-unix" ]
 build:
