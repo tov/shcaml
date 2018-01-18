@@ -1,5 +1,5 @@
 true: bin_annot
-true: package(pcre), package(hmap), package(unix)
+true: package(pcre), package(hmap), package(unix), package(stdcompat)
 "lib": include
 
 <lib/*.{cmo,cmx}> and not <lib/shcaml*>: for-pack(Shcaml)
