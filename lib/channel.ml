@@ -59,7 +59,7 @@ module InDisposal = Disposal.Make (struct
                   with Sys_error("Bad file descriptor") -> 103
   let default = Pervasives.close_in
 end)
- 
+
 module OutDisposal = Disposal.Make (struct
   type t      = out_channel
   let equal   = (==)
@@ -287,11 +287,11 @@ let open_string_in str =
 let string_of_channel c =
   let bufsize = 1024 in
   let buf     = Buffer.create bufsize in
-  let str     = String.make bufsize '\000' in
+  let str     = Bytes.make bufsize '\000' in
   let rec loop c =
     match Pervasives.input c str 0 bufsize with
     | 0 -> Buffer.contents buf
-    | n -> Buffer.add_substring buf str 0 n;
+    | n -> Buffer.add_subbytes buf str 0 n;
            loop c in
   loop c
 

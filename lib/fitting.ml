@@ -75,7 +75,7 @@ module Make(Shtream : AnyShtream.S) = struct
   (* This isn't reentrant. *)
   let copy_in_out =
     let buflen = 4096 in
-    let buf    = String.make buflen ' ' in
+    let buf    = Bytes.make buflen ' ' in
     let rec loop () =
       let count = Unix.read Unix.stdin buf 0 buflen in
       if count > 0 then begin

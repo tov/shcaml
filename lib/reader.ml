@@ -63,12 +63,13 @@ let rec make =
                 after    = ""; })
   | `Set set -> make (`Buf (set_helper set))
   | `Fixed (n, m) -> fun c ->
-      let result = { content  = String.make n '\000';
-                     before   = "";
-                     after    = String.make m '\000'; } in
-      Pervasives.really_input c result.content 0 n;
-      ignore @@ Pervasives.input c result.after 0 n;
-      result
+      let content = Bytes.make n '\000' in
+      let after = Bytes.make m '\000' in
+      Pervasives.really_input c content 0 n;
+      ignore @@ Pervasives.input c after 0 n;
+      { content  = Bytes.unsafe_to_string content;
+        before   = "";
+        after    = Bytes.unsafe_to_string after; }
   | `Buf f -> fun c ->
       let buf = Buffer.create 80 in
       let rec loop () =
