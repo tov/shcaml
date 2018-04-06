@@ -26,4 +26,4 @@ paper](http://users.eecs.northwestern.edu/%7Ejesse/pubs/caml-shcaml/). Note than
 as of Shcaml 0.2.0 and onwards, the solution to encode row types described in
 section 4.3 has been replaced by a more lightweight policy, where the absence or
 presence of fields is only checked dynamically. This trades static guarantees
-for maintenability of the library.
+for maintainability of the library.
